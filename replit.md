@@ -14,10 +14,10 @@ The system supports hierarchical browsing from city level down to individual pos
   - Added `sameSite: 'lax'` to session cookie configuration
   - Fixed admin panel authentication in production environment
 - **Sitemap Optimization for Google Search Console**
-  - Split neighborhood sitemap into 2 parts to comply with Google's 50,000 URL limit per sitemap
-  - `sitemap-neighborhoods-1.xml`: First 40,000 neighborhoods
-  - `sitemap-neighborhoods-2.xml`: Remaining ~33,000+ neighborhoods
-  - Updated sitemap index to reference both parts
+  - Split neighborhood sitemap into 50 equal parts for better Google indexing
+  - Each sitemap contains ~1,460 neighborhoods (well under 50,000 URL limit)
+  - Dynamic route: `/sitemap-neighborhoods-{1-50}.xml`
+  - Sitemap index now references 54 total sitemaps (static, cities, districts, 50 neighborhoods, postal-codes)
 - **SEO-Optimized FAQ Section on Homepage**
   - Added comprehensive FAQ section with 10 detailed questions and answers
   - FAQ positioned after city listings for maximum SEO impact
@@ -68,15 +68,14 @@ The system supports hierarchical browsing from city level down to individual pos
   - Set as /favicon.png with proper HTML head references
   - Includes apple-touch-icon for iOS devices
 - Implemented comprehensive sitemap system with index and sub-sitemaps
-  - Created sitemap index at `/sitemap.xml` referencing 6 sub-sitemaps
+  - Created sitemap index at `/sitemap.xml` referencing 54 sub-sitemaps
   - `/sitemap-static.xml`: Homepage + 6 static pages (7 URLs)
   - `/sitemap-cities.xml`: All city pages (81 URLs)
   - `/sitemap-districts.xml`: All district pages (973 URLs)
-  - `/sitemap-neighborhoods-1.xml`: First 40,000 neighborhood pages (Google 50k limit compliance)
-  - `/sitemap-neighborhoods-2.xml`: Remaining ~33,000+ neighborhood pages
+  - `/sitemap-neighborhoods-{1-50}.xml`: Neighborhood pages split into 50 parts (~1,460 URLs each)
   - `/sitemap-postal-codes.xml`: All postal code pages (2,771 unique codes)
   - Total: ~77,000 URLs indexed for search engines
-  - All sitemaps use proper XML format with priority values and change frequencies
+  - All sitemaps use proper XML format with lastmod, priority, and changefreq tags
   - Storage functions added: `getAllDistricts()`, `getAllMahalleler()`, `getAllPostalCodes()`
 - Restructured mahalle/village page URLs to remove postal code suffix
   - Changed from `/:ilSlug/:ilceSlug/:mahalleSlug/:pk` to `/:ilSlug/:ilceSlug/:mahalleSlug`

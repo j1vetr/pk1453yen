@@ -79,10 +79,14 @@ Sitemap: ${baseUrl}/sitemap.xml
         'sitemap-static.xml',
         'sitemap-cities.xml',
         'sitemap-districts.xml',
-        'sitemap-neighborhoods-1.xml',
-        'sitemap-neighborhoods-2.xml',
-        'sitemap-postal-codes.xml'
       ];
+      
+      // Add 50 neighborhood sitemaps
+      for (let i = 1; i <= 50; i++) {
+        sitemaps.push(`sitemap-neighborhoods-${i}.xml`);
+      }
+      
+      sitemaps.push('sitemap-postal-codes.xml');
       
       for (const sitemap of sitemaps) {
         sitemapIndex += '  <sitemap>\n';
@@ -193,20 +197,36 @@ Sitemap: ${baseUrl}/sitemap.xml
     }
   });
 
-  // Sitemap - Neighborhoods Part 1 (İlk 40,000 mahalle)
-  app.get("/sitemap-neighborhoods-1.xml", async (req, res) => {
+  // Sitemap - Neighborhoods (50 parçaya bölünmüş)
+  app.get("/sitemap-neighborhoods-:part.xml", async (req, res) => {
     try {
       const baseUrl = process.env.BASE_URL || "https://postakodrehberi.com";
+      const part = parseInt(req.params.part);
+      
+      // Part 1-50 arası olmalı
+      if (part < 1 || part > 50) {
+        return res.status(404).send('Sitemap not found');
+      }
+      
       const neighborhoods = await storage.getAllMahalleler();
       const lastmod = new Date().toISOString().split('T')[0];
       
-      // İlk 40,000 kayıt
-      const part1 = neighborhoods.slice(0, 40000);
+      // Toplam kayıt sayısı
+      const total = neighborhoods.length;
+      // Her parçada olması gereken kayıt sayısı
+      const perPart = Math.ceil(total / 50);
+      
+      // Bu parçanın başlangıç ve bitiş index'leri
+      const startIndex = (part - 1) * perPart;
+      const endIndex = Math.min(part * perPart, total);
+      
+      // Bu parçaya ait mahalleler
+      const partData = neighborhoods.slice(startIndex, endIndex);
       
       let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n';
       sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
       
-      for (const neighborhood of part1) {
+      for (const neighborhood of partData) {
         sitemap += '  <url>\n';
         sitemap += `    <loc>${baseUrl}/${neighborhood.ilSlug}/${neighborhood.ilceSlug}/${neighborhood.mahalleSlug}</loc>\n`;
         sitemap += `    <lastmod>${lastmod}</lastmod>\n`;
@@ -220,38 +240,7 @@ Sitemap: ${baseUrl}/sitemap.xml
       res.header('Content-Type', 'application/xml; charset=UTF-8');
       res.send(sitemap);
     } catch (error: any) {
-      res.status(500).send('Error generating neighborhoods sitemap part 1');
-    }
-  });
-
-  // Sitemap - Neighborhoods Part 2 (Kalan mahalleler)
-  app.get("/sitemap-neighborhoods-2.xml", async (req, res) => {
-    try {
-      const baseUrl = process.env.BASE_URL || "https://postakodrehberi.com";
-      const neighborhoods = await storage.getAllMahalleler();
-      const lastmod = new Date().toISOString().split('T')[0];
-      
-      // 40,000'den sonraki kayıtlar
-      const part2 = neighborhoods.slice(40000);
-      
-      let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n';
-      sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
-      
-      for (const neighborhood of part2) {
-        sitemap += '  <url>\n';
-        sitemap += `    <loc>${baseUrl}/${neighborhood.ilSlug}/${neighborhood.ilceSlug}/${neighborhood.mahalleSlug}</loc>\n`;
-        sitemap += `    <lastmod>${lastmod}</lastmod>\n`;
-        sitemap += '    <changefreq>monthly</changefreq>\n';
-        sitemap += '    <priority>0.7</priority>\n';
-        sitemap += '  </url>\n';
-      }
-      
-      sitemap += '</urlset>';
-      
-      res.header('Content-Type', 'application/xml; charset=UTF-8');
-      res.send(sitemap);
-    } catch (error: any) {
-      res.status(500).send('Error generating neighborhoods sitemap part 2');
+      res.status(500).send('Error generating neighborhoods sitemap');
     }
   });
 
