@@ -118,27 +118,30 @@ export default function MahallePage() {
         ) : data ? (
           <>
             {/* Reklam Alanı - Header */}
-            <div className="mb-6 p-4 bg-muted/30 border rounded-lg text-center text-sm text-muted-foreground">
+            <aside className="mb-6 p-4 bg-muted/30 border rounded-lg text-center text-sm text-muted-foreground">
               Reklam Alanı
-            </div>
+            </aside>
 
-            <div className="mb-8">
-              <h1 className="text-3xl md:text-4xl font-bold mb-3">
-                {data.mahalle} Posta Kodu
-              </h1>
-              <p className="text-lg text-muted-foreground leading-relaxed">
-                {generateMahalleDescription(data.mahalle, data.ilce, data.il, data.postalCodes[0])}
-              </p>
-            </div>
+            <article>
+              <header className="mb-8">
+                <h1 className="text-3xl md:text-4xl font-bold mb-3">
+                  {data.mahalle} Mahallesi Posta Kodu
+                </h1>
+                <p className="text-lg text-muted-foreground leading-relaxed">
+                  {generateMahalleDescription(data.mahalle, data.ilce, data.il, data.postalCodes[0])}
+                </p>
+              </header>
 
-            {/* Postal Code Card */}
-            <Card className="mb-8 border-primary/20">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+              {/* Postal Code Card */}
+              <section className="mb-8" id="posta-kodu-bilgisi">
+                <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
                   <MapPin className="w-6 h-6 text-primary" />
                   Posta {data.postalCodes.length > 1 ? 'Kodları' : 'Kodu'}
-                </CardTitle>
-              </CardHeader>
+                </h2>
+                <Card className="border-primary/20">
+                  <CardHeader>
+                    <CardTitle className="sr-only">Posta Kodu Bilgileri</CardTitle>
+                  </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   {data.postalCodes.map((pk, index) => (
@@ -155,17 +158,20 @@ export default function MahallePage() {
                     </div>
                   ))}
                 </div>
-              </CardContent>
-            </Card>
+                  </CardContent>
+                </Card>
+              </section>
 
-            {/* Address Hierarchy */}
-            <Card className="mb-8">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+              {/* Address Hierarchy */}
+              <section className="mb-8" id="adres-hiyerarsisi">
+                <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
                   <Home className="w-5 h-5" />
                   Adres Hiyerarşisi
-                </CardTitle>
-              </CardHeader>
+                </h3>
+                <Card>
+                  <CardHeader className="sr-only">
+                    <CardTitle>Adres Detayları</CardTitle>
+                  </CardHeader>
               <CardContent>
                 <div className="space-y-3">
                   <div className="flex justify-between py-2 border-b">
@@ -191,15 +197,16 @@ export default function MahallePage() {
                     <span className="font-mono font-bold">{data.postalCodes.map(formatPostalCode).join(', ')}</span>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+                  </CardContent>
+                </Card>
+              </section>
 
-            {/* Related Mahalleler */}
-            {data.relatedMahalleler.length > 0 && (
-              <div>
-                <h2 className="text-2xl font-semibold mb-6">
-                  {data.ilce} İlçesindeki Diğer Mahalleler
-                </h2>
+              {/* Related Mahalleler */}
+              {data.relatedMahalleler.length > 0 && (
+                <section id="diger-mahalleler">
+                  <h2 className="text-2xl font-semibold mb-6">
+                    {data.ilce} İlçesindeki Diğer Mahalleler
+                  </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {data.relatedMahalleler.slice(0, 6).map((rel) => (
                     <PostalCodeCard
@@ -210,8 +217,9 @@ export default function MahallePage() {
                     />
                   ))}
                 </div>
-              </div>
+              </section>
             )}
+            </article>
           </>
         ) : (
           <EmptyState
