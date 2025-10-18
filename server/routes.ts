@@ -68,8 +68,9 @@ Sitemap: ${baseUrl}/sitemap.xml
   app.get("/sitemap.xml", async (req, res) => {
     try {
       const baseUrl = process.env.BASE_URL || "https://postakodrehberi.com";
+      const lastmod = new Date().toISOString().split('T')[0];
       
-      // Build sitemap index XML
+      // Build sitemap index XML (Google standard format)
       let sitemapIndex = '<?xml version="1.0" encoding="UTF-8"?>\n';
       sitemapIndex += '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
       
@@ -84,12 +85,15 @@ Sitemap: ${baseUrl}/sitemap.xml
       ];
       
       for (const sitemap of sitemaps) {
-        sitemapIndex += `  <sitemap>\n    <loc>${baseUrl}/${sitemap}</loc>\n  </sitemap>\n`;
+        sitemapIndex += '  <sitemap>\n';
+        sitemapIndex += `    <loc>${baseUrl}/${sitemap}</loc>\n`;
+        sitemapIndex += `    <lastmod>${lastmod}</lastmod>\n`;
+        sitemapIndex += '  </sitemap>\n';
       }
       
       sitemapIndex += '</sitemapindex>';
       
-      res.header('Content-Type', 'application/xml');
+      res.header('Content-Type', 'application/xml; charset=UTF-8');
       res.send(sitemapIndex);
     } catch (error: any) {
       res.status(500).send('Error generating sitemap index');
@@ -100,22 +104,33 @@ Sitemap: ${baseUrl}/sitemap.xml
   app.get("/sitemap-static.xml", async (req, res) => {
     try {
       const baseUrl = process.env.BASE_URL || "https://postakodrehberi.com";
+      const lastmod = new Date().toISOString().split('T')[0];
       
       let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n';
       sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
       
       // Homepage
-      sitemap += `  <url>\n    <loc>${baseUrl}/</loc>\n    <changefreq>daily</changefreq>\n    <priority>1.0</priority>\n  </url>\n`;
+      sitemap += '  <url>\n';
+      sitemap += `    <loc>${baseUrl}/</loc>\n`;
+      sitemap += `    <lastmod>${lastmod}</lastmod>\n`;
+      sitemap += '    <changefreq>daily</changefreq>\n';
+      sitemap += '    <priority>1.0</priority>\n';
+      sitemap += '  </url>\n';
       
       // Static pages
       const staticPages = ['ara', 'hakkimizda', 'iletisim', 'gizlilik-politikasi', 'kullanim-sartlari', 'cerez-politikasi'];
       for (const page of staticPages) {
-        sitemap += `  <url>\n    <loc>${baseUrl}/${page}</loc>\n    <changefreq>monthly</changefreq>\n    <priority>0.5</priority>\n  </url>\n`;
+        sitemap += '  <url>\n';
+        sitemap += `    <loc>${baseUrl}/${page}</loc>\n`;
+        sitemap += `    <lastmod>${lastmod}</lastmod>\n`;
+        sitemap += '    <changefreq>monthly</changefreq>\n';
+        sitemap += '    <priority>0.5</priority>\n';
+        sitemap += '  </url>\n';
       }
       
       sitemap += '</urlset>';
       
-      res.header('Content-Type', 'application/xml');
+      res.header('Content-Type', 'application/xml; charset=UTF-8');
       res.send(sitemap);
     } catch (error: any) {
       res.status(500).send('Error generating static sitemap');
@@ -127,17 +142,23 @@ Sitemap: ${baseUrl}/sitemap.xml
     try {
       const baseUrl = process.env.BASE_URL || "https://postakodrehberi.com";
       const cities = await storage.getCities();
+      const lastmod = new Date().toISOString().split('T')[0];
       
       let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n';
       sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
       
       for (const city of cities) {
-        sitemap += `  <url>\n    <loc>${baseUrl}/${city.ilSlug}</loc>\n    <changefreq>weekly</changefreq>\n    <priority>0.9</priority>\n  </url>\n`;
+        sitemap += '  <url>\n';
+        sitemap += `    <loc>${baseUrl}/${city.ilSlug}</loc>\n`;
+        sitemap += `    <lastmod>${lastmod}</lastmod>\n`;
+        sitemap += '    <changefreq>weekly</changefreq>\n';
+        sitemap += '    <priority>0.9</priority>\n';
+        sitemap += '  </url>\n';
       }
       
       sitemap += '</urlset>';
       
-      res.header('Content-Type', 'application/xml');
+      res.header('Content-Type', 'application/xml; charset=UTF-8');
       res.send(sitemap);
     } catch (error: any) {
       res.status(500).send('Error generating cities sitemap');
@@ -149,17 +170,23 @@ Sitemap: ${baseUrl}/sitemap.xml
     try {
       const baseUrl = process.env.BASE_URL || "https://postakodrehberi.com";
       const districts = await storage.getAllDistricts();
+      const lastmod = new Date().toISOString().split('T')[0];
       
       let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n';
       sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
       
       for (const district of districts) {
-        sitemap += `  <url>\n    <loc>${baseUrl}/${district.ilSlug}/${district.ilceSlug}</loc>\n    <changefreq>weekly</changefreq>\n    <priority>0.8</priority>\n  </url>\n`;
+        sitemap += '  <url>\n';
+        sitemap += `    <loc>${baseUrl}/${district.ilSlug}/${district.ilceSlug}</loc>\n`;
+        sitemap += `    <lastmod>${lastmod}</lastmod>\n`;
+        sitemap += '    <changefreq>weekly</changefreq>\n';
+        sitemap += '    <priority>0.8</priority>\n';
+        sitemap += '  </url>\n';
       }
       
       sitemap += '</urlset>';
       
-      res.header('Content-Type', 'application/xml');
+      res.header('Content-Type', 'application/xml; charset=UTF-8');
       res.send(sitemap);
     } catch (error: any) {
       res.status(500).send('Error generating districts sitemap');
@@ -171,6 +198,7 @@ Sitemap: ${baseUrl}/sitemap.xml
     try {
       const baseUrl = process.env.BASE_URL || "https://postakodrehberi.com";
       const neighborhoods = await storage.getAllMahalleler();
+      const lastmod = new Date().toISOString().split('T')[0];
       
       // İlk 40,000 kayıt
       const part1 = neighborhoods.slice(0, 40000);
@@ -179,12 +207,17 @@ Sitemap: ${baseUrl}/sitemap.xml
       sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
       
       for (const neighborhood of part1) {
-        sitemap += `  <url>\n    <loc>${baseUrl}/${neighborhood.ilSlug}/${neighborhood.ilceSlug}/${neighborhood.mahalleSlug}</loc>\n    <changefreq>monthly</changefreq>\n    <priority>0.7</priority>\n  </url>\n`;
+        sitemap += '  <url>\n';
+        sitemap += `    <loc>${baseUrl}/${neighborhood.ilSlug}/${neighborhood.ilceSlug}/${neighborhood.mahalleSlug}</loc>\n`;
+        sitemap += `    <lastmod>${lastmod}</lastmod>\n`;
+        sitemap += '    <changefreq>monthly</changefreq>\n';
+        sitemap += '    <priority>0.7</priority>\n';
+        sitemap += '  </url>\n';
       }
       
       sitemap += '</urlset>';
       
-      res.header('Content-Type', 'application/xml');
+      res.header('Content-Type', 'application/xml; charset=UTF-8');
       res.send(sitemap);
     } catch (error: any) {
       res.status(500).send('Error generating neighborhoods sitemap part 1');
@@ -196,6 +229,7 @@ Sitemap: ${baseUrl}/sitemap.xml
     try {
       const baseUrl = process.env.BASE_URL || "https://postakodrehberi.com";
       const neighborhoods = await storage.getAllMahalleler();
+      const lastmod = new Date().toISOString().split('T')[0];
       
       // 40,000'den sonraki kayıtlar
       const part2 = neighborhoods.slice(40000);
@@ -204,12 +238,17 @@ Sitemap: ${baseUrl}/sitemap.xml
       sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
       
       for (const neighborhood of part2) {
-        sitemap += `  <url>\n    <loc>${baseUrl}/${neighborhood.ilSlug}/${neighborhood.ilceSlug}/${neighborhood.mahalleSlug}</loc>\n    <changefreq>monthly</changefreq>\n    <priority>0.7</priority>\n  </url>\n`;
+        sitemap += '  <url>\n';
+        sitemap += `    <loc>${baseUrl}/${neighborhood.ilSlug}/${neighborhood.ilceSlug}/${neighborhood.mahalleSlug}</loc>\n`;
+        sitemap += `    <lastmod>${lastmod}</lastmod>\n`;
+        sitemap += '    <changefreq>monthly</changefreq>\n';
+        sitemap += '    <priority>0.7</priority>\n';
+        sitemap += '  </url>\n';
       }
       
       sitemap += '</urlset>';
       
-      res.header('Content-Type', 'application/xml');
+      res.header('Content-Type', 'application/xml; charset=UTF-8');
       res.send(sitemap);
     } catch (error: any) {
       res.status(500).send('Error generating neighborhoods sitemap part 2');
@@ -221,17 +260,23 @@ Sitemap: ${baseUrl}/sitemap.xml
     try {
       const baseUrl = process.env.BASE_URL || "https://postakodrehberi.com";
       const postalCodes = await storage.getUniquePostalCodes();
+      const lastmod = new Date().toISOString().split('T')[0];
       
       let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n';
       sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
       
       for (const code of postalCodes) {
-        sitemap += `  <url>\n    <loc>${baseUrl}/kod/${code.pk}</loc>\n    <changefreq>monthly</changefreq>\n    <priority>0.6</priority>\n  </url>\n`;
+        sitemap += '  <url>\n';
+        sitemap += `    <loc>${baseUrl}/kod/${code.pk}</loc>\n`;
+        sitemap += `    <lastmod>${lastmod}</lastmod>\n`;
+        sitemap += '    <changefreq>monthly</changefreq>\n';
+        sitemap += '    <priority>0.6</priority>\n';
+        sitemap += '  </url>\n';
       }
       
       sitemap += '</urlset>';
       
-      res.header('Content-Type', 'application/xml');
+      res.header('Content-Type', 'application/xml; charset=UTF-8');
       res.send(sitemap);
     } catch (error: any) {
       res.status(500).send('Error generating postal codes sitemap');
