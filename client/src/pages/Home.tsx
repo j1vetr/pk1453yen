@@ -32,15 +32,52 @@ export default function Home() {
 
   const jsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'WebSite',
-    name: 'Türkiye Posta Kodları',
-    description: 'Türkiye geneli posta kodları, il, ilçe ve mahalle bazlı adres bilgileri',
-    url: getCanonicalUrl('/'),
-    potentialAction: {
-      '@type': 'SearchAction',
-      target: `${getCanonicalUrl('/ara')}?q={search_term_string}`,
-      'query-input': 'required name=search_term_string',
-    },
+    '@graph': [
+      {
+        '@type': 'WebSite',
+        '@id': getCanonicalUrl('/#website'),
+        name: 'Posta Kodları',
+        alternateName: 'Türkiye Posta Kodları',
+        description: 'Türkiye geneli posta kodları, il, ilçe ve mahalle bazlı adres bilgileri',
+        url: getCanonicalUrl('/'),
+        potentialAction: {
+          '@type': 'SearchAction',
+          target: {
+            '@type': 'EntryPoint',
+            urlTemplate: `${getCanonicalUrl('/ara')}?q={search_term_string}`,
+          },
+          'query-input': 'required name=search_term_string',
+        },
+        publisher: {
+          '@id': getCanonicalUrl('/#organization'),
+        },
+      },
+      {
+        '@type': 'Organization',
+        '@id': getCanonicalUrl('/#organization'),
+        name: 'Posta Kodları',
+        alternateName: 'postakodlari.com.tr',
+        url: getCanonicalUrl('/'),
+        logo: {
+          '@type': 'ImageObject',
+          url: `${getCanonicalUrl('/favicon.png')}`,
+        },
+        description: 'Türkiye\'nin en kapsamlı posta kodu rehberi. 73.000+ posta kodu bilgisi ile il, ilçe ve mahalle bazlı adres sorgulama platformu.',
+        contactPoint: {
+          '@type': 'ContactPoint',
+          telephone: '+905308616785',
+          contactType: 'Customer Service',
+          email: 'info@postakodlari.com.tr',
+          availableLanguage: ['Turkish'],
+          areaServed: 'TR',
+        },
+        sameAs: [
+          getCanonicalUrl('/'),
+          getCanonicalUrl('/hakkimizda'),
+          getCanonicalUrl('/iletisim'),
+        ],
+      },
+    ],
   };
 
   return (

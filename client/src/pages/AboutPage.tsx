@@ -1,22 +1,28 @@
-import { useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { MapPin, Search, Zap } from 'lucide-react';
+import { SEOHead } from '@/components/SEOHead';
+import { getCanonicalUrl } from '@shared/utils';
 
 export default function AboutPage() {
-  useEffect(() => {
-    document.title = 'Hakkımızda - Posta Kodları | Türkiye Posta Kodları Rehberi';
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute('content', 'Posta Kodları, Türkiye\'nin 73.000+ posta kodunu içeren en kapsamlı posta kodu rehberidir. Tüm il, ilçe ve mahallelerin posta kodlarını kolayca sorgulayın.');
-    }
-    const canonicalLink = document.querySelector('link[rel="canonical"]');
-    if (canonicalLink) {
-      canonicalLink.setAttribute('href', `${window.location.origin}/hakkimizda`);
-    }
-  }, []);
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'AboutPage',
+    name: 'Hakkımızda - Posta Kodları',
+    description: 'Posta Kodları, Türkiye\'nin 73.000+ posta kodunu içeren en kapsamlı posta kodu rehberidir.',
+    url: getCanonicalUrl('/hakkimizda'),
+  };
 
   return (
-    <div className="container max-w-4xl mx-auto px-4 py-8">
+    <>
+      <SEOHead
+        title="Hakkımızda - Posta Kodları | Türkiye Posta Kodları Rehberi"
+        description="Posta Kodları, Türkiye'nin 73.000+ posta kodunu içeren en kapsamlı posta kodu rehberidir. Tüm il, ilçe ve mahallelerin posta kodlarını kolayca sorgulayın."
+        canonical={getCanonicalUrl('/hakkimizda')}
+        keywords="hakkımızda, posta kodları, türkiye posta kodu rehberi, posta kodu sorgulama"
+        jsonLd={jsonLd}
+      />
+      
+      <div className="container max-w-4xl mx-auto px-4 py-8">
       {/* Reklam Alanı - Header */}
       <div className="mb-8 p-4 bg-muted/30 border rounded-lg text-center text-sm text-muted-foreground">
         Reklam Alanı
@@ -115,5 +121,6 @@ export default function AboutPage() {
         </div>
       </div>
     </div>
+    </>
   );
 }

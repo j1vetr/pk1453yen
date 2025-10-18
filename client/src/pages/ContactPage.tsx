@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,6 +6,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Mail, Phone, MessageCircle, Send } from 'lucide-react';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { useToast } from '@/hooks/use-toast';
+import { SEOHead } from '@/components/SEOHead';
+import { getCanonicalUrl } from '@shared/utils';
 
 export default function ContactPage() {
   const { executeRecaptcha } = useGoogleReCaptcha();
@@ -18,17 +20,25 @@ export default function ContactPage() {
     message: ''
   });
 
-  useEffect(() => {
-    document.title = 'İletişim - Posta Kodları | Bize Ulaşın';
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute('content', 'Posta Kodları ile iletişime geçin. E-posta, telefon veya WhatsApp üzerinden bize ulaşabilir, sorularınızı iletebilirsiniz.');
-    }
-    const canonicalLink = document.querySelector('link[rel="canonical"]');
-    if (canonicalLink) {
-      canonicalLink.setAttribute('href', `${window.location.origin}/iletisim`);
-    }
-  }, []);
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'ContactPage',
+    name: 'İletişim - Posta Kodları',
+    description: 'Posta Kodları ile iletişime geçin. Sorularınızı ve önerilerinizi bize iletebilirsiniz.',
+    url: getCanonicalUrl('/iletisim'),
+    mainEntity: {
+      '@type': 'Organization',
+      name: 'Posta Kodları',
+      email: 'info@postakodlari.com.tr',
+      telephone: '+905308616785',
+      contactPoint: {
+        '@type': 'ContactPoint',
+        telephone: '+905308616785',
+        contactType: 'Customer Service',
+        availableLanguage: 'Turkish',
+      },
+    },
+  };
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
@@ -88,7 +98,16 @@ export default function ContactPage() {
   }, [executeRecaptcha, toast, formData]);
 
   return (
-    <div className="container max-w-4xl mx-auto px-4 py-8">
+    <>
+      <SEOHead
+        title="İletişim - Posta Kodları | Bize Ulaşın"
+        description="Posta Kodları ile iletişime geçin. E-posta, telefon veya WhatsApp üzerinden bize ulaşabilir, sorularınızı iletebilirsiniz."
+        canonical={getCanonicalUrl('/iletisim')}
+        keywords="iletişim, posta kodları, destek, yardım, soru sor"
+        jsonLd={jsonLd}
+      />
+      
+      <div className="container max-w-4xl mx-auto px-4 py-8">
       {/* Reklam Alanı - Header */}
       <div className="mb-8 p-4 bg-muted/30 border rounded-lg text-center text-sm text-muted-foreground">
         Reklam Alanı
@@ -257,5 +276,6 @@ export default function ContactPage() {
         </div>
       </div>
     </div>
+    </>
   );
 }
