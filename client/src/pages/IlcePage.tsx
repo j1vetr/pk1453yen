@@ -7,7 +7,7 @@ import { SearchBar } from '@/components/SearchBar';
 import { PostalCodeCard } from '@/components/PostalCodeCard';
 import { LoadingGrid } from '@/components/LoadingState';
 import { EmptyState } from '@/components/EmptyState';
-import { getCanonicalUrl, generateMetaDescription } from '@shared/utils';
+import { getCanonicalUrl, generateMetaDescription, generateIlceDescription } from '@shared/utils';
 
 interface Mahalle {
   mahalle: string;
@@ -76,12 +76,17 @@ export default function IlcePage() {
           </div>
         ) : data ? (
           <>
+            {/* Reklam Alanı - Header */}
+            <div className="mb-6 p-4 bg-muted/30 border rounded-lg text-center text-sm text-muted-foreground">
+              Reklam Alanı
+            </div>
+
             <div className="mb-8">
               <h1 className="text-3xl md:text-4xl font-bold mb-3">
                 {data.ilce}, {data.il} Posta Kodları
               </h1>
-              <p className="text-lg text-muted-foreground">
-                {data.ilce} ilçesine ait {data.mahalleler.length} mahallenin posta kodlarını görüntüleyin
+              <p className="text-lg text-muted-foreground leading-relaxed">
+                {generateIlceDescription(data.ilce, data.il)}
               </p>
             </div>
 

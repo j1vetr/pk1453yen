@@ -108,3 +108,24 @@ export function levenshteinDistance(str1: string, str2: string): number {
 
   return matrix[len1][len2];
 }
+
+/**
+ * Generate dynamic SEO-friendly description for province pages
+ */
+export function generateIlDescription(il: string): string {
+  return `${il} ili, Türkiye'nin önemli şehirlerinden biridir ve posta kodu sistemiyle ilçelere, mahallelere kadar ayrıntılı şekilde bölünmüştür. ${il} iline ait tüm posta kodlarını aşağıdaki listeden inceleyebilirsiniz.`;
+}
+
+/**
+ * Generate dynamic SEO-friendly description for district pages
+ */
+export function generateIlceDescription(ilce: string, il: string): string {
+  return `${ilce} ilçesi, ${il} iline bağlıdır ve farklı mahalle ve köylerden oluşur. ${ilce} ilçesindeki tüm posta kodlarını aşağıdaki listeden görebilirsiniz.`;
+}
+
+/**
+ * Generate dynamic SEO-friendly description for neighborhood pages
+ */
+export function generateMahalleDescription(mahalle: string, ilce: string, il: string, pk: string): string {
+  return `${mahalle} Mahallesi, ${ilce} ilçesine bağlı olup ${il} il sınırları içerisindedir. Bu mahallenin posta kodu ${pk}'dır. Yakın mahallelerin posta kodlarını da aşağıda bulabilirsiniz.`;
+}

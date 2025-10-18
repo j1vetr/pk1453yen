@@ -7,7 +7,7 @@ import { Breadcrumb } from '@/components/Breadcrumb';
 import { CopyButton } from '@/components/CopyButton';
 import { PostalCodeCard } from '@/components/PostalCodeCard';
 import { EmptyState } from '@/components/EmptyState';
-import { getCanonicalUrl, generateMetaDescription, formatPostalCode } from '@shared/utils';
+import { getCanonicalUrl, generateMetaDescription, formatPostalCode, generateMahalleDescription } from '@shared/utils';
 
 interface MahalleData {
   il: string;
@@ -80,12 +80,17 @@ export default function MahallePage() {
           </div>
         ) : data ? (
           <>
+            {/* Reklam Alanı - Header */}
+            <div className="mb-6 p-4 bg-muted/30 border rounded-lg text-center text-sm text-muted-foreground">
+              Reklam Alanı
+            </div>
+
             <div className="mb-8">
               <h1 className="text-3xl md:text-4xl font-bold mb-3">
-                {data.mahalle}
+                {data.mahalle} Posta Kodu
               </h1>
-              <p className="text-lg text-muted-foreground">
-                {data.ilce}, {data.il}
+              <p className="text-lg text-muted-foreground leading-relaxed">
+                {generateMahalleDescription(data.mahalle, data.ilce, data.il, data.pk)}
               </p>
             </div>
 

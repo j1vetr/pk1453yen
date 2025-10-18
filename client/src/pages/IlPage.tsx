@@ -7,7 +7,7 @@ import { SearchBar } from '@/components/SearchBar';
 import { PostalCodeCard } from '@/components/PostalCodeCard';
 import { LoadingGrid } from '@/components/LoadingState';
 import { EmptyState } from '@/components/EmptyState';
-import { getCanonicalUrl, generateMetaDescription } from '@shared/utils';
+import { getCanonicalUrl, generateMetaDescription, generateIlDescription } from '@shared/utils';
 
 interface District {
   ilce: string;
@@ -73,12 +73,17 @@ export default function IlPage() {
           </div>
         ) : data ? (
           <>
+            {/* Reklam Alanı - Header */}
+            <div className="mb-6 p-4 bg-muted/30 border rounded-lg text-center text-sm text-muted-foreground">
+              Reklam Alanı
+            </div>
+
             <div className="mb-8">
               <h1 className="text-3xl md:text-4xl font-bold mb-3">
                 {data.il} Posta Kodları
               </h1>
-              <p className="text-lg text-muted-foreground">
-                {data.il} iline ait {data.districts.length} ilçenin posta kodlarını görüntüleyin
+              <p className="text-lg text-muted-foreground leading-relaxed">
+                {generateIlDescription(data.il)}
               </p>
             </div>
 

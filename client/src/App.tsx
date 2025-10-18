@@ -14,6 +14,11 @@ import IlcePage from "@/pages/IlcePage";
 import MahallePage from "@/pages/MahallePage";
 import KodPage from "@/pages/KodPage";
 import SearchPage from "@/pages/SearchPage";
+import AboutPage from "@/pages/AboutPage";
+import ContactPage from "@/pages/ContactPage";
+import PrivacyPage from "@/pages/PrivacyPage";
+import TermsPage from "@/pages/TermsPage";
+import CookiePage from "@/pages/CookiePage";
 import NotFound from "@/pages/not-found";
 
 // Admin Pages
@@ -52,6 +57,41 @@ function Router() {
         {() => (
           <PublicLayout>
             <SearchPage />
+          </PublicLayout>
+        )}
+      </Route>
+      <Route path="/hakkimizda">
+        {() => (
+          <PublicLayout>
+            <AboutPage />
+          </PublicLayout>
+        )}
+      </Route>
+      <Route path="/iletisim">
+        {() => (
+          <PublicLayout>
+            <ContactPage />
+          </PublicLayout>
+        )}
+      </Route>
+      <Route path="/gizlilik-politikasi">
+        {() => (
+          <PublicLayout>
+            <PrivacyPage />
+          </PublicLayout>
+        )}
+      </Route>
+      <Route path="/kullanim-sartlari">
+        {() => (
+          <PublicLayout>
+            <TermsPage />
+          </PublicLayout>
+        )}
+      </Route>
+      <Route path="/cerez-politikasi">
+        {() => (
+          <PublicLayout>
+            <CookiePage />
           </PublicLayout>
         )}
       </Route>
