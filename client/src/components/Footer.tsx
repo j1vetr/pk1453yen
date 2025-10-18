@@ -105,9 +105,21 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="border-t mt-8 pt-8 text-center text-sm text-muted-foreground">
-          <p>© {currentYear} Posta Kodum. Tüm hakları saklıdır.</p>
-          <p className="mt-2 text-xs">
+        <div className="border-t mt-8 pt-8 text-center space-y-3">
+          <p className="text-sm text-muted-foreground">© {currentYear} Posta Kodum. Tüm hakları saklıdır.</p>
+          <p className="text-sm text-muted-foreground">
+            made with <span className="text-primary">❤</span> by{' '}
+            <a 
+              href="https://toov.com.tr" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="font-medium text-foreground hover:text-primary transition-colors"
+              data-testid="link-toov"
+            >
+              TOOV
+            </a>
+          </p>
+          <p className="text-xs text-muted-foreground">
             Bu site, Google reklam iş ortakları tarafından sunulan reklamlar içerebilir. 
             Çerez kullanımı ve kişisel verilerin korunması hakkında daha fazla bilgi için{' '}
             <Link href="/gizlilik-politikasi" className="text-primary hover:underline">
