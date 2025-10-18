@@ -128,7 +128,7 @@ export default function SearchPage() {
                     key={idx}
                     title={result.mahalle}
                     subtitle={`${result.ilce}, ${result.il} - Posta Kodu: ${result.pk}${result.semt ? ` - ${result.semt}` : ''}`}
-                    href={`/${result.ilSlug}/${result.ilceSlug}/${result.mahalleSlug}/${result.pk}`}
+                    href={`/${result.ilSlug}/${result.ilceSlug}/${result.mahalleSlug}`}
                   />
                 ))}
               </div>

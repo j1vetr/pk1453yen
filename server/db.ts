@@ -1,9 +1,7 @@
-import { Pool, neonConfig } from '@neondatabase/serverless';
-import { drizzle } from 'drizzle-orm/neon-serverless';
-import ws from "ws";
+import { drizzle } from 'drizzle-orm/node-postgres';
+import pkg from 'pg';
+const { Pool } = pkg;
 import * as schema from "@shared/schema";
-
-neonConfig.webSocketConstructor = ws;
 
 if (!process.env.DATABASE_URL) {
   throw new Error(
@@ -11,5 +9,12 @@ if (!process.env.DATABASE_URL) {
   );
 }
 
-export const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-export const db = drizzle({ client: pool, schema });
+// Normal PostgreSQL için pg driver (production için SSL devre dışı)
+const sslConfig = process.env.NODE_ENV === 'production' ? { ssl: false } : {};
+
+export const pool = new Pool({ 
+  connectionString: process.env.DATABASE_URL,
+  ...sslConfig
+});
+
+export const db = drizzle(pool, { schema });
