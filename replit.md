@@ -1,14 +1,21 @@
-# Turkish Postal Code Platform
+# Turkish Postal Code Platform - Posta Kodları
 
 ## Overview
 
-This is a modern, SEO-optimized web application for querying Turkish postal codes. The platform provides comprehensive coverage of all cities (il), districts (ilçe), neighborhoods/villages (mahalle/köy), and postal codes across Turkey, serving 73,000+ postal code records. The application is built with a focus on search engine optimization, fast performance (targeting Core Web Vitals: LCP <1.8s, CLS <0.1, INP <200ms), and a clean, accessible user interface with both light and dark themes.
+This is a modern, SEO-optimized web application for querying Turkish postal codes under the brand "Posta Kodları" (postakodlari.com.tr). The platform provides comprehensive coverage of all cities (il), districts (ilçe), neighborhoods/villages (mahalle/köy), and postal codes across Turkey, serving 73,000+ postal code records. The application is built with a focus on search engine optimization, fast performance (targeting Core Web Vitals: LCP <1.8s, CLS <0.1, INP <200ms), and a clean, accessible user interface with both light and dark themes.
 
 The system supports hierarchical browsing from city level down to individual postal codes, comprehensive search functionality, and includes an admin panel for data management, site configuration, and analytics.
 
 ## Recent Changes
 
 **October 18, 2025 (Latest):**
+- **Domain and Branding Update**
+  - Changed site name from "Posta Kodum" to "Posta Kodları"
+  - Updated domain references to postakodlari.com.tr throughout application
+  - Email changed to info@postakodlari.com.tr
+  - All sitemap URLs now use postakodlari.com.tr domain
+  - robots.txt updated with correct sitemap reference
+  - Explicit /robots.txt route added to prevent route collision
 - **Added Google reCAPTCHA v3 Integration**
   - Integrated reCAPTCHA v3 to contact form for spam protection
   - Site key: 6LfZW-4rAAAAAGDdo-bEElPM0PJ6PYGnsFYCo5Ly (Turkish language)
