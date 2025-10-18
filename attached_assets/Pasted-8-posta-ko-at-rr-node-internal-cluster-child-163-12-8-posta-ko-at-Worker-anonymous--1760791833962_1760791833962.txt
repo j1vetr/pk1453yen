@@ -1,0 +1,34 @@
+8|posta-ko |     at rr (node:internal/cluster/child:163:12)
+8|posta-ko |     at Worker.<anonymous> (node:internal/cluster/child:113:7)
+8|posta-ko |     at process.onInternalMessage (node:internal/cluster/utils:49:5)
+8|posta-ko |     at process.emit (node:events:536:35)
+8|posta-ko |     at emit (node:internal/child_process:950:14)
+8|posta-ko |     at process.processTicksAndRejections (node:internal/process/task_queues:83:21)
+8|posta-ko | Error: bind EADDRINUSE 0.0.0.0:5000
+8|posta-ko |     at listenOnPrimaryHandle (node:net:1989:18)
+8|posta-ko |     at rr (node:internal/cluster/child:163:12)
+8|posta-ko |     at Worker.<anonymous> (node:internal/cluster/child:113:7)
+8|posta-ko |     at process.onInternalMessage (node:internal/cluster/utils:49:5)
+8|posta-ko |     at process.emit (node:events:536:35)
+8|posta-ko |     at emit (node:internal/child_process:950:14)
+8|posta-ko |     at process.processTicksAndRejections (node:internal/process/task_queues:83:21)
+8|posta-ko | Error: bind EADDRINUSE 0.0.0.0:5000
+8|posta-ko |     at listenOnPrimaryHandle (node:net:1989:18)
+8|posta-ko |     at rr (node:internal/cluster/child:163:12)
+8|posta-ko |     at Worker.<anonymous> (node:internal/cluster/child:113:7)
+8|posta-ko |     at process.onInternalMessage (node:internal/cluster/utils:49:5)
+8|posta-ko |     at process.emit (node:events:536:35)
+8|posta-ko |     at emit (node:internal/child_process:950:14)
+8|posta-ko |     at process.processTicksAndRejections (node:internal/process/task_queues:83:21)
+8|posta-ko | Error: bind EADDRINUSE 0.0.0.0:5000
+8|posta-ko |     at listenOnPrimaryHandle (node:net:1989:18)
+8|posta-ko |     at rr (node:internal/cluster/child:163:12)
+8|posta-ko |     at Worker.<anonymous> (node:internal/cluster/child:113:7)
+8|posta-ko |     at process.onInternalMessage (node:internal/cluster/utils:49:5)
+8|posta-ko |     at process.emit (node:events:536:35)
+8|posta-ko |     at emit (node:internal/child_process:950:14)
+8|posta-ko |     at process.processTicksAndRejections (node:internal/process/task_queues:83:21)
+
+/var/www/posta-kodlari/logs/pm2-out.log last 30 lines:
+8|posta-ko | 2025-10-18 15:50:18 +03:00: 3:50:18 PM [express] serving on port 5040
+8|posta-ko | 2025-10-18 15:50:18 +03:00: 3:50:18 PM [express] serving on port 5040
