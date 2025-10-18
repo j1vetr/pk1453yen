@@ -105,6 +105,29 @@ export const insertPageViewSchema = createInsertSchema(pageViews).omit({
 export type PageView = typeof pageViews.$inferSelect;
 export type InsertPageView = z.infer<typeof insertPageViewSchema>;
 
+// Contact Messages Table
+export const contactMessages = pgTable("contact_messages", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 100 }).notNull(),
+  email: varchar("email", { length: 255 }).notNull(),
+  subject: varchar("subject", { length: 255 }).notNull(),
+  message: text("message").notNull(),
+  isRead: integer("is_read").notNull().default(0), // 0 = unread, 1 = read
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (table) => ({
+  createdAtIndex: index("contact_messages_created_at_idx").on(table.createdAt),
+  isReadIndex: index("contact_messages_is_read_idx").on(table.isRead),
+}));
+
+export const insertContactMessageSchema = createInsertSchema(contactMessages).omit({
+  id: true,
+  isRead: true,
+  createdAt: true,
+});
+
+export type ContactMessage = typeof contactMessages.$inferSelect;
+export type InsertContactMessage = z.infer<typeof insertContactMessageSchema>;
+
 // Legacy users table (keep for compatibility)
 export const users = pgTable("users", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
