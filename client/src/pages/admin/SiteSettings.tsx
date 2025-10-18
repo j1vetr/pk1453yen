@@ -15,6 +15,8 @@ interface SiteSettings {
   siteDescription: string;
   contactEmail: string;
   metaKeywords: string;
+  googleAnalyticsCode: string;
+  googleSearchConsoleCode: string;
 }
 
 export default function SiteSettings() {
@@ -29,6 +31,8 @@ export default function SiteSettings() {
     siteDescription: '',
     contactEmail: '',
     metaKeywords: '',
+    googleAnalyticsCode: '',
+    googleSearchConsoleCode: '',
   });
 
   // Update form when data loads
@@ -138,6 +142,37 @@ export default function SiteSettings() {
                   />
                   <p className="text-sm text-muted-foreground">
                     Virgül ile ayırarak birden fazla kelime girebilirsiniz
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="googleAnalyticsCode">Google Analytics Kodu</Label>
+                  <Textarea
+                    id="googleAnalyticsCode"
+                    value={formData.googleAnalyticsCode}
+                    onChange={(e) => setFormData({ ...formData, googleAnalyticsCode: e.target.value })}
+                    placeholder='<!-- Google tag (gtag.js) -->&#10;<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>&#10;<script>&#10;  window.dataLayer = window.dataLayer || [];&#10;  function gtag(){dataLayer.push(arguments);}&#10;  gtag("js", new Date());&#10;  gtag("config", "G-XXXXXXXXXX");&#10;</script>'
+                    rows={8}
+                    data-testid="input-google-analytics"
+                    className="font-mono text-xs"
+                  />
+                  <p className="text-sm text-muted-foreground">
+                    Google Analytics kodunu buraya yapıştırın. Tüm sayfalarda otomatik olarak yüklenecektir.
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="googleSearchConsoleCode">Google Search Console Doğrulama Kodu</Label>
+                  <Input
+                    id="googleSearchConsoleCode"
+                    value={formData.googleSearchConsoleCode}
+                    onChange={(e) => setFormData({ ...formData, googleSearchConsoleCode: e.target.value })}
+                    placeholder='<meta name="google-site-verification" content="xxxxxxxxxxxx" />'
+                    data-testid="input-search-console"
+                    className="font-mono text-xs"
+                  />
+                  <p className="text-sm text-muted-foreground">
+                    Google Search Console doğrulama meta etiketini buraya yapıştırın.
                   </p>
                 </div>
 
