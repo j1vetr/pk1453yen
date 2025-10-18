@@ -3,10 +3,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function TermsPage() {
   useEffect(() => {
-    document.title = 'Kullanım Şartları - Posta Kodum | Hizmet Koşulları';
+    document.title = 'Kullanım Şartları - Posta Kodları | Hizmet Koşulları';
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute('content', 'Posta Kodum kullanım şartları ve hizmet koşulları. Siteyi kullanırken uymanız gereken kurallar ve koşullar hakkında bilgi edinin.');
+      metaDescription.setAttribute('content', 'Posta Kodları kullanım şartları ve hizmet koşulları. Siteyi kullanırken uymanız gereken kurallar ve koşullar hakkında bilgi edinin.');
     }
     const canonicalLink = document.querySelector('link[rel="canonical"]');
     if (canonicalLink) {
@@ -32,7 +32,7 @@ export default function TermsPage() {
         <Card>
           <CardContent className="pt-6">
             <p className="text-muted-foreground leading-relaxed">
-              Posta Kodum web sitesini kullanarak, aşağıdaki kullanım şartlarını kabul 
+              Posta Kodları web sitesini kullanarak, aşağıdaki kullanım şartlarını kabul 
               etmiş sayılırsınız. Lütfen siteyi kullanmadan önce bu şartları dikkatlice okuyun.
             </p>
           </CardContent>
@@ -44,12 +44,12 @@ export default function TermsPage() {
           </CardHeader>
           <CardContent className="space-y-3">
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Posta Kodum, Türkiye'deki posta kodlarını ücretsiz olarak sorgulayabileceğiniz 
+              Posta Kodları, Türkiye'deki posta kodlarını ücretsiz olarak sorgulayabileceğiniz 
               bir platformdur. Site üzerinde sunulan bilgiler, kullanıcıların bilgilendirilmesi 
               amacıyla sağlanmaktadır.
             </p>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Posta Kodum, site içeriğini herhangi bir zamanda ve önceden haber vermeksizin 
+              Posta Kodları, site içeriğini herhangi bir zamanda ve önceden haber vermeksizin 
               değiştirme, güncelleme veya kaldırma hakkını saklı tutar.
             </p>
           </CardContent>

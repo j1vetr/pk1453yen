@@ -18,10 +18,10 @@ export default function ContactPage() {
   });
 
   useEffect(() => {
-    document.title = 'İletişim - Posta Kodum | Bize Ulaşın';
+    document.title = 'İletişim - Posta Kodları | Bize Ulaşın';
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute('content', 'Posta Kodum ile iletişime geçin. E-posta, telefon veya WhatsApp üzerinden bize ulaşabilir, sorularınızı iletebilirsiniz.');
+      metaDescription.setAttribute('content', 'Posta Kodları ile iletişime geçin. E-posta, telefon veya WhatsApp üzerinden bize ulaşabilir, sorularınızı iletebilirsiniz.');
     }
     const canonicalLink = document.querySelector('link[rel="canonical"]');
     if (canonicalLink) {

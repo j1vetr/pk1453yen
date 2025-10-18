@@ -3,10 +3,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function PrivacyPage() {
   useEffect(() => {
-    document.title = 'Gizlilik Politikası - Posta Kodum | Kişisel Verilerin Korunması';
+    document.title = 'Gizlilik Politikası - Posta Kodları | Kişisel Verilerin Korunması';
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute('content', 'Posta Kodum gizlilik politikası. Kişisel verilerinizin korunması, çerez kullanımı ve Google reklam iş ortakları hakkında bilgi edinin.');
+      metaDescription.setAttribute('content', 'Posta Kodları gizlilik politikası. Kişisel verilerinizin korunması, çerez kullanımı ve Google reklam iş ortakları hakkında bilgi edinin.');
     }
     const canonicalLink = document.querySelector('link[rel="canonical"]');
     if (canonicalLink) {
@@ -32,7 +32,7 @@ export default function PrivacyPage() {
         <Card>
           <CardContent className="pt-6 space-y-4">
             <p className="text-muted-foreground leading-relaxed">
-              Posta Kodum olarak, kullanıcılarımızın gizliliğine büyük önem veriyoruz. 
+              Posta Kodları olarak, kullanıcılarımızın gizliliğine büyük önem veriyoruz. 
               Bu gizlilik politikası, web sitemizi ziyaret ettiğinizde kişisel verilerinizin 
               nasıl toplandığını, kullanıldığını ve korunduğunu açıklamaktadır.
             </p>

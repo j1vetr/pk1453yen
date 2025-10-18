@@ -4,10 +4,10 @@ import { MapPin, Search, Zap } from 'lucide-react';
 
 export default function AboutPage() {
   useEffect(() => {
-    document.title = 'Hakkımızda - Posta Kodum | Türkiye Posta Kodları Rehberi';
+    document.title = 'Hakkımızda - Posta Kodları | Türkiye Posta Kodları Rehberi';
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute('content', 'Posta Kodum, Türkiye\'nin 73.000+ posta kodunu içeren en kapsamlı posta kodu rehberidir. Tüm il, ilçe ve mahallelerin posta kodlarını kolayca sorgulayın.');
+      metaDescription.setAttribute('content', 'Posta Kodları, Türkiye\'nin 73.000+ posta kodunu içeren en kapsamlı posta kodu rehberidir. Tüm il, ilçe ve mahallelerin posta kodlarını kolayca sorgulayın.');
     }
     const canonicalLink = document.querySelector('link[rel="canonical"]');
     if (canonicalLink) {
@@ -33,7 +33,7 @@ export default function AboutPage() {
         <Card>
           <CardContent className="pt-6">
             <p className="text-muted-foreground leading-relaxed">
-              Posta Kodum, Türkiye'deki tüm il, ilçe ve mahallelerin posta kodlarını 
+              Posta Kodları, Türkiye'deki tüm il, ilçe ve mahallelerin posta kodlarını 
               kolayca bulabileceğiniz kapsamlı bir posta kodu rehberidir. 73.000'den fazla 
               posta kodu bilgisini içeren platformumuz, kullanıcılarımızın ihtiyaç duydukları 
               posta kodu bilgisine hızlı ve kolay bir şekilde ulaşmalarını sağlar.

@@ -3,10 +3,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function CookiePage() {
   useEffect(() => {
-    document.title = 'Çerez Politikası - Posta Kodum | Cookie Policy';
+    document.title = 'Çerez Politikası - Posta Kodları | Cookie Policy';
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute('content', 'Posta Kodum çerez politikası. Web sitemizde kullanılan çerezler, çerez türleri ve yönetimi hakkında detaylı bilgi edinin.');
+      metaDescription.setAttribute('content', 'Posta Kodları çerez politikası. Web sitemizde kullanılan çerezler, çerez türleri ve yönetimi hakkında detaylı bilgi edinin.');
     }
     const canonicalLink = document.querySelector('link[rel="canonical"]');
     if (canonicalLink) {
@@ -32,7 +32,7 @@ export default function CookiePage() {
         <Card>
           <CardContent className="pt-6">
             <p className="text-muted-foreground leading-relaxed">
-              Bu çerez politikası, Posta Kodum web sitesinde çerezlerin nasıl kullanıldığını 
+              Bu çerez politikası, Posta Kodları web sitesinde çerezlerin nasıl kullanıldığını 
               ve yönetildiğini açıklamaktadır.
             </p>
           </CardContent>

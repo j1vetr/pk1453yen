@@ -12,7 +12,7 @@ export function Footer() {
           {/* Logo ve Açıklama */}
           <div className="space-y-4">
             <Link href="/" className="inline-block">
-              <img src={logoUrl} alt="Posta Kodum Logo" className="h-12 w-auto" />
+              <img src={logoUrl} alt="Posta Kodları Logo" className="h-12 w-auto" />
             </Link>
             <p className="text-sm text-muted-foreground">
               Türkiye'nin en kapsamlı posta kodu rehberi. 73.000+ posta kodu bilgisi ile tüm il, ilçe ve mahallelerin posta kodlarını hızlıca sorgulayın.
@@ -74,11 +74,11 @@ export function Footer() {
             <ul className="space-y-3 text-sm">
               <li>
                 <a 
-                  href="mailto:info@postakodum.tr" 
+                  href="mailto:info@postakodlari.com.tr" 
                   className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
                 >
                   <Mail className="w-5 h-5" />
-                  info@postakodum.tr
+                  info@postakodlari.com.tr
                 </a>
               </li>
               <li>
@@ -106,7 +106,7 @@ export function Footer() {
         </div>
 
         <div className="border-t mt-8 pt-8 text-center space-y-3">
-          <p className="text-sm text-muted-foreground">© {currentYear} Posta Kodum. Tüm hakları saklıdır.</p>
+          <p className="text-sm text-muted-foreground">© {currentYear} Posta Kodları. Tüm hakları saklıdır.</p>
           <p className="text-sm text-muted-foreground">
             made with <span className="text-primary">❤</span> by{' '}
             <a 
