@@ -40,7 +40,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   );
   // Serve robots.txt explicitly (before other routes)
   app.get("/robots.txt", (req, res) => {
-    const baseUrl = process.env.BASE_URL || "https://postakodlari.com.tr";
+    const baseUrl = process.env.BASE_URL || "https://postakodrehberi.com";
     const robotsTxt = `User-agent: *
 Allow: /
 Allow: /ara
@@ -66,7 +66,7 @@ Sitemap: ${baseUrl}/sitemap.xml
   // Sitemap Index - Ana sitemap dosyası
   app.get("/sitemap.xml", async (req, res) => {
     try {
-      const baseUrl = process.env.BASE_URL || "https://postakodlari.com.tr";
+      const baseUrl = process.env.BASE_URL || "https://postakodrehberi.com";
       
       // Build sitemap index XML
       let sitemapIndex = '<?xml version="1.0" encoding="UTF-8"?>\n';
@@ -97,7 +97,7 @@ Sitemap: ${baseUrl}/sitemap.xml
   // Sitemap - Static pages
   app.get("/sitemap-static.xml", async (req, res) => {
     try {
-      const baseUrl = process.env.BASE_URL || "https://postakodlari.com.tr";
+      const baseUrl = process.env.BASE_URL || "https://postakodrehberi.com";
       
       let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n';
       sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
@@ -123,7 +123,7 @@ Sitemap: ${baseUrl}/sitemap.xml
   // Sitemap - Cities (Il pages)
   app.get("/sitemap-cities.xml", async (req, res) => {
     try {
-      const baseUrl = process.env.BASE_URL || "https://postakodlari.com.tr";
+      const baseUrl = process.env.BASE_URL || "https://postakodrehberi.com";
       const cities = await storage.getCities();
       
       let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n';
@@ -145,7 +145,7 @@ Sitemap: ${baseUrl}/sitemap.xml
   // Sitemap - Districts (Ilce pages)
   app.get("/sitemap-districts.xml", async (req, res) => {
     try {
-      const baseUrl = process.env.BASE_URL || "https://postakodlari.com.tr";
+      const baseUrl = process.env.BASE_URL || "https://postakodrehberi.com";
       const districts = await storage.getAllDistricts();
       
       let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n';
@@ -167,7 +167,7 @@ Sitemap: ${baseUrl}/sitemap.xml
   // Sitemap - Neighborhoods (Mahalle pages)
   app.get("/sitemap-neighborhoods.xml", async (req, res) => {
     try {
-      const baseUrl = process.env.BASE_URL || "https://postakodlari.com.tr";
+      const baseUrl = process.env.BASE_URL || "https://postakodrehberi.com";
       const neighborhoods = await storage.getAllMahalleler();
       
       let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n';
@@ -189,7 +189,7 @@ Sitemap: ${baseUrl}/sitemap.xml
   // Sitemap - Postal Codes (Posta kodu pages)
   app.get("/sitemap-postal-codes.xml", async (req, res) => {
     try {
-      const baseUrl = process.env.BASE_URL || "https://postakodlari.com.tr";
+      const baseUrl = process.env.BASE_URL || "https://postakodrehberi.com";
       const postalCodes = await storage.getAllPostalCodes();
       
       let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n';

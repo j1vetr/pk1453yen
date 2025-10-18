@@ -55,7 +55,7 @@ export function formatPostalCode(pk: string): string {
 export function getCanonicalUrl(path: string): string {
   const baseUrl = typeof window !== 'undefined' 
     ? window.location.origin 
-    : 'https://postakodlari.com.tr';
+    : 'https://postakodrehberi.com';
   return `${baseUrl}${path}`;
 }
 
