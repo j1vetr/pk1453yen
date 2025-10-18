@@ -17,6 +17,31 @@ declare module "express-session" {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Serve robots.txt explicitly (before other routes)
+  app.get("/robots.txt", (req, res) => {
+    const baseUrl = process.env.BASE_URL || "https://postakodlari.com.tr";
+    const robotsTxt = `User-agent: *
+Allow: /
+Allow: /ara
+Allow: /hakkimizda
+Allow: /iletisim
+Allow: /gizlilik-politikasi
+Allow: /kullanim-sartlari
+Allow: /cerez-politikasi
+
+# Disallow admin pages
+Disallow: /admin
+Disallow: /admin/*
+
+# Disallow API endpoints
+Disallow: /api/*
+
+Sitemap: ${baseUrl}/sitemap.xml
+`;
+    res.header('Content-Type', 'text/plain');
+    res.send(robotsTxt);
+  });
+
   // Sitemap Index - Ana sitemap dosyası
   app.get("/sitemap.xml", async (req, res) => {
     try {
