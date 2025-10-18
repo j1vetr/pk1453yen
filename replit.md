@@ -9,6 +9,16 @@ The system supports hierarchical browsing from city level down to individual pos
 ## Recent Changes
 
 **October 18, 2025 (Latest):**
+- Implemented comprehensive sitemap system with index and sub-sitemaps
+  - Created sitemap index at `/sitemap.xml` referencing 5 sub-sitemaps
+  - `/sitemap-static.xml`: Homepage + 6 static pages (7 URLs)
+  - `/sitemap-cities.xml`: All city pages (81 URLs)
+  - `/sitemap-districts.xml`: All district pages (973 URLs)
+  - `/sitemap-neighborhoods.xml`: All neighborhood pages (73,299 URLs)
+  - `/sitemap-postal-codes.xml`: All postal code pages (2,771 unique codes)
+  - Total: ~77,000 URLs indexed for search engines
+  - All sitemaps use proper XML format with priority values and change frequencies
+  - Storage functions added: `getAllDistricts()`, `getAllMahalleler()`, `getAllPostalCodes()`
 - Restructured mahalle/village page URLs to remove postal code suffix
   - Changed from `/:ilSlug/:ilceSlug/:mahalleSlug/:pk` to `/:ilSlug/:ilceSlug/:mahalleSlug`
   - Backend API updated to return all postal codes for a neighborhood
@@ -24,7 +34,7 @@ The system supports hierarchical browsing from city level down to individual pos
 - Added footer credit
   - "made with ❤ by TOOV" linking to https://toov.com.tr
 - Fixed nested anchor tag warning in PostalCodeCard component
-- All end-to-end tests passing: navigation, URL structure, 404 handling, footer links
+- All end-to-end tests passing: navigation, URL structure, 404 handling, footer links, sitemap validation
 
 **October 18, 2025 (Earlier):**
 - Changed color scheme from blue to red theme throughout application
