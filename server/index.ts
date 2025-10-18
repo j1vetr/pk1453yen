@@ -1,6 +1,9 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import { renderHTMLWithMeta } from "./ssr";
+import path from "path";
+import fs from "fs";
 
 const app = express();
 
@@ -59,7 +62,22 @@ app.use((req, res, next) => {
   if (app.get("env") === "development") {
     await setupVite(app, server);
   } else {
-    serveStatic(app);
+    // Production: Serve static files first
+    const distPath = path.resolve(import.meta.dirname, "public");
+    app.use(express.static(distPath));
+    
+    // SSR: Serve HTML with dynamic meta tags for all routes
+    app.use("*", async (req, res) => {
+      const templatePath = path.resolve(distPath, "index.html");
+      
+      // Check if this is a static file request (has extension)
+      if (req.path.includes('.')) {
+        // Let it 404 naturally
+        return res.status(404).send('Not Found');
+      }
+      
+      await renderHTMLWithMeta(req, res, templatePath);
+    });
   }
 
   // ALWAYS serve the app on the port specified in the environment variable PORT
