@@ -2,15 +2,23 @@
 
 ## Overview
 
-This is a modern, SEO-optimized web application for querying Turkish postal codes under the brand "Posta Kodları" (postakodlari.com.tr). The platform provides comprehensive coverage of all cities (il), districts (ilçe), neighborhoods/villages (mahalle/köy), and postal codes across Turkey, serving 73,000+ postal code records. The application is built with a focus on search engine optimization, fast performance (targeting Core Web Vitals: LCP <1.8s, CLS <0.1, INP <200ms), and a clean, accessible user interface with both light and dark themes.
+This is a modern, SEO-optimized web application for querying Turkish postal codes under the brand "Posta Kodları" (postakodrehberi.com). The platform provides comprehensive coverage of all cities (il), districts (ilçe), neighborhoods/villages (mahalle/köy), and postal codes across Turkey, serving 73,000+ postal code records. The application is built with a focus on search engine optimization, fast performance (targeting Core Web Vitals: LCP <1.8s, CLS <0.1, INP <200ms), and a clean, accessible user interface with both light and dark themes.
 
 The system supports hierarchical browsing from city level down to individual postal codes, comprehensive search functionality, and includes an admin panel for data management, site configuration, and analytics.
 
 ## Recent Changes
 
 **October 18, 2025 (Latest):**
+- **Domain Migration to postakodrehberi.com**
+  - Changed primary domain from postakodlari.com.tr to postakodrehberi.com
+  - Updated all canonical URLs across all pages
+  - Updated email from info@postakodlari.com.tr to info@postakodrehberi.com
+  - Updated Organization schema alternateName to postakodrehberi.com
+  - Updated sitemap URLs in robots.txt and server/routes.ts
+  - Updated email addresses in all policy pages (Privacy, Terms, Cookie)
+  - Updated email addresses in Footer and ContactPage components
 - **Advanced SEO Optimization for Google Ranking**
-  - Fixed critical canonical URL domain from turkiye-posta-kodlari.com to postakodlari.com.tr across all pages
+  - Fixed critical canonical URL domain from turkiye-posta-kodlari.com to postakodrehberi.com across all pages
   - Migrated AboutPage and ContactPage from manual meta tags to SEOHead component for consistent SEO
   - Enhanced JSON-LD structured data with @graph structure for multiple entities
   - Added comprehensive Organization schema to Home.tsx with contact details and branding
@@ -27,9 +35,9 @@ The system supports hierarchical browsing from city level down to individual pos
   - Admin can manage codes through Site Ayarları page (/admin/settings)
 - **Domain and Branding Update**
   - Changed site name from "Posta Kodum" to "Posta Kodları"
-  - Updated domain references to postakodlari.com.tr throughout application
-  - Email changed to info@postakodlari.com.tr (updated across all policy pages)
-  - All sitemap URLs now use postakodlari.com.tr domain
+  - Updated domain references to postakodrehberi.com throughout application
+  - Email changed to info@postakodrehberi.com (updated across all policy pages)
+  - All sitemap URLs now use postakodrehberi.com domain
   - robots.txt updated with correct sitemap reference
   - Explicit /robots.txt route added to prevent route collision
 - **Added Google reCAPTCHA v3 Integration**
