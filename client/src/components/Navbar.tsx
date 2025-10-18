@@ -1,5 +1,5 @@
 import { Link } from 'wouter';
-import { Moon, Sun } from 'lucide-react';
+import { Moon, Sun, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTheme } from '@/contexts/ThemeContext';
 import logoUrl from '@/assets/logo.png';
@@ -15,8 +15,9 @@ export function Navbar() {
         </Link>
 
         <nav className="flex items-center gap-2">
-          <Link href="/ara" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-3 py-2">
-            Ara
+          <Link href="/" data-testid="link-home" className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-3 py-2">
+            <Home className="w-4 h-4" />
+            Ana Sayfa
           </Link>
           <Link href="/hakkimizda" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-3 py-2 hidden sm:inline-block">
             Hakkımızda
