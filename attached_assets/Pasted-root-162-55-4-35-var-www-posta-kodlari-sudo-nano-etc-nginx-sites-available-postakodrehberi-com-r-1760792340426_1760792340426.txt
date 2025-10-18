@@ -1,0 +1,49 @@
+root@162-55-4-35:/var/www/posta-kodlari# sudo nano /etc/nginx/sites-available/postakodrehberi.com
+root@162-55-4-35:/var/www/posta-kodlari# sudo ln -s /etc/nginx/sites-available/postakodrehberi.com /etc/nginx/sites-enabled/
+root@162-55-4-35:/var/www/posta-kodlari# sudo nginx -t
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+root@162-55-4-35:/var/www/posta-kodlari# sudo systemctl reload nginx
+root@162-55-4-35:/var/www/posta-kodlari# sudo certbot --nginx -d postakodrehberi.com -d www.postakodrehberi.com
+Saving debug log to /var/log/letsencrypt/letsencrypt.log
+Requesting a certificate for postakodrehberi.com and www.postakodrehberi.com
+
+Successfully received certificate.
+Certificate is saved at: /etc/letsencrypt/live/postakodrehberi.com/fullchain.pem
+Key is saved at:         /etc/letsencrypt/live/postakodrehberi.com/privkey.pem
+This certificate expires on 2026-01-16.
+These files will be updated when the certificate renews.
+Certbot has set up a scheduled task to automatically renew this certificate in the background.
+
+Deploying certificate
+Could not install certificate
+
+NEXT STEPS:
+- The certificate was saved, but could not be installed (installer: nginx). After fixing the error shown below, try installing it again by running:
+  certbot install --cert-name postakodrehberi.com
+
+Could not automatically find a matching server block for postakodrehberi.com. Set the `server_name` directive to use the Nginx installer.
+Ask for help or search for solutions at https://community.letsencrypt.org. See the logfile /var/log/letsencrypt/letsencrypt.log or re-run Certbot with -v for more details.
+root@162-55-4-35:/var/www/posta-kodlari# hostname toov.com.tr
+root@162-55-4-35:/var/www/posta-kodlari# sudo certbot --nginx -d postakodrehberi.com -d www.postakodrehberi.com
+Saving debug log to /var/log/letsencrypt/letsencrypt.log
+Certificate not yet due for renewal
+
+You have an existing certificate that has exactly the same domains or certificate name you requested and isn't close to expiry.
+(ref: /etc/letsencrypt/renewal/postakodrehberi.com.conf)
+
+What would you like to do?
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+1: Attempt to reinstall this existing certificate
+2: Renew & replace the certificate (may be subject to CA rate limits)
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Select the appropriate number [1-2] then [enter] (press 'c' to cancel): 1
+Deploying certificate
+Could not install certificate
+
+NEXT STEPS:
+- The certificate was saved, but could not be installed (installer: nginx). After fixing the error shown below, try installing it again by running:
+  certbot install --cert-name postakodrehberi.com
+
+Could not automatically find a matching server block for postakodrehberi.com. Set the `server_name` directive to use the Nginx installer.
+Ask for help or search for solutions at https://community.letsencrypt.org. See the logfile /var/log/letsencrypt/letsencrypt.log or re-run Certbot with -v for more details.
