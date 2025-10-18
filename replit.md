@@ -9,6 +9,15 @@ The system supports hierarchical browsing from city level down to individual pos
 ## Recent Changes
 
 **October 18, 2025 (Latest):**
+- **Advanced SEO Optimization for Google Ranking**
+  - Fixed critical canonical URL domain from turkiye-posta-kodlari.com to postakodlari.com.tr across all pages
+  - Migrated AboutPage and ContactPage from manual meta tags to SEOHead component for consistent SEO
+  - Enhanced JSON-LD structured data with @graph structure for multiple entities
+  - Added comprehensive Organization schema to Home.tsx with contact details and branding
+  - Added FAQPage schema to ContactPage for rich snippets in Google search
+  - All static pages now use centralized SEO management through SEOHead component
+  - Organization schema includes logo, contact points, area served, and social links
+  - WebSite schema includes SearchAction for Google Search integration
 - **Admin Panel: Google Analytics and Search Console Integration**
   - Added Google Analytics code input field in admin settings
   - Added Google Search Console verification meta tag input field
