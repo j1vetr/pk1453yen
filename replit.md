@@ -9,6 +9,19 @@ The system supports hierarchical browsing from city level down to individual pos
 ## Recent Changes
 
 **October 18, 2025:**
+- Changed color scheme from blue to red theme throughout application
+  - Primary color: 355 85% 50% (light) / 355 85% 55% (dark)
+  - All accent colors updated to red tones (355 hue)
+  - Consistent red theme across all UI components, buttons, icons
+- Set dark mode as default theme
+  - Application loads in dark mode by default
+  - Users can still toggle to light mode via theme button
+  - Theme preference saved in localStorage
+- Improved icon sizing across components
+  - StatsCard: Icons increased to w-8 h-8
+  - PostalCodeCard: Icons increased to w-6 h-6
+  - EmptyState: Icons increased to w-10 h-10
+  - Footer contact icons: w-5 h-5
 - Fixed Turkish character search functionality with proper normalization
   - Implemented character-by-character pattern matching (e.g., "kadikoy" matches "KADIKÖY")
   - Handles all Turkish characters: ı/i, ö/o, ü/u, ş/s, ç/c, ğ/g
@@ -17,7 +30,7 @@ The system supports hierarchical browsing from city level down to individual pos
   - Numeric queries (e.g., "34") now use start-of-string matching (^34 pattern)
   - Prevents false matches like "01340" when searching for "34"
 - Fixed SearchPage query parameter reading using window.location.search
-- All end-to-end tests passing: search, navigation, detail pages, copy functionality
+- All end-to-end tests passing: search, navigation, detail pages, copy functionality, theme system
 
 **October 17, 2025:**
 - Successfully imported 73,305 postal code records from CSV into PostgreSQL
@@ -44,6 +57,8 @@ Preferred communication style: Simple, everyday language.
 - Tailwind CSS for utility-first styling with custom design tokens
 - Design system inspired by Material Design with influences from Linear (data presentation), Google (search UX), and Notion (admin dashboard)
 - Comprehensive theme system supporting light/dark modes via React Context
+- Color scheme: Red theme (355 hue) throughout application
+- Default theme: Dark mode (user-switchable to light mode)
 
 **Page Structure:**
 - Home page: Search bar, statistics cards, city listing

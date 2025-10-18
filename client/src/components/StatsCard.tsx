@@ -22,8 +22,8 @@ export function StatsCard({ title, value, icon: Icon, description }: StatsCardPr
               <p className="text-sm text-muted-foreground mt-1">{description}</p>
             )}
           </div>
-          <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-            <Icon className="w-6 h-6 text-primary" />
+          <div className="w-16 h-16 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+            <Icon className="w-8 h-8 text-primary" />
           </div>
         </div>
       </CardContent>

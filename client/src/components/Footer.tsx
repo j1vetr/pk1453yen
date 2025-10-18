@@ -77,7 +77,7 @@ export function Footer() {
                   href="mailto:info@postakodum.tr" 
                   className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  <Mail className="w-4 h-4" />
+                  <Mail className="w-5 h-5" />
                   info@postakodum.tr
                 </a>
               </li>
@@ -86,7 +86,7 @@ export function Footer() {
                   href="tel:+905308616785" 
                   className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  <Phone className="w-4 h-4" />
+                  <Phone className="w-5 h-5" />
                   0530 861 67 85
                 </a>
               </li>
@@ -97,7 +97,7 @@ export function Footer() {
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  <MessageCircle className="w-4 h-4" />
+                  <MessageCircle className="w-5 h-5" />
                   WhatsApp
                 </a>
               </li>
