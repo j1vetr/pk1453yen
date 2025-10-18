@@ -9,6 +9,16 @@ The system supports hierarchical browsing from city level down to individual pos
 ## Recent Changes
 
 **October 18, 2025 (Latest):**
+- **Added Google reCAPTCHA v3 Integration**
+  - Integrated reCAPTCHA v3 to contact form for spam protection
+  - Site key: 6LfZW-4rAAAAAGDdo-bEElPM0PJ6PYGnsFYCo5Ly (Turkish language)
+  - Backend verification endpoint: POST /api/verify-recaptcha
+  - Graceful error handling for development environment (domain mismatch tolerance)
+  - Form submission works with improved UX and success notifications
+- **Custom Favicon Implementation**
+  - Added custom favicon using provided Turkish flag map logo
+  - Set as /favicon.png with proper HTML head references
+  - Includes apple-touch-icon for iOS devices
 - Implemented comprehensive sitemap system with index and sub-sitemaps
   - Created sitemap index at `/sitemap.xml` referencing 5 sub-sitemaps
   - `/sitemap-static.xml`: Homepage + 6 static pages (7 URLs)
@@ -34,7 +44,7 @@ The system supports hierarchical browsing from city level down to individual pos
 - Added footer credit
   - "made with ❤ by TOOV" linking to https://toov.com.tr
 - Fixed nested anchor tag warning in PostalCodeCard component
-- All end-to-end tests passing: navigation, URL structure, 404 handling, footer links, sitemap validation
+- All end-to-end tests passing: navigation, URL structure, 404 handling, footer links, sitemap validation, contact form submission
 
 **October 18, 2025 (Earlier):**
 - Changed color scheme from blue to red theme throughout application
