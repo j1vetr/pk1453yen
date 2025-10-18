@@ -205,41 +205,33 @@ export class DatabaseStorage {
 
   // Sitemap için tüm ilçeleri getir
   async getAllDistricts() {
-    const results = await db.select({
-      ilSlug: postalCodes.ilSlug,
-      ilceSlug: postalCodes.ilceSlug,
-    })
-      .from(postalCodes)
-      .groupBy(postalCodes.ilSlug, postalCodes.ilceSlug)
-      .orderBy(postalCodes.ilSlug, postalCodes.ilceSlug);
+    const results = await db.execute<{ ilSlug: string; ilceSlug: string }>(
+      sql`SELECT DISTINCT il_slug as "ilSlug", ilce_slug as "ilceSlug" 
+          FROM postal_codes 
+          ORDER BY il_slug, ilce_slug`
+    );
     
-    return results;
+    return results.rows;
   }
 
   // Sitemap için tüm mahalleleri getir
   async getAllMahalleler() {
-    const results = await db.select({
-      ilSlug: postalCodes.ilSlug,
-      ilceSlug: postalCodes.ilceSlug,
-      mahalleSlug: postalCodes.mahalleSlug,
-    })
-      .from(postalCodes)
-      .groupBy(postalCodes.ilSlug, postalCodes.ilceSlug, postalCodes.mahalleSlug)
-      .orderBy(postalCodes.ilSlug, postalCodes.ilceSlug, postalCodes.mahalleSlug);
+    const results = await db.execute<{ ilSlug: string; ilceSlug: string; mahalleSlug: string }>(
+      sql`SELECT DISTINCT il_slug as "ilSlug", ilce_slug as "ilceSlug", mahalle_slug as "mahalleSlug"
+          FROM postal_codes 
+          ORDER BY il_slug, ilce_slug, mahalle_slug`
+    );
     
-    return results;
+    return results.rows;
   }
 
   // Sitemap için tüm posta kodlarını getir
   async getAllPostalCodes() {
-    const results = await db.select({
-      pk: postalCodes.pk,
-    })
-      .from(postalCodes)
-      .groupBy(postalCodes.pk)
-      .orderBy(postalCodes.pk);
+    const results = await db.execute<{ pk: string }>(
+      sql`SELECT DISTINCT pk FROM postal_codes ORDER BY pk`
+    );
     
-    return results;
+    return results.rows;
   }
 
   // Site Settings
