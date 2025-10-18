@@ -74,11 +74,11 @@ export function Footer() {
             <ul className="space-y-3 text-sm">
               <li>
                 <a 
-                  href="mailto:info@postakodlari.com.tr" 
+                  href="mailto:info@postakodrehberi.com" 
                   className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
                 >
                   <Mail className="w-5 h-5" />
-                  info@postakodlari.com.tr
+                  info@postakodrehberi.com
                 </a>
               </li>
               <li>

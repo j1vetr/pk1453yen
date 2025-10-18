@@ -56,7 +56,7 @@ export default function Home() {
         '@type': 'Organization',
         '@id': getCanonicalUrl('/#organization'),
         name: 'Posta Kodları',
-        alternateName: 'postakodlari.com.tr',
+        alternateName: 'postakodrehberi.com',
         url: getCanonicalUrl('/'),
         logo: {
           '@type': 'ImageObject',
@@ -67,7 +67,7 @@ export default function Home() {
           '@type': 'ContactPoint',
           telephone: '+905308616785',
           contactType: 'Customer Service',
-          email: 'info@postakodlari.com.tr',
+          email: 'info@postakodrehberi.com',
           availableLanguage: ['Turkish'],
           areaServed: 'TR',
         },

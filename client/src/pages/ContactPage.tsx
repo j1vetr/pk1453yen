@@ -29,7 +29,7 @@ export default function ContactPage() {
     mainEntity: {
       '@type': 'Organization',
       name: 'Posta Kodları',
-      email: 'info@postakodlari.com.tr',
+      email: 'info@postakodrehberi.com',
       telephone: '+905308616785',
       contactPoint: {
         '@type': 'ContactPoint',
@@ -199,10 +199,10 @@ export default function ContactPage() {
                 <div>
                   <h3 className="font-semibold mb-1">E-posta</h3>
                   <a 
-                    href="mailto:info@postakodlari.com.tr"
+                    href="mailto:info@postakodrehberi.com"
                     className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
-                    info@postakodlari.com.tr
+                    info@postakodrehberi.com
                   </a>
                 </div>
               </div>
