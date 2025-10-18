@@ -56,6 +56,11 @@ export default function Home() {
       {/* Hero Section */}
       <section className="bg-gradient-to-b from-primary/5 to-background py-16 md:py-24">
         <div className="container max-w-4xl mx-auto px-4">
+          {/* Reklam Alanı - Header */}
+          <div className="mb-8 p-4 bg-muted/30 border rounded-lg text-center text-sm text-muted-foreground">
+            Reklam Alanı
+          </div>
+
           <div className="text-center mb-8">
             <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">
               Türkiye Posta Kodları
@@ -107,6 +112,13 @@ export default function Home() {
           </div>
         ) : null}
       </section>
+
+      {/* Reklam Alanı - İçerik İçi */}
+      <div className="container max-w-7xl mx-auto px-4 mb-8">
+        <div className="p-4 bg-muted/30 border rounded-lg text-center text-sm text-muted-foreground">
+          Reklam Alanı
+        </div>
+      </div>
 
       {/* Cities Section */}
       <section className="container max-w-7xl mx-auto px-4 py-12">

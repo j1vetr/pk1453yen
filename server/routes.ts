@@ -17,6 +17,41 @@ declare module "express-session" {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Sitemap XML
+  app.get("/sitemap.xml", async (req, res) => {
+    try {
+      const baseUrl = process.env.BASE_URL || "https://postakodum.tr";
+      
+      // Get all cities
+      const cities = await storage.getCities();
+      
+      // Build sitemap XML
+      let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n';
+      sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+      
+      // Homepage
+      sitemap += `  <url>\n    <loc>${baseUrl}/</loc>\n    <changefreq>daily</changefreq>\n    <priority>1.0</priority>\n  </url>\n`;
+      
+      // Static pages
+      const staticPages = ['ara', 'hakkimizda', 'iletisim', 'gizlilik-politikasi', 'kullanim-sartlari', 'cerez-politikasi'];
+      for (const page of staticPages) {
+        sitemap += `  <url>\n    <loc>${baseUrl}/${page}</loc>\n    <changefreq>monthly</changefreq>\n    <priority>0.8</priority>\n  </url>\n`;
+      }
+      
+      // Cities (Il pages)
+      for (const city of cities) {
+        sitemap += `  <url>\n    <loc>${baseUrl}/${city.ilSlug}</loc>\n    <changefreq>weekly</changefreq>\n    <priority>0.9</priority>\n  </url>\n`;
+      }
+      
+      sitemap += '</urlset>';
+      
+      res.header('Content-Type', 'application/xml');
+      res.send(sitemap);
+    } catch (error: any) {
+      res.status(500).send('Error generating sitemap');
+    }
+  });
+
   // Public API Routes
 
   // Get statistics

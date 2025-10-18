@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+Allow: /ara
+Allow: /hakkimizda
+Allow: /iletisim
+Allow: /gizlilik-politikasi
+Allow: /kullanim-sartlari
+Allow: /cerez-politikasi
+
+# Disallow admin pages
+Disallow: /admin
+Disallow: /admin/*
+
+# Disallow API endpoints
+Disallow: /api/*
+
+Sitemap: https://postakodum.tr/sitemap.xml
