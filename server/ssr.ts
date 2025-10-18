@@ -269,9 +269,12 @@ export async function renderHTMLWithMeta(req: Request, res: Response, templatePa
                     url === "/cerez-politikasi";
 
     if (!skipSSR) {
+      console.log(`[SSR] Rendering page: ${url}, parts:`, parts);
       if (parts.length === 0 || url === "/") {
         // Home page
+        console.log("[SSR] Rendering home page");
         const result = await renderHomePage();
+        console.log(`[SSR] Home page rendered, length: ${result.html.length}`);
         renderedContent = result.html;
         contentStatusCode = result.statusCode;
       } else if (parts[0] === "kod" && parts[1]) {
@@ -307,10 +310,13 @@ export async function renderHTMLWithMeta(req: Request, res: Response, templatePa
 
     // Inject rendered content into root div if available
     if (renderedContent) {
+      console.log(`[SSR] Injecting ${renderedContent.length} chars into root div`);
       html = html.replace(
         '<div id="root"></div>',
         `<div id="root">${renderedContent}</div>`
       );
+    } else {
+      console.log("[SSR] No rendered content to inject");
     }
 
     // Use the more restrictive status code
