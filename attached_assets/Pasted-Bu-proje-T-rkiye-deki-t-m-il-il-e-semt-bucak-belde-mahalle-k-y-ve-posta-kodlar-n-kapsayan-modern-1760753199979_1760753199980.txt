@@ -1,0 +1,68 @@
+Bu proje Türkiye’deki tüm il, ilçe, semt/bucak/belde, mahalle/köy ve posta kodlarını kapsayan modern bir web uygulaması olacak. 
+Kök dizinde data/posta_kodlari.csv adlı UTF-8 formatında dosya bulunacak (başlıklar: il, ilçe, semt_bucak_belde, Mahalle, PK). 
+Uygulama bu CSV’yi okuyup veritabanına aktararak tüm Türkiye posta kodlarını dinamik olarak sunacak.
+
+Amaç:
+• Her sayfası SEO uyumlu, %100 Google tarafından sevilecek şekilde yapılandırılmış bir site oluştur.
+• Modern, göz yormayan, sade bir arayüz tasarla (açık/koyu tema uyumlu, mobil öncelikli).
+• Her sayfada geçerli Structured Data (JSON-LD) şemaları bulunacak: Organization, WebSite, BreadcrumbList, PostalAddress, FAQPage, ItemList.
+• SSR veya statik render fark etmeksizin “view-source” çıktısında HTML içeriği tamamen görünür olmalı.
+• Core Web Vitals hedefleri: LCP <1.8s, CLS <0.1, INP <200ms.
+
+Site yapısı:
+- / → anasayfa (arama çubuğu + iller listesi)
+- /{il}/ → ilin ilçeleri
+- /{il}/{ilce}/ → ilçenin mahalle/köy listesi
+- /{il}/{ilce}/{mahalle}/{pk}/ → tekil posta kodu detay sayfası
+- /kod/{pk}/ → aynı PK’ya sahip tüm yerleşimlerin listesi
+- /ara?q=... → arama sonuç sayfası
+- /sitemap.xml → sitemap index
+- /sitemaps/... → parçalı sitemaplar (50.000 URL sınırı)
+- /robots.txt → API ve admin disallow, içerik yolları allow
+- /admin → yönetim paneli
+
+Admin panel özellikleri (/admin):
+• Modern dashboard (istatistikler, hızlı erişim kutuları)
+• “Veri Yönetimi” modülü: CSV import, tekil düzenleme, mükerrer tespiti
+• “Site Ayarları” modülü: site adı, açıklama, logo, favicon, meta şablonları, structured data aç/kapat
+• “SEO & Sitemap” modülü: robots kuralları, sitemap üretim ve yeniden gönderim
+• “Kullanıcı Yönetimi” modülü: roller (admin/editor), şifre değişimi, oturum yönetimi
+• “Analitik & Log” modülü: arama terimleri, en çok görüntülenen sayfalar, son import tarihleri
+• Giriş güvenliği: brute-force koruması, 2FA, güvenli oturum cookie’leri
+• Tasarım olarak güncel yönetim panelleri tarzında (sidebar, kart yapısı, chartlar, dark mode).
+
+Sayfa içerikleri:
+- İl sayfası: “{İl} Posta Kodları”, ilçelerin listesi, arama kutusu, son güncelleme tarihi.
+- İlçe sayfası: “{İlçe}, {İl} Posta Kodları”, mahalle listesi, komşu ilçeler.
+- Mahalle detay: “{Mahalle} Mahallesi Posta Kodu: {PK}”, aynı ilçedeki mahalleler, ilgili SSS.
+- Kod sayfası: “{PK} Posta Kodu – İlgili Yerleşimler”, tablo halinde bağlantılar.
+- Her içerikte breadcrumb, alt linkler ve “kopyala posta kodu” butonu.
+
+SEO kuralları:
+• Title ve Description otomatik doldurulacak, benzersiz olacak.
+• Canonical link her sayfada tekil.
+• Internal linking güçlü olacak: yukarı, aşağı ve yatay bağlantılar.
+• Sitemap’ler veri miktarına göre otomatik bölünecek, “lastmod” alanı eklenecek.
+• Robots.txt otomatik güncellenebilir.
+• Structured data testlerinde hata bulunmayacak.
+
+Veri işlemesi:
+• Import sırasında Türkçe karakterleri normalize et (İ/ı/Ş/Ğ/Ü/Ö/Ç→ASCII), slug alanları oluştur.
+• (il, ilce, mahalle, pk) kombinasyonunu tekil anahtar kabul et.
+• Eksik veya boş PK olan satırları atla.
+• Veriler sorgulanabilir, arama fonksiyonu yazım hatalarına toleranslı.
+• Aynı PK’ya sahip birden fazla mahalle varsa birlikte listelenmeli.
+
+Performans:
+• Sayfalar önbellekli, popüler iller statik hazır.
+• Cache mekanizması (istemci + sunucu).
+• Lazy load listeler, tablo sayfalama.
+• CDN önbellekleme, ETag ve Last-Modified başlıkları.
+
+Erişilebilirlik:
+• WCAG 2.2 AA seviyesinde, tüm butonlar ve formlar klavye ile erişilebilir.
+• Kopyala butonları için ekran okuyucu açıklamaları.
+• Mobilde tek elle kullanılabilir layout.
+
+Hedef:
+Tüm Türkiye posta kodlarını kapsayan, hızlı, modern, SEO-dostu bir bilgi platformu ve yönetim paneli oluşturmak. Tüm sayfalar Structured Data, güçlü link yapısı ve Google’ın yönergelerine tamamen uygun olacak. Kullanıcılar hem adres → kod hem de kod → adres yönünde arama yapabilecek.
