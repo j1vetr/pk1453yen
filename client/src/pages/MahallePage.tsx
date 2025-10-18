@@ -62,7 +62,7 @@ export default function MahallePage() {
         />
       )}
 
-      <div className="container max-w-4xl px-4 py-8">
+      <div className="container max-w-4xl mx-auto px-4 py-8">
         {data && (
           <Breadcrumb
             items={[

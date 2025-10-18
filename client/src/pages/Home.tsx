@@ -55,7 +55,7 @@ export default function Home() {
 
       {/* Hero Section */}
       <section className="bg-gradient-to-b from-primary/5 to-background py-16 md:py-24">
-        <div className="container max-w-4xl px-4">
+        <div className="container max-w-4xl mx-auto px-4">
           <div className="text-center mb-8">
             <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">
               Türkiye Posta Kodları
@@ -74,7 +74,7 @@ export default function Home() {
       </section>
 
       {/* Stats Section */}
-      <section className="container max-w-7xl px-4 py-12">
+      <section className="container max-w-7xl mx-auto px-4 py-12">
         <h2 className="text-2xl font-semibold mb-6">İstatistikler</h2>
         {statsLoading ? (
           <LoadingStats />
@@ -109,7 +109,7 @@ export default function Home() {
       </section>
 
       {/* Cities Section */}
-      <section className="container max-w-7xl px-4 py-12">
+      <section className="container max-w-7xl mx-auto px-4 py-12">
         <h2 className="text-2xl font-semibold mb-6">İller</h2>
         {citiesLoading ? (
           <LoadingGrid />

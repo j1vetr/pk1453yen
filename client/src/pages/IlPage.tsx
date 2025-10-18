@@ -57,7 +57,7 @@ export default function IlPage() {
         />
       )}
 
-      <div className="container max-w-7xl px-4 py-8">
+      <div className="container max-w-7xl mx-auto px-4 py-8">
         {data && (
           <Breadcrumb
             items={[
