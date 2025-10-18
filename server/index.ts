@@ -48,6 +48,19 @@ app.use((req, res, next) => {
 (async () => {
   const server = await registerRoutes(app);
 
+  // 301 Redirect for old URL structure: /{il}/{ilce}/{mahalle}/{pk}/ -> /{il}/{ilce}/{mahalle}/
+  app.use((req, res, next) => {
+    const urlParts = req.path.split('/').filter(Boolean);
+    
+    // Check if this is the old URL format: 4 parts where last part is a 5-digit postal code
+    if (urlParts.length === 4 && /^\d{5}$/.test(urlParts[3])) {
+      const newUrl = `/${urlParts[0]}/${urlParts[1]}/${urlParts[2]}/`;
+      return res.redirect(301, newUrl);
+    }
+    
+    next();
+  });
+
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";

@@ -1,0 +1,45 @@
+DÜZELT VE GELİŞTİR:
+
+1. URL YAPISI
+- Eski “/{il}/{ilce}/{mahalle}/{pk}/” adreslerini 301 ile yeni URL’ye yönlendir. Canonical da yeni adrese işaret etsin.
+- Slug normalizasyonunu düzelt: “i-stanbul” yerine “istanbul” vb. Türkçe karakterleri düzgün dönüştür.
+
+2. SSR (SUNUCU TARAFI RENDER)
+- Tüm içerik sayfaları (il, ilçe, mahalle, PK) SSR veya statik pre-render olsun.
+- View Source çıktısında boş root div yerine sayfa içeriği (H1, H2, paragraf, tablo, linkler) HTML olarak görünsün.
+- Hatalı “render var ama header 404” durumlarını düzelt. Veri bulunan sayfa 200, bulunmayan 404 dönsün.
+
+3. META TAG’LAR
+- Mahalle sayfası:
+  <title>{MAHALLE} Mahallesi Posta Kodu ({İLÇE}, {İL})</title>
+  <meta name="description" content="{İL} {İLÇE} {MAHALLE} Mahallesi’nin posta kodu {PK}. Diğer mahalleleri buradan görüntüleyin.">
+  <link rel="canonical" href="https://postakodrehberi.com/{il-slug}/{ilce-slug}/{mahalle-slug}/">
+  OG/Twitter meta’ları da bunlarla uyumlu olsun.
+- Kod sayfası:
+  <title>{PK} Posta Kodu – İlgili Yerleşimler</title>
+  <meta name="description" content="{PK} posta koduna bağlı il/ilçe/mahallelerin güncel listesi.">
+  <link rel="canonical" href="https://postakodrehberi.com/kod/{pk}/">
+
+4. YAPI VE İÇERİK ZENGİNLEŞTİRME
+- Her içerik sayfasına H1, H2 ve H3 etiketleri ekle (en az birer tane).
+  Örnek:
+    <h1>{MAHALLE} Mahallesi Posta Kodu</h1>
+    <h2>{İLÇE}, {İL} Bölgesindeki Diğer Mahalleler</h2>
+    <h3>{PK} Koduna Ait Yerleşimler</h3>
+- Sayfanın üst kısmına **çapa bağlantılar (anchor links)** ekle: “Mahalle Bilgileri”, “Diğer Mahalleler”, “Kod Sayfası”.
+- Çapaları “screen-reader friendly” yap: aria-label’larla erişilebilirlik ekle.
+- İçerik bloklarını (ör. mahalle listesi, tablo, açıklama) semantic HTML (section, article, aside) ile bölümlendir.
+- Görme engelliler için skip link ekle: <a href="#content" class="sr-only">İçeriğe geç</a>
+
+5. ŞEMA (JSON-LD)
+- Mahalle sayfasında:
+  • PostalAddress (streetAddress={MAHALLE} Mah., addressLocality={İLÇE}, addressRegion={İL}, postalCode={PK}, addressCountry=TR)
+  • BreadcrumbList: Anasayfa → {İL} → {İLÇE} → {MAHALLE}
+  • (Varsa) FAQPage
+- Kod sayfasında:
+  • ItemList (her öğe PostalAddress)
+  • BreadcrumbList
+
+6. SITEMAP
+
+- Düzelttiğin linkleri sitemap tarafında da düzelt.
