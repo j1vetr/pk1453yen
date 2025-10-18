@@ -14,6 +14,7 @@ export default function ContactPage() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    subject: '',
     message: ''
   });
 
@@ -56,14 +57,24 @@ export default function ContactPage() {
         }
       }
 
-      // Form gönderimi (development ortamında reCAPTCHA olmadan da çalışır)
+      // Form gönderimi backend'e
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+
+      if (!response.ok) {
+        throw new Error('Form gönderilemedi');
+      }
+
       toast({
         title: "Mesajınız Alındı",
         description: "İletişim formunuz başarıyla gönderildi. En kısa sürede size dönüş yapacağız. Teşekkürler!",
       });
 
       // Formu temizle
-      setFormData({ name: '', email: '', message: '' });
+      setFormData({ name: '', email: '', subject: '', message: '' });
     } catch (error) {
       console.error('Form gönderim hatası:', error);
       toast({
@@ -114,6 +125,16 @@ export default function ContactPage() {
                   placeholder="E-posta Adresiniz"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  required
+                />
+              </div>
+              <div>
+                <Input
+                  data-testid="input-subject"
+                  type="text"
+                  placeholder="Konu"
+                  value={formData.subject}
+                  onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                   required
                 />
               </div>
