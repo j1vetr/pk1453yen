@@ -125,7 +125,7 @@ export default function KodPage() {
                       key={idx}
                       title={loc.mahalle}
                       subtitle={`${loc.ilce}, ${loc.il}${loc.semt ? ` - ${loc.semt}` : ''}`}
-                      href={`/${loc.ilSlug}/${loc.ilceSlug}/${loc.mahalleSlug}/${data.pk}`}
+                      href={`/${loc.ilSlug}/${loc.ilceSlug}/${loc.mahalleSlug}`}
                     />
                   ))}
                 </div>
