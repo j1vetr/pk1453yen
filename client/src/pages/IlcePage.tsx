@@ -12,7 +12,6 @@ import { getCanonicalUrl, generateMetaDescription, generateIlceDescription } fro
 interface Mahalle {
   mahalle: string;
   mahalleSlug: string;
-  pk: string;
 }
 
 interface IlceData {
@@ -43,7 +42,7 @@ export default function IlcePage() {
       '@type': 'ListItem',
       position: index + 1,
       name: mahalle.mahalle,
-      url: getCanonicalUrl(`/${data.ilSlug}/${data.ilceSlug}/${mahalle.mahalleSlug}/${mahalle.pk}`),
+      url: getCanonicalUrl(`/${data.ilSlug}/${data.ilceSlug}/${mahalle.mahalleSlug}`),
     })),
   } : undefined;
 
@@ -97,10 +96,10 @@ export default function IlcePage() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {data.mahalleler.map((mahalle) => (
                   <PostalCodeCard
-                    key={`${mahalle.mahalleSlug}-${mahalle.pk}`}
+                    key={mahalle.mahalleSlug}
                     title={mahalle.mahalle}
-                    subtitle={`Posta Kodu: ${mahalle.pk}`}
-                    href={`/${data.ilSlug}/${data.ilceSlug}/${mahalle.mahalleSlug}/${mahalle.pk}`}
+                    subtitle={`${data.ilce} / ${data.il}`}
+                    href={`/${data.ilSlug}/${data.ilceSlug}/${mahalle.mahalleSlug}`}
                   />
                 ))}
               </div>

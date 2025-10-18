@@ -108,16 +108,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ error: "İlçe bulunamadı" });
       }
       
+      // Group mahalleler by unique mahalleSlug
+      const uniqueMahalleler = mahalleler.reduce((acc, curr) => {
+        if (!acc.find(item => item.mahalleSlug === curr.mahalleSlug)) {
+          acc.push({
+            mahalle: curr.mahalle,
+            mahalleSlug: curr.mahalleSlug,
+          });
+        }
+        return acc;
+      }, [] as Array<{ mahalle: string; mahalleSlug: string }>);
+
       res.json({
         il: mahalleler[0].il,
         ilSlug: mahalleler[0].ilSlug,
         ilce: mahalleler[0].ilce,
         ilceSlug: mahalleler[0].ilceSlug,
-        mahalleler: mahalleler.map(m => ({
-          mahalle: m.mahalle,
-          mahalleSlug: m.mahalleSlug,
-          pk: m.pk,
-        })),
+        mahalleler: uniqueMahalleler,
       });
     } catch (error: any) {
       res.status(500).json({ error: error.message });
@@ -125,34 +132,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get mahalle detail
-  app.get("/api/mahalle/:ilSlug/:ilceSlug/:mahalleSlug/:pk", async (req, res) => {
+  app.get("/api/mahalle/:ilSlug/:ilceSlug/:mahalleSlug", async (req, res) => {
     try {
-      const { ilSlug, ilceSlug, mahalleSlug, pk } = req.params;
-      const mahalle = await storage.getMahalleDetail(ilSlug, ilceSlug, mahalleSlug, pk);
+      const { ilSlug, ilceSlug, mahalleSlug } = req.params;
+      const mahalleRecords = await storage.getMahalleDetail(ilSlug, ilceSlug, mahalleSlug);
       
-      if (!mahalle) {
+      if (!mahalleRecords || mahalleRecords.length === 0) {
         return res.status(404).json({ error: "Mahalle bulunamadı" });
       }
       
       // Get related mahalleler in same district
       const relatedMahalleler = await storage.getMahallerByDistrict(ilSlug, ilceSlug);
       
+      // Use first record for general info
+      const firstRecord = mahalleRecords[0];
+      
       res.json({
-        il: mahalle.il,
-        ilSlug: mahalle.ilSlug,
-        ilce: mahalle.ilce,
-        ilceSlug: mahalle.ilceSlug,
-        mahalle: mahalle.mahalle,
-        mahalleSlug: mahalle.mahalleSlug,
-        pk: mahalle.pk,
-        semt: mahalle.semt,
+        il: firstRecord.il,
+        ilSlug: firstRecord.ilSlug,
+        ilce: firstRecord.ilce,
+        ilceSlug: firstRecord.ilceSlug,
+        mahalle: firstRecord.mahalle,
+        mahalleSlug: firstRecord.mahalleSlug,
+        semt: firstRecord.semt,
+        postalCodes: mahalleRecords.map(m => m.pk),
         relatedMahalleler: relatedMahalleler
-          .filter(m => m.id !== mahalle.id)
-          .map(m => ({
-            mahalle: m.mahalle,
-            mahalleSlug: m.mahalleSlug,
-            pk: m.pk,
-          })),
+          .filter(m => m.mahalleSlug !== mahalleSlug)
+          .reduce((acc, curr) => {
+            // Group by unique mahalle
+            if (!acc.find(item => item.mahalleSlug === curr.mahalleSlug)) {
+              acc.push({
+                mahalle: curr.mahalle,
+                mahalleSlug: curr.mahalleSlug,
+              });
+            }
+            return acc;
+          }, [] as Array<{ mahalle: string; mahalleSlug: string }>),
       });
     } catch (error: any) {
       res.status(500).json({ error: error.message });

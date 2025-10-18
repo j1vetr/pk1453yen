@@ -116,7 +116,7 @@ function Router() {
           </PublicLayout>
         )}
       </Route>
-      <Route path="/:ilSlug/:ilceSlug/:mahalleSlug/:pk">
+      <Route path="/:ilSlug/:ilceSlug/:mahalleSlug">
         {() => (
           <PublicLayout>
             <MahallePage />

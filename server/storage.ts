@@ -110,20 +110,18 @@ export class DatabaseStorage {
     return results;
   }
 
-  async getMahalleDetail(ilSlug: string, ilceSlug: string, mahalleSlug: string, pk: string) {
-    const [result] = await db.select()
+  async getMahalleDetail(ilSlug: string, ilceSlug: string, mahalleSlug: string) {
+    const results = await db.select()
       .from(postalCodes)
       .where(
         and(
           eq(postalCodes.ilSlug, ilSlug),
           eq(postalCodes.ilceSlug, ilceSlug),
-          eq(postalCodes.mahalleSlug, mahalleSlug),
-          eq(postalCodes.pk, pk)
+          eq(postalCodes.mahalleSlug, mahalleSlug)
         )
-      )
-      .limit(1);
+      );
     
-    return result;
+    return results;
   }
 
   async getLocationsByPostalCode(pk: string) {

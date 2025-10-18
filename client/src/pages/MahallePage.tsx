@@ -16,25 +16,24 @@ interface MahalleData {
   ilceSlug: string;
   mahalle: string;
   mahalleSlug: string;
-  pk: string;
+  postalCodes: string[];
   semt?: string;
   relatedMahalleler: Array<{
     mahalle: string;
     mahalleSlug: string;
-    pk: string;
   }>;
 }
 
 export default function MahallePage() {
-  const [, params] = useRoute('/:ilSlug/:ilceSlug/:mahalleSlug/:pk');
-  const { ilSlug, ilceSlug, mahalleSlug, pk } = params || {};
+  const [, params] = useRoute('/:ilSlug/:ilceSlug/:mahalleSlug');
+  const { ilSlug, ilceSlug, mahalleSlug } = params || {};
 
   const { data, isLoading } = useQuery<MahalleData>({
-    queryKey: ['/api/mahalle', ilSlug, ilceSlug, mahalleSlug, pk],
-    enabled: !!ilSlug && !!ilceSlug && !!mahalleSlug && !!pk,
+    queryKey: ['/api/mahalle', ilSlug, ilceSlug, mahalleSlug],
+    enabled: !!ilSlug && !!ilceSlug && !!mahalleSlug,
   });
 
-  if (!ilSlug || !ilceSlug || !mahalleSlug || !pk) return null;
+  if (!ilSlug || !ilceSlug || !mahalleSlug) return null;
 
   const jsonLd = data ? {
     '@context': 'https://schema.org',
@@ -42,22 +41,22 @@ export default function MahallePage() {
     addressLocality: data.mahalle,
     addressRegion: data.ilce,
     addressCountry: 'TR',
-    postalCode: data.pk,
+    postalCode: data.postalCodes.join(', '),
   } : undefined;
 
   return (
     <>
       {data && (
         <SEOHead
-          title={`${data.mahalle} Posta Kodu: ${data.pk} - ${data.ilce}, ${data.il}`}
+          title={`${data.mahalle} Posta Kodu - ${data.ilce}, ${data.il}`}
           description={generateMetaDescription('mahalle', { 
             mahalle: data.mahalle, 
             ilce: data.ilce, 
             il: data.il, 
-            pk: data.pk 
+            pk: data.postalCodes[0] 
           })}
-          canonical={getCanonicalUrl(`/${ilSlug}/${ilceSlug}/${mahalleSlug}/${pk}`)}
-          keywords={`${data.mahalle} posta kodu, ${data.pk}, ${data.ilce} ${data.mahalle}, ${data.il} posta kodları`}
+          canonical={getCanonicalUrl(`/${ilSlug}/${ilceSlug}/${mahalleSlug}`)}
+          keywords={`${data.mahalle} posta kodu, ${data.postalCodes.join(', ')}, ${data.ilce} ${data.mahalle}, ${data.il} posta kodları`}
           jsonLd={jsonLd}
         />
       )}
@@ -90,7 +89,7 @@ export default function MahallePage() {
                 {data.mahalle} Posta Kodu
               </h1>
               <p className="text-lg text-muted-foreground leading-relaxed">
-                {generateMahalleDescription(data.mahalle, data.ilce, data.il, data.pk)}
+                {generateMahalleDescription(data.mahalle, data.ilce, data.il, data.postalCodes[0])}
               </p>
             </div>
 
@@ -99,20 +98,24 @@ export default function MahallePage() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <MapPin className="w-6 h-6 text-primary" />
-                  Posta Kodu
+                  Posta {data.postalCodes.length > 1 ? 'Kodları' : 'Kodu'}
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                  <div className="flex-1">
-                    <p className="text-5xl font-mono font-bold text-primary" data-testid="text-postal-code">
-                      {formatPostalCode(data.pk)}
-                    </p>
-                    <p className="text-muted-foreground mt-2">
-                      {data.mahalle}, {data.ilce} / {data.il}
-                    </p>
-                  </div>
-                  <CopyButton text={data.pk} variant="default" size="lg" />
+                <div className="space-y-4">
+                  {data.postalCodes.map((pk, index) => (
+                    <div key={pk} className="flex flex-col sm:flex-row items-center justify-between gap-4 pb-4 border-b last:border-b-0 last:pb-0">
+                      <div className="flex-1">
+                        <p className="text-4xl font-mono font-bold text-primary" data-testid={`text-postal-code-${index}`}>
+                          {formatPostalCode(pk)}
+                        </p>
+                        <p className="text-muted-foreground mt-2">
+                          {data.mahalle}, {data.ilce} / {data.il}
+                        </p>
+                      </div>
+                      <CopyButton text={pk} variant="default" size="lg" />
+                    </div>
+                  ))}
                 </div>
               </CardContent>
             </Card>
@@ -146,8 +149,8 @@ export default function MahallePage() {
                     <span>{data.mahalle}</span>
                   </div>
                   <div className="flex justify-between py-2">
-                    <span className="font-medium">Posta Kodu:</span>
-                    <span className="font-mono font-bold">{formatPostalCode(data.pk)}</span>
+                    <span className="font-medium">Posta {data.postalCodes.length > 1 ? 'Kodları' : 'Kodu'}:</span>
+                    <span className="font-mono font-bold">{data.postalCodes.map(formatPostalCode).join(', ')}</span>
                   </div>
                 </div>
               </CardContent>
@@ -162,10 +165,10 @@ export default function MahallePage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {data.relatedMahalleler.slice(0, 6).map((rel) => (
                     <PostalCodeCard
-                      key={`${rel.mahalleSlug}-${rel.pk}`}
+                      key={rel.mahalleSlug}
                       title={rel.mahalle}
-                      subtitle={`Posta Kodu: ${rel.pk}`}
-                      href={`/${data.ilSlug}/${data.ilceSlug}/${rel.mahalleSlug}/${rel.pk}`}
+                      subtitle={`${data.ilce} / ${data.il}`}
+                      href={`/${data.ilSlug}/${data.ilceSlug}/${rel.mahalleSlug}`}
                     />
                   ))}
                 </div>
