@@ -9,10 +9,17 @@ The system supports hierarchical browsing from city level down to individual pos
 ## Recent Changes
 
 **October 18, 2025 (Latest):**
+- **Admin Panel: Google Analytics and Search Console Integration**
+  - Added Google Analytics code input field in admin settings
+  - Added Google Search Console verification meta tag input field
+  - Created AnalyticsLoader component to dynamically inject codes into all pages
+  - Public API endpoint: GET /api/settings returns analytics codes
+  - Analytics codes automatically load on all pages via React component
+  - Admin can manage codes through Site Ayarları page (/admin/settings)
 - **Domain and Branding Update**
   - Changed site name from "Posta Kodum" to "Posta Kodları"
   - Updated domain references to postakodlari.com.tr throughout application
-  - Email changed to info@postakodlari.com.tr
+  - Email changed to info@postakodlari.com.tr (updated across all policy pages)
   - All sitemap URLs now use postakodlari.com.tr domain
   - robots.txt updated with correct sitemap reference
   - Explicit /robots.txt route added to prevent route collision
