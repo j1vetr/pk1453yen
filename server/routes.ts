@@ -395,6 +395,19 @@ Sitemap: ${baseUrl}/sitemap.xml
     }
   });
 
+  // Public settings endpoint (for analytics codes only)
+  app.get("/api/settings", async (req, res) => {
+    try {
+      const settings = await storage.getAllSettings();
+      res.json({
+        googleAnalyticsCode: settings.googleAnalyticsCode || '',
+        googleSearchConsoleCode: settings.googleSearchConsoleCode || '',
+      });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   // Admin Authentication
 
   // Admin login
@@ -558,6 +571,8 @@ Sitemap: ${baseUrl}/sitemap.xml
         siteDescription: settings.siteDescription || '',
         contactEmail: settings.contactEmail || '',
         metaKeywords: settings.metaKeywords || '',
+        googleAnalyticsCode: settings.googleAnalyticsCode || '',
+        googleSearchConsoleCode: settings.googleSearchConsoleCode || '',
       });
     } catch (error: any) {
       res.status(500).json({ error: error.message });
@@ -566,13 +581,15 @@ Sitemap: ${baseUrl}/sitemap.xml
 
   app.put("/api/admin/settings", requireAdmin, async (req, res) => {
     try {
-      const { siteName, siteDescription, contactEmail, metaKeywords } = req.body;
+      const { siteName, siteDescription, contactEmail, metaKeywords, googleAnalyticsCode, googleSearchConsoleCode } = req.body;
       
       await storage.setMultipleSettings({
         siteName,
         siteDescription,
         contactEmail,
         metaKeywords,
+        googleAnalyticsCode,
+        googleSearchConsoleCode,
       });
       
       res.json({ success: true });

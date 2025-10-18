@@ -7,6 +7,7 @@ import { ThemeProvider } from "@/contexts/ThemeContext";
 import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { AnalyticsLoader } from "@/components/AnalyticsLoader";
 
 // Pages
 import Home from "@/pages/Home";
@@ -154,6 +155,7 @@ function App() {
           }}
         >
           <TooltipProvider>
+            <AnalyticsLoader />
             <Toaster />
             <Router />
           </TooltipProvider>
