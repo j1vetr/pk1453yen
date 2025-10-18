@@ -108,12 +108,12 @@ export default function ContactPage() {
       />
       
       <div className="container max-w-4xl mx-auto px-4 py-8">
-      {/* Reklam Alanı - Header */}
-      <div className="mb-8 p-4 bg-muted/30 border rounded-lg text-center text-sm text-muted-foreground">
-        Reklam Alanı
-      </div>
+        {/* Reklam Alanı - Header */}
+        <div className="mb-8 p-4 bg-muted/30 border rounded-lg text-center text-sm text-muted-foreground">
+          Reklam Alanı
+        </div>
 
-      <div className="space-y-8">
+        <div className="space-y-8">
         <div>
           <h1 className="text-3xl font-bold mb-4">İletişim</h1>
           <p className="text-lg text-muted-foreground">
