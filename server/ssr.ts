@@ -100,6 +100,18 @@ export async function generatePageMeta(url: string): Promise<PageMeta> {
   const parts = url.split("/").filter(Boolean);
 
   try {
+    // Homepage
+    if (parts.length === 0 || url === "/") {
+      return {
+        title: "Türkiye Posta Kodları - Tüm İller, İlçeler ve Mahalle Posta Kodları",
+        description: "Türkiye'nin 81 ilinin tüm ilçe ve mahalle posta kodlarını ücretsiz sorgulayın. 73.000+ posta kodu bilgisi, hızlı arama ve detaylı bilgi.",
+        canonicalUrl: baseUrl,
+        ogTitle: "Türkiye Posta Kodları",
+        ogDescription: "Türkiye'nin tüm posta kodlarını ücretsiz sorgulayın.",
+        statusCode: 200,
+      };
+    }
+
     // Postal code page: /kod/:pk
     if (parts[0] === "kod" && parts[1]) {
       const pk = parts[1];

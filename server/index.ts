@@ -62,9 +62,9 @@ app.use((req, res, next) => {
   if (app.get("env") === "development") {
     await setupVite(app, server);
   } else {
-    // Production: Serve static files first
+    // Production: Serve static files (but not index.html - SSR will handle that)
     const distPath = path.resolve(import.meta.dirname, "public");
-    app.use(express.static(distPath));
+    app.use(express.static(distPath, { index: false }));
     
     // SSR: Serve HTML with dynamic meta tags for all routes
     app.use("*", async (req, res) => {
