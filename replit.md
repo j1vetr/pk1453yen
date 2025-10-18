@@ -4,6 +4,17 @@
 
 "Posta Kodları" (postakodrehberi.com) is an SEO-optimized web application for Turkish postal codes, covering over 73,000 records across all cities, districts, and neighborhoods. It emphasizes fast performance (targeting Core Web Vitals) and offers a clean, accessible UI with light/dark themes. The platform supports hierarchical browsing, comprehensive search, and an admin panel for data and site management. Its business vision is to be the definitive guide for Turkish postal codes, leveraging strong SEO for market leadership and user acquisition.
 
+## Recent Changes (October 18, 2025)
+
+**SEO Enhancements:**
+- Implemented 301 redirects from old URL structure (/{il}/{ilce}/{mahalle}/{pk}/) to new structure (/{il}/{ilce}/{mahalle}/)
+- Enhanced semantic HTML structure with proper article, section, header, and aside elements
+- Implemented proper heading hierarchy (H1, H2, H3) across all content pages
+- Added accessibility features: skip links and in-page anchor navigation
+- Enriched JSON-LD structured data with PostalAddress, BreadcrumbList, ItemList, and FAQPage schemas
+- Improved meta tag formats for better search engine visibility
+- All changes verified with e2e testing to ensure proper functionality
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
@@ -20,7 +31,8 @@ The backend is built with Node.js and Express.js, using TypeScript for type safe
 
 ### System Design Choices
 
-- **SEO-First Design:** Implemented SSR for all pages, dynamic meta tag generation, comprehensive JSON-LD schemas (including FAQPage and Organization), canonical URLs, sitemaps (index, static, cities, districts, 50 neighborhood parts), and optimized internal linking.
+- **SEO-First Design:** Implemented SSR for all pages, dynamic meta tag generation, comprehensive JSON-LD schemas (Organization, WebSite, BreadcrumbList, PostalAddress, ItemList, FAQPage), canonical URLs, sitemaps (index, static, cities, districts, 50 neighborhood parts), 301 redirects for URL structure migration, semantic HTML with proper heading hierarchy (H1-H3), and optimized internal linking.
+- **Accessibility:** Skip links for keyboard navigation, in-page anchor navigation for content sections, proper ARIA labels, and semantic HTML structure.
 - **Performance:** Vite for fast builds, TanStack Query for efficient data fetching, and focus on Core Web Vitals.
 - **User Experience:** Responsive design, light/dark themes, clear navigation, and a modern UI with consistent branding.
 - **Scalability:** PostgreSQL with Neon serverless for the database, designed to handle large datasets and traffic.
