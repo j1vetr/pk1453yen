@@ -9,6 +9,15 @@ The system supports hierarchical browsing from city level down to individual pos
 ## Recent Changes
 
 **October 18, 2025 (Latest):**
+- **Production Session Cookie Fix**
+  - Added `app.set('trust proxy', 1)` for Nginx reverse proxy compatibility
+  - Added `sameSite: 'lax'` to session cookie configuration
+  - Fixed admin panel authentication in production environment
+- **Sitemap Optimization for Google Search Console**
+  - Split neighborhood sitemap into 2 parts to comply with Google's 50,000 URL limit per sitemap
+  - `sitemap-neighborhoods-1.xml`: First 40,000 neighborhoods
+  - `sitemap-neighborhoods-2.xml`: Remaining ~33,000+ neighborhoods
+  - Updated sitemap index to reference both parts
 - **SEO-Optimized FAQ Section on Homepage**
   - Added comprehensive FAQ section with 10 detailed questions and answers
   - FAQ positioned after city listings for maximum SEO impact
@@ -59,11 +68,12 @@ The system supports hierarchical browsing from city level down to individual pos
   - Set as /favicon.png with proper HTML head references
   - Includes apple-touch-icon for iOS devices
 - Implemented comprehensive sitemap system with index and sub-sitemaps
-  - Created sitemap index at `/sitemap.xml` referencing 5 sub-sitemaps
+  - Created sitemap index at `/sitemap.xml` referencing 6 sub-sitemaps
   - `/sitemap-static.xml`: Homepage + 6 static pages (7 URLs)
   - `/sitemap-cities.xml`: All city pages (81 URLs)
   - `/sitemap-districts.xml`: All district pages (973 URLs)
-  - `/sitemap-neighborhoods.xml`: All neighborhood pages (73,299 URLs)
+  - `/sitemap-neighborhoods-1.xml`: First 40,000 neighborhood pages (Google 50k limit compliance)
+  - `/sitemap-neighborhoods-2.xml`: Remaining ~33,000+ neighborhood pages
   - `/sitemap-postal-codes.xml`: All postal code pages (2,771 unique codes)
   - Total: ~77,000 URLs indexed for search engines
   - All sitemaps use proper XML format with priority values and change frequencies

@@ -78,7 +78,8 @@ Sitemap: ${baseUrl}/sitemap.xml
         'sitemap-static.xml',
         'sitemap-cities.xml',
         'sitemap-districts.xml',
-        'sitemap-neighborhoods.xml',
+        'sitemap-neighborhoods-1.xml',
+        'sitemap-neighborhoods-2.xml',
         'sitemap-postal-codes.xml'
       ];
       
@@ -165,16 +166,19 @@ Sitemap: ${baseUrl}/sitemap.xml
     }
   });
 
-  // Sitemap - Neighborhoods (Mahalle pages)
-  app.get("/sitemap-neighborhoods.xml", async (req, res) => {
+  // Sitemap - Neighborhoods Part 1 (İlk 40,000 mahalle)
+  app.get("/sitemap-neighborhoods-1.xml", async (req, res) => {
     try {
       const baseUrl = process.env.BASE_URL || "https://postakodrehberi.com";
       const neighborhoods = await storage.getAllMahalleler();
       
+      // İlk 40,000 kayıt
+      const part1 = neighborhoods.slice(0, 40000);
+      
       let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n';
       sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
       
-      for (const neighborhood of neighborhoods) {
+      for (const neighborhood of part1) {
         sitemap += `  <url>\n    <loc>${baseUrl}/${neighborhood.ilSlug}/${neighborhood.ilceSlug}/${neighborhood.mahalleSlug}</loc>\n    <changefreq>monthly</changefreq>\n    <priority>0.7</priority>\n  </url>\n`;
       }
       
@@ -183,7 +187,32 @@ Sitemap: ${baseUrl}/sitemap.xml
       res.header('Content-Type', 'application/xml');
       res.send(sitemap);
     } catch (error: any) {
-      res.status(500).send('Error generating neighborhoods sitemap');
+      res.status(500).send('Error generating neighborhoods sitemap part 1');
+    }
+  });
+
+  // Sitemap - Neighborhoods Part 2 (Kalan mahalleler)
+  app.get("/sitemap-neighborhoods-2.xml", async (req, res) => {
+    try {
+      const baseUrl = process.env.BASE_URL || "https://postakodrehberi.com";
+      const neighborhoods = await storage.getAllMahalleler();
+      
+      // 40,000'den sonraki kayıtlar
+      const part2 = neighborhoods.slice(40000);
+      
+      let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n';
+      sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+      
+      for (const neighborhood of part2) {
+        sitemap += `  <url>\n    <loc>${baseUrl}/${neighborhood.ilSlug}/${neighborhood.ilceSlug}/${neighborhood.mahalleSlug}</loc>\n    <changefreq>monthly</changefreq>\n    <priority>0.7</priority>\n  </url>\n`;
+      }
+      
+      sitemap += '</urlset>';
+      
+      res.header('Content-Type', 'application/xml');
+      res.send(sitemap);
+    } catch (error: any) {
+      res.status(500).send('Error generating neighborhoods sitemap part 2');
     }
   });
 
