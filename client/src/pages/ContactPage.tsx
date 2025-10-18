@@ -149,7 +149,7 @@ export default function ContactPage() {
           </CardHeader>
           <CardContent className="pt-6">
             <p className="text-muted-foreground leading-relaxed mb-6">
-              Posta Kodum hakkında sorularınız, önerileriniz veya geri bildirimleriniz için 
+              Posta Kodları hakkında sorularınız, önerileriniz veya geri bildirimleriniz için 
               bizimle iletişime geçebilirsiniz. Size en kısa sürede dönüş yapmaya çalışacağız.
             </p>
 
@@ -159,10 +159,10 @@ export default function ContactPage() {
                 <div>
                   <h3 className="font-semibold mb-1">E-posta</h3>
                   <a 
-                    href="mailto:info@postakodum.tr"
+                    href="mailto:info@postakodlari.com.tr"
                     className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
-                    info@postakodum.tr
+                    info@postakodlari.com.tr
                   </a>
                 </div>
               </div>

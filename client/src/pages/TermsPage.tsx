@@ -85,7 +85,7 @@ export default function TermsPage() {
           <CardContent className="space-y-3">
             <p className="text-sm text-muted-foreground leading-relaxed">
               Site üzerindeki tüm içerik, tasarım, logo, yazılım ve diğer materyaller 
-              Posta Kodum'un mülkiyetindedir ve telif hakkı yasaları ile korunmaktadır.
+              Posta Kodları'nın mülkiyetindedir ve telif hakkı yasaları ile korunmaktadır.
             </p>
             <p className="text-sm text-muted-foreground leading-relaxed">
               Site içeriğini kişisel ve ticari olmayan amaçlarla kullanabilirsiniz. 
@@ -101,7 +101,7 @@ export default function TermsPage() {
           </CardHeader>
           <CardContent className="space-y-3">
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Posta Kodum, site üzerinde sunulan bilgilerin doğruluğunu ve güncelliğini 
+              Posta Kodları, site üzerinde sunulan bilgilerin doğruluğunu ve güncelliğini 
               sağlamak için makul çabayı göstermektedir. Ancak:
             </p>
             <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground ml-4">
@@ -129,12 +129,12 @@ export default function TermsPage() {
             </p>
             <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground ml-4">
               <li>Kullanıcı deneyiminizi kişiselleştirmek için çerezler kullanabilir</li>
-              <li>Posta Kodum tarafından onaylanmış veya garanti edilmiş değildir</li>
+              <li>Posta Kodları tarafından onaylanmış veya garanti edilmiş değildir</li>
               <li>Reklam verenin sorumluluğundadır</li>
             </ul>
             <p className="text-sm text-muted-foreground leading-relaxed">
               Reklam içeriklerinden ve reklam verenlerle olan etkileşimlerinizden 
-              Posta Kodum sorumlu tutulamaz.
+              Posta Kodları sorumlu tutulamaz.
             </p>
           </CardContent>
         </Card>
