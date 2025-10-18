@@ -2,6 +2,13 @@ import { type Request, type Response } from "express";
 import { storage } from "./storage";
 import path from "path";
 import fs from "fs";
+import {
+  renderMahallePage,
+  renderCityPage,
+  renderDistrictPage,
+  renderPostalCodePage,
+  renderHomePage,
+} from "./render";
 
 interface PageMeta {
   title: string;
@@ -247,6 +254,49 @@ export async function renderHTMLWithMeta(req: Request, res: Response, templatePa
     // Read HTML template
     let html = await fs.promises.readFile(templatePath, "utf-8");
 
+    // Parse route to determine which page to render
+    const parts = url.split("/").filter(Boolean);
+    let renderedContent = "";
+    let contentStatusCode = 200;
+
+    // Skip SSR for admin and static pages
+    const skipSSR = url.startsWith("/admin") || 
+                    url === "/ara" || 
+                    url === "/hakkimizda" || 
+                    url === "/iletisim" ||
+                    url === "/gizlilik-politikasi" ||
+                    url === "/kullanim-sartlari" ||
+                    url === "/cerez-politikasi";
+
+    if (!skipSSR) {
+      if (parts.length === 0 || url === "/") {
+        // Home page
+        const result = await renderHomePage();
+        renderedContent = result.html;
+        contentStatusCode = result.statusCode;
+      } else if (parts[0] === "kod" && parts[1]) {
+        // Postal code page
+        const result = await renderPostalCodePage(parts[1]);
+        renderedContent = result.html;
+        contentStatusCode = result.statusCode;
+      } else if (parts.length === 1) {
+        // City page
+        const result = await renderCityPage(parts[0]);
+        renderedContent = result.html;
+        contentStatusCode = result.statusCode;
+      } else if (parts.length === 2) {
+        // District page
+        const result = await renderDistrictPage(parts[0], parts[1]);
+        renderedContent = result.html;
+        contentStatusCode = result.statusCode;
+      } else if (parts.length === 3) {
+        // Neighborhood page
+        const result = await renderMahallePage(parts[0], parts[1], parts[2]);
+        renderedContent = result.html;
+        contentStatusCode = result.statusCode;
+      }
+    }
+
     // Replace placeholders
     html = html
       .replace(/\{\{TITLE\}\}/g, meta.title)
@@ -255,7 +305,18 @@ export async function renderHTMLWithMeta(req: Request, res: Response, templatePa
       .replace(/\{\{OG_TITLE\}\}/g, meta.ogTitle)
       .replace(/\{\{OG_DESCRIPTION\}\}/g, meta.ogDescription);
 
-    res.status(meta.statusCode).set({ "Content-Type": "text/html" }).send(html);
+    // Inject rendered content into root div if available
+    if (renderedContent) {
+      html = html.replace(
+        '<div id="root"></div>',
+        `<div id="root">${renderedContent}</div>`
+      );
+    }
+
+    // Use the more restrictive status code
+    const finalStatusCode = contentStatusCode !== 200 ? contentStatusCode : meta.statusCode;
+
+    res.status(finalStatusCode).set({ "Content-Type": "text/html" }).send(html);
   } catch (error) {
     console.error("SSR Render Error:", error);
     res.status(500).send("Internal Server Error");
