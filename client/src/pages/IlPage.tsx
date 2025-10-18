@@ -8,6 +8,7 @@ import { PostalCodeCard } from '@/components/PostalCodeCard';
 import { LoadingGrid } from '@/components/LoadingState';
 import { EmptyState } from '@/components/EmptyState';
 import { getCanonicalUrl, generateMetaDescription, generateIlDescription } from '@shared/utils';
+import NotFound from './not-found';
 
 interface District {
   ilce: string;
@@ -25,12 +26,16 @@ export default function IlPage() {
   const [, params] = useRoute('/:ilSlug');
   const ilSlug = params?.ilSlug;
 
-  const { data, isLoading } = useQuery<IlData>({
+  const { data, isLoading, isError } = useQuery<IlData>({
     queryKey: ['/api/il', ilSlug],
     enabled: !!ilSlug,
   });
 
   if (!ilSlug) return null;
+  
+  if (isError && !isLoading) {
+    return <NotFound />;
+  }
 
   const jsonLd = data ? {
     '@context': 'https://schema.org',

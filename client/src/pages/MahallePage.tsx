@@ -8,6 +8,7 @@ import { CopyButton } from '@/components/CopyButton';
 import { PostalCodeCard } from '@/components/PostalCodeCard';
 import { EmptyState } from '@/components/EmptyState';
 import { getCanonicalUrl, generateMetaDescription, formatPostalCode, generateMahalleDescription } from '@shared/utils';
+import NotFound from './not-found';
 
 interface MahalleData {
   il: string;
@@ -28,12 +29,16 @@ export default function MahallePage() {
   const [, params] = useRoute('/:ilSlug/:ilceSlug/:mahalleSlug');
   const { ilSlug, ilceSlug, mahalleSlug } = params || {};
 
-  const { data, isLoading } = useQuery<MahalleData>({
+  const { data, isLoading, isError } = useQuery<MahalleData>({
     queryKey: ['/api/mahalle', ilSlug, ilceSlug, mahalleSlug],
     enabled: !!ilSlug && !!ilceSlug && !!mahalleSlug,
   });
 
   if (!ilSlug || !ilceSlug || !mahalleSlug) return null;
+  
+  if (isError && !isLoading) {
+    return <NotFound />;
+  }
 
   const jsonLd = data ? {
     '@context': 'https://schema.org',

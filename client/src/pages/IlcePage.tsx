@@ -8,6 +8,7 @@ import { PostalCodeCard } from '@/components/PostalCodeCard';
 import { LoadingGrid } from '@/components/LoadingState';
 import { EmptyState } from '@/components/EmptyState';
 import { getCanonicalUrl, generateMetaDescription, generateIlceDescription } from '@shared/utils';
+import NotFound from './not-found';
 
 interface Mahalle {
   mahalle: string;
@@ -26,12 +27,16 @@ export default function IlcePage() {
   const [, params] = useRoute('/:ilSlug/:ilceSlug');
   const { ilSlug, ilceSlug } = params || {};
 
-  const { data, isLoading } = useQuery<IlceData>({
+  const { data, isLoading, isError } = useQuery<IlceData>({
     queryKey: ['/api/ilce', ilSlug, ilceSlug],
     enabled: !!ilSlug && !!ilceSlug,
   });
 
   if (!ilSlug || !ilceSlug) return null;
+  
+  if (isError && !isLoading) {
+    return <NotFound />;
+  }
 
   const jsonLd = data ? {
     '@context': 'https://schema.org',
