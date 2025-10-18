@@ -26,6 +26,7 @@ import NotFound from "@/pages/not-found";
 // Admin Pages
 import AdminLogin from "@/pages/admin/AdminLogin";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
+import Messages from "@/pages/admin/Messages";
 import CSVImport from "@/pages/admin/CSVImport";
 import DataManagement from "@/pages/admin/DataManagement";
 import SiteSettings from "@/pages/admin/SiteSettings";
@@ -129,6 +130,7 @@ function Router() {
       {/* Admin Routes */}
       <Route path="/admin" component={AdminLogin} />
       <Route path="/admin/dashboard" component={AdminDashboard} />
+      <Route path="/admin/messages" component={Messages} />
       <Route path="/admin/csv-import" component={CSVImport} />
       <Route path="/admin/data" component={DataManagement} />
       <Route path="/admin/settings" component={SiteSettings} />

@@ -6,6 +6,7 @@ import {
   Settings, 
   Search as SearchIcon, 
   BarChart3, 
+  MessageSquare,
   LogOut,
   Moon,
   Sun
@@ -22,6 +23,7 @@ interface AdminLayoutProps {
 
 const menuItems = [
   { icon: LayoutDashboard, label: 'Dashboard', href: '/admin/dashboard' },
+  { icon: MessageSquare, label: 'Mesajlar', href: '/admin/messages' },
   { icon: Upload, label: 'CSV Import', href: '/admin/csv-import' },
   { icon: Database, label: 'Veri Yönetimi', href: '/admin/data' },
   { icon: Settings, label: 'Site Ayarları', href: '/admin/settings' },
