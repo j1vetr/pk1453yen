@@ -13,6 +13,12 @@
 - Google bots can now index all content without JavaScript execution
 - Production-ready SSR with proper status codes and error handling
 
+**Slug Fix Tool (October 18, 2025):**
+- Created automated slug correction tool (`server/fix-slugs.ts`)
+- Fixes incorrect hyphenation in slugs (e.g., `sehi-tler` → `sehitler`)
+- Preserves correct Turkish izafet constructs (e.g., `ahmed-i-hani` remains unchanged)
+- See `SLUG_FIX_GUIDE.md` for deployment instructions
+
 **SEO Enhancements:**
 - Implemented 301 redirects from old URL structure (/{il}/{ilce}/{mahalle}/{pk}/) to new structure (/{il}/{ilce}/{mahalle}/)
 - Enhanced semantic HTML structure with proper article, section, header, and aside elements
