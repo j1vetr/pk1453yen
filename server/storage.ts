@@ -203,6 +203,45 @@ export class DatabaseStorage {
     };
   }
 
+  // Sitemap için tüm ilçeleri getir
+  async getAllDistricts() {
+    const results = await db.select({
+      ilSlug: postalCodes.ilSlug,
+      ilceSlug: postalCodes.ilceSlug,
+    })
+      .from(postalCodes)
+      .groupBy(postalCodes.ilSlug, postalCodes.ilceSlug)
+      .orderBy(postalCodes.ilSlug, postalCodes.ilceSlug);
+    
+    return results;
+  }
+
+  // Sitemap için tüm mahalleleri getir
+  async getAllMahalleler() {
+    const results = await db.select({
+      ilSlug: postalCodes.ilSlug,
+      ilceSlug: postalCodes.ilceSlug,
+      mahalleSlug: postalCodes.mahalleSlug,
+    })
+      .from(postalCodes)
+      .groupBy(postalCodes.ilSlug, postalCodes.ilceSlug, postalCodes.mahalleSlug)
+      .orderBy(postalCodes.ilSlug, postalCodes.ilceSlug, postalCodes.mahalleSlug);
+    
+    return results;
+  }
+
+  // Sitemap için tüm posta kodlarını getir
+  async getAllPostalCodes() {
+    const results = await db.select({
+      pk: postalCodes.pk,
+    })
+      .from(postalCodes)
+      .groupBy(postalCodes.pk)
+      .orderBy(postalCodes.pk);
+    
+    return results;
+  }
+
   // Site Settings
   async getSetting(key: string): Promise<string | null> {
     const [result] = await db.select()
