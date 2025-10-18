@@ -408,6 +408,28 @@ Sitemap: ${baseUrl}/sitemap.xml
     }
   });
 
+  // Contact form submission
+  app.post("/api/contact", async (req, res) => {
+    try {
+      const { name, email, subject, message } = req.body;
+      
+      if (!name || !email || !subject || !message) {
+        return res.status(400).json({ error: "Tüm alanlar zorunludur" });
+      }
+      
+      await storage.createContactMessage({
+        name,
+        email,
+        subject,
+        message,
+      });
+      
+      res.json({ success: true, message: "Mesajınız başarıyla gönderildi" });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   // Admin Authentication
 
   // Admin login
@@ -612,6 +634,54 @@ Sitemap: ${baseUrl}/sitemap.xml
         topSearches,
         topPages,
       });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Messages
+  app.get("/api/admin/messages", requireAdmin, async (req, res) => {
+    try {
+      const page = parseInt(req.query.page as string) || 1;
+      const pageSize = parseInt(req.query.pageSize as string) || 20;
+      
+      const result = await storage.getAllMessages(page, pageSize);
+      
+      res.json({
+        data: result.data,
+        total: result.total,
+        page,
+        pageSize,
+      });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.get("/api/admin/messages/unread-count", requireAdmin, async (req, res) => {
+    try {
+      const count = await storage.getUnreadMessagesCount();
+      res.json({ count });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.patch("/api/admin/messages/:id/read", requireAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.markMessageAsRead(id);
+      res.json({ success: true });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.delete("/api/admin/messages/:id", requireAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteMessage(id);
+      res.json({ success: true });
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }

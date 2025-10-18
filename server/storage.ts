@@ -1,5 +1,5 @@
 import { db } from './db';
-import { postalCodes, adminUsers, siteSettings, searchLogs, pageViews } from '@shared/schema';
+import { postalCodes, adminUsers, siteSettings, searchLogs, pageViews, contactMessages } from '@shared/schema';
 import { eq, sql, ilike, or, desc, and } from 'drizzle-orm';
 import type { 
   PostalCode, 
@@ -10,7 +10,9 @@ import type {
   SearchLog,
   InsertSearchLog,
   PageView,
-  InsertPageView
+  InsertPageView,
+  ContactMessage,
+  InsertContactMessage
 } from '@shared/schema';
 import { turkishToSlug } from '@shared/utils';
 
@@ -325,6 +327,46 @@ export class DatabaseStorage {
     }).from(pageViews);
     
     return Number(result.total || 0);
+  }
+
+  // Contact Messages
+  async createContactMessage(data: InsertContactMessage): Promise<ContactMessage> {
+    const [result] = await db.insert(contactMessages).values(data).returning();
+    return result;
+  }
+
+  async getAllMessages(page: number = 1, pageSize: number = 20) {
+    const offset = (page - 1) * pageSize;
+    
+    const data = await db.select()
+      .from(contactMessages)
+      .orderBy(desc(contactMessages.createdAt))
+      .limit(pageSize)
+      .offset(offset);
+    
+    const [{ count }] = await db.select({ count: sql<number>`count(*)` })
+      .from(contactMessages);
+    
+    return { data, total: Number(count) };
+  }
+
+  async getUnreadMessagesCount(): Promise<number> {
+    const [result] = await db.select({ count: sql<number>`count(*)` })
+      .from(contactMessages)
+      .where(eq(contactMessages.isRead, 0));
+    
+    return Number(result.count);
+  }
+
+  async markMessageAsRead(id: number) {
+    await db.update(contactMessages)
+      .set({ isRead: 1 })
+      .where(eq(contactMessages.id, id));
+  }
+
+  async deleteMessage(id: number) {
+    await db.delete(contactMessages)
+      .where(eq(contactMessages.id, id));
   }
 
   // Clean all data (for testing/reset)
