@@ -4,6 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/contexts/ThemeContext";
+import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 
@@ -143,10 +144,20 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Router />
-        </TooltipProvider>
+        <GoogleReCaptchaProvider
+          reCaptchaKey="6LfZW-4rAAAAAGDdo-bEElPM0PJ6PYGnsFYCo5Ly"
+          language="tr"
+          scriptProps={{
+            async: true,
+            defer: true,
+            appendTo: 'head',
+          }}
+        >
+          <TooltipProvider>
+            <Toaster />
+            <Router />
+          </TooltipProvider>
+        </GoogleReCaptchaProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );

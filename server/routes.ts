@@ -164,6 +164,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Public API Routes
 
+  // Verify reCAPTCHA
+  app.post("/api/verify-recaptcha", async (req, res) => {
+    try {
+      const { token } = req.body;
+      const secretKey = "6LfZW-4rAAAAAPQ5F8nnQjpEdvhguS4Sr7eR1Ehv";
+      
+      if (!token) {
+        return res.status(400).json({ success: false, error: "Token gerekli" });
+      }
+
+      const verifyUrl = `https://www.google.com/recaptcha/api/siteverify`;
+      const response = await fetch(verifyUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `secret=${secretKey}&response=${token}`,
+      });
+
+      const data = await response.json();
+
+      if (data.success && data.score >= 0.5) {
+        res.json({ 
+          success: true, 
+          score: data.score,
+          message: "reCAPTCHA doğrulandı" 
+        });
+      } else {
+        res.json({ 
+          success: false, 
+          score: data.score || 0,
+          message: "reCAPTCHA doğrulaması başarısız" 
+        });
+      }
+    } catch (error: any) {
+      res.status(500).json({ success: false, error: error.message });
+    }
+  });
+
   // Get statistics
   app.get("/api/stats", async (req, res) => {
     try {

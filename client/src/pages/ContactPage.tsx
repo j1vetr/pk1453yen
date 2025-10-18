@@ -1,8 +1,22 @@
-import { useEffect } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Mail, Phone, MessageCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Mail, Phone, MessageCircle, Send } from 'lucide-react';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
+import { useToast } from '@/hooks/use-toast';
 
 export default function ContactPage() {
+  const { executeRecaptcha } = useGoogleReCaptcha();
+  const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    message: ''
+  });
+
   useEffect(() => {
     document.title = 'İletişim - Posta Kodum | Bize Ulaşın';
     const metaDescription = document.querySelector('meta[name="description"]');
@@ -14,6 +28,62 @@ export default function ContactPage() {
       canonicalLink.setAttribute('href', `${window.location.origin}/iletisim`);
     }
   }, []);
+
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!executeRecaptcha) {
+      toast({
+        title: "Hata",
+        description: "reCAPTCHA yüklenemedi, lütfen sayfayı yenileyin.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      // reCAPTCHA token oluştur
+      const token = await executeRecaptcha('contact_form');
+
+      // Backend'de token doğrula
+      const verifyResponse = await fetch('/api/verify-recaptcha', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token })
+      });
+
+      const verifyData = await verifyResponse.json();
+
+      if (!verifyData.success) {
+        toast({
+          title: "Güvenlik Doğrulaması Başarısız",
+          description: "Lütfen tekrar deneyin.",
+          variant: "destructive"
+        });
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Form gönderimi başarılı
+      toast({
+        title: "Mesajınız Gönderildi",
+        description: "En kısa sürede size dönüş yapacağız. Teşekkürler!",
+      });
+
+      // Formu temizle
+      setFormData({ name: '', email: '', message: '' });
+    } catch (error) {
+      toast({
+        title: "Hata",
+        description: "Mesaj gönderilirken bir hata oluştu.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, [executeRecaptcha, formData, toast]);
 
   return (
     <div className="container max-w-4xl mx-auto px-4 py-8">
@@ -31,6 +101,61 @@ export default function ContactPage() {
         </div>
 
         <Card>
+          <CardHeader>
+            <CardTitle>İletişim Formu</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <Input
+                  data-testid="input-name"
+                  type="text"
+                  placeholder="Adınız Soyadınız"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  required
+                />
+              </div>
+              <div>
+                <Input
+                  data-testid="input-email"
+                  type="email"
+                  placeholder="E-posta Adresiniz"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  required
+                />
+              </div>
+              <div>
+                <Textarea
+                  data-testid="input-message"
+                  placeholder="Mesajınız"
+                  value={formData.message}
+                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                  required
+                  rows={6}
+                />
+              </div>
+              <Button 
+                data-testid="button-submit"
+                type="submit" 
+                className="w-full"
+                disabled={isSubmitting}
+              >
+                <Send className="w-4 h-4 mr-2" />
+                {isSubmitting ? 'Gönderiliyor...' : 'Gönder'}
+              </Button>
+              <p className="text-xs text-muted-foreground text-center">
+                Bu site Google reCAPTCHA tarafından korunmaktadır.
+              </p>
+            </form>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Diğer İletişim Yolları</CardTitle>
+          </CardHeader>
           <CardContent className="pt-6">
             <p className="text-muted-foreground leading-relaxed mb-6">
               Posta Kodum hakkında sorularınız, önerileriniz veya geri bildirimleriniz için 
