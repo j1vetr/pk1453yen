@@ -21,11 +21,12 @@ interface SearchResult {
 
 export default function SearchPage() {
   const [location] = useLocation();
-  const searchParams = new URLSearchParams(location.split('?')[1]);
+  // Use window.location.search for more reliable query param reading
+  const searchParams = new URLSearchParams(window.location.search);
   const query = searchParams.get('q') || '';
 
   const { data: results, isLoading } = useQuery<SearchResult[]>({
-    queryKey: ['/api/search', query],
+    queryKey: [`/api/search?q=${encodeURIComponent(query)}`],
     enabled: !!query,
   });
 

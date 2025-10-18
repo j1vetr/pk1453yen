@@ -136,17 +136,45 @@ export class DatabaseStorage {
   }
 
   async searchPostalCodes(query: string) {
-    const searchTerm = `%${query}%`;
+    // Normalize query for Turkish character matching
+    // Map each character to its Turkish equivalent pattern
+    const normalizedQuery = query.split('').map(char => {
+      // Handle Turkish i/ı variations
+      if (/[iıİI]/.test(char)) return '[iıİI]';
+      // Handle o/ö variations
+      if (/[oöOÖ]/.test(char)) return '[oöOÖ]';
+      // Handle u/ü variations
+      if (/[uüUÜ]/.test(char)) return '[uüUÜ]';
+      // Handle s/ş variations
+      if (/[sşSŞ]/.test(char)) return '[sşSŞ]';
+      // Handle c/ç variations
+      if (/[cçCÇ]/.test(char)) return '[cçCÇ]';
+      // Handle g/ğ variations
+      if (/[gğGĞ]/.test(char)) return '[gğGĞ]';
+      // Handle a/A for case insensitivity
+      if (/[aA]/.test(char)) return '[aA]';
+      // Handle e/E for case insensitivity
+      if (/[eE]/.test(char)) return '[eE]';
+      // Handle other letters for case insensitivity
+      if (/[b-zB-Z]/.test(char)) return `[${char.toLowerCase()}${char.toUpperCase()}]`;
+      // Keep other characters as-is
+      return char;
+    }).join('');
     
+    // For postal codes, use starts-with matching if query is numeric
+    const isNumeric = /^\d+$/.test(query);
+    const pkPattern = isNumeric ? `^${query}` : query;
+    
+    // Use raw SQL for regex matching to avoid escaping issues
     const results = await db.select()
       .from(postalCodes)
       .where(
         or(
-          ilike(postalCodes.il, searchTerm),
-          ilike(postalCodes.ilce, searchTerm),
-          ilike(postalCodes.mahalle, searchTerm),
-          ilike(postalCodes.pk, searchTerm),
-          ilike(postalCodes.semt, searchTerm)
+          sql.raw(`postal_codes.il ~* '${normalizedQuery}'`),
+          sql.raw(`postal_codes.ilce ~* '${normalizedQuery}'`),
+          sql.raw(`postal_codes.mahalle ~* '${normalizedQuery}'`),
+          sql.raw(`postal_codes.pk ~* '${pkPattern}'`),
+          sql.raw(`postal_codes.semt ~* '${normalizedQuery}'`)
         )
       )
       .limit(100)
