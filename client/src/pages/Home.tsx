@@ -7,6 +7,12 @@ import { PostalCodeCard } from '@/components/PostalCodeCard';
 import { LoadingGrid, LoadingStats } from '@/components/LoadingState';
 import { EmptyState } from '@/components/EmptyState';
 import { getCanonicalUrl } from '@shared/utils';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 
 interface Stats {
   totalCities: number;
@@ -29,6 +35,49 @@ export default function Home() {
   const { data: cities, isLoading: citiesLoading } = useQuery<City[]>({
     queryKey: ['/api/cities'],
   });
+
+  const faqItems = [
+    {
+      question: "Posta kodu nedir ve ne işe yarar?",
+      answer: "Posta kodu, posta hizmetlerinde kullanılan ve belirli bir coğrafi bölgeyi temsil eden sayısal bir koddur. Türkiye'de 5 haneli olan posta kodları, kargo ve posta gönderilerinin doğru adrese hızlı ve güvenli bir şekilde ulaşmasını sağlar. Her il, ilçe ve mahallenin kendine özgü bir posta kodu vardır."
+    },
+    {
+      question: "Posta kodu nasıl öğrenilir?",
+      answer: "Posta kodunu öğrenmenin en kolay yolu Posta Kodları platformumuzu kullanmaktır. Ana sayfadaki arama kutusuna il, ilçe veya mahalle adını yazarak anında posta kodunu bulabilirsiniz. Alternatif olarak, il > ilçe > mahalle şeklinde hiyerarşik olarak da gezinerek istediğiniz posta koduna ulaşabilirsiniz."
+    },
+    {
+      question: "Türkiye'de kaç tane posta kodu var?",
+      answer: "Türkiye'de toplam 2.771 benzersiz posta kodu bulunmaktadır. Ancak platformumuzda 73.000'den fazla kayıt mevcuttur çünkü aynı posta kodu birden fazla mahalle veya yerleşim yeri tarafından kullanılabilir. Tüm 81 il, 973 ilçe ve binlerce mahalle için detaylı posta kodu bilgilerine erişebilirsiniz."
+    },
+    {
+      question: "Posta kodu kaç haneden oluşur?",
+      answer: "Türkiye'de posta kodları 5 haneden oluşmaktadır. İlk iki rakam ili, sonraki rakamlar ise ilçe ve mahalle bilgilerini temsil eder. Örneğin, 34710 posta kodunda '34' İstanbul ilini gösterir. Bu standart format sayesinde posta ve kargo şirketleri gönderileri kolayca sınıflandırabilir."
+    },
+    {
+      question: "Posta kodu olmadan kargo gönderilebilir mi?",
+      answer: "Teknik olarak posta kodu olmadan kargo göndermek mümkün olsa da, posta kodunun kullanılması teslimat sürecini önemli ölçüde hızlandırır ve hata riskini azaltır. Kargo şirketleri posta kodlarını kullanarak gönderiyi otomatik olarak doğru şubeye yönlendirebilir. Bu nedenle, kargo gönderirken mutlaka doğru posta kodunu kullanmanız önerilir."
+    },
+    {
+      question: "Mahalle posta kodu nasıl bulunur?",
+      answer: "Mahalle posta kodunu bulmak için platformumuzda iki yöntem kullanabilirsiniz: 1) Arama kutusuna doğrudan mahalle adını yazarak arama yapabilirsiniz, sistem otomatik olarak ilgili mahallenin posta kodunu gösterecektir. 2) İl ve ilçe seçerek mahalleleri listeletebilir, aradığınız mahalleyi bulabilirsiniz. Her mahalle detay sayfasında posta kodu büyük ve net bir şekilde görüntülenir."
+    },
+    {
+      question: "İstanbul posta kodları kaçtır?",
+      answer: "İstanbul'un posta kodları 34000 ile 34990 arasında değişmektedir. İstanbul'da 39 ilçe bulunmaktadır ve her ilçenin birden fazla posta kodu vardır. Örneğin Kadıköy'ün posta kodları 34710-34762 arasındadır. Platformumuzda İstanbul'un tüm ilçeleri ve mahallelerinin posta kodlarını detaylı olarak bulabilirsiniz."
+    },
+    {
+      question: "Posta kodu ile adres bulunur mu?",
+      answer: "Evet, posta kodu ile adres bulunabilir. Platformumuzun 'Posta Kodu Ara' özelliğini kullanarak herhangi bir 5 haneli posta kodunu sorgulayabilirsiniz. Sistem size o posta koduna ait tüm mahalleleri, ilçeyi ve ili gösterecektir. Bu özellik özellikle ters adres araması yapmak isteyenler için çok kullanışlıdır."
+    },
+    {
+      question: "Posta kodu değişir mi?",
+      answer: "Posta kodları genellikle sabittir ancak nadir durumlarda değişebilir. Yeni yerleşim yerlerinin oluşması, idari sınır değişiklikleri veya PTT'nin sistem güncellemeleri posta kodu değişikliklerine neden olabilir. Platformumuz düzenli olarak güncellenmekte ve en güncel posta kodu bilgilerini sunmaktadır. Son güncellemeler için istatistikler bölümünü kontrol edebilirsiniz."
+    },
+    {
+      question: "Online posta kodu sorgulama nasıl yapılır?",
+      answer: "Online posta kodu sorgulaması yapmak için Posta Kodları platformumuzu kullanabilirsiniz. Ana sayfadaki arama kutusuna il, ilçe, mahalle adı veya posta kodu numarasını yazmanız yeterlidir. Türkçe karakter desteği sayesinde 'Kadıköy' veya 'Kadikoy' şeklinde arama yapabilirsiniz. Arama sonuçları anında görüntülenir ve detaylı bilgilere tek tıkla ulaşabilirsiniz."
+    }
+  ];
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -76,6 +125,18 @@ export default function Home() {
           getCanonicalUrl('/hakkimizda'),
           getCanonicalUrl('/iletisim'),
         ],
+      },
+      {
+        '@type': 'FAQPage',
+        '@id': getCanonicalUrl('/#faq'),
+        mainEntity: faqItems.map((item, index) => ({
+          '@type': 'Question',
+          name: item.question,
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: item.answer,
+          },
+        })),
       },
     ],
   };
@@ -180,6 +241,40 @@ export default function Home() {
             description="Henüz hiç il kaydı bulunmuyor. Lütfen admin panelinden CSV import yapın."
           />
         )}
+      </section>
+
+      {/* Reklam Alanı - İçerik İçi */}
+      <div className="container max-w-7xl mx-auto px-4 mb-8">
+        <div className="p-4 bg-muted/30 border rounded-lg text-center text-sm text-muted-foreground">
+          Reklam Alanı
+        </div>
+      </div>
+
+      {/* FAQ Section */}
+      <section className="container max-w-4xl mx-auto px-4 py-12">
+        <div className="text-center mb-8">
+          <h2 className="text-3xl font-bold mb-3">Sık Sorulan Sorular</h2>
+          <p className="text-muted-foreground text-lg">
+            Posta kodları hakkında merak ettiğiniz her şey
+          </p>
+        </div>
+        
+        <Accordion type="single" collapsible className="space-y-4">
+          {faqItems.map((item, index) => (
+            <AccordionItem 
+              key={index} 
+              value={`item-${index}`}
+              className="border rounded-lg px-6 bg-card"
+            >
+              <AccordionTrigger className="text-left hover:no-underline py-5">
+                <span className="font-semibold text-base pr-4">{item.question}</span>
+              </AccordionTrigger>
+              <AccordionContent className="text-muted-foreground pb-5 leading-relaxed">
+                {item.answer}
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
       </section>
     </>
   );

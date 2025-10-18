@@ -9,6 +9,14 @@ The system supports hierarchical browsing from city level down to individual pos
 ## Recent Changes
 
 **October 18, 2025 (Latest):**
+- **SEO-Optimized FAQ Section on Homepage**
+  - Added comprehensive FAQ section with 10 detailed questions and answers
+  - FAQ positioned after city listings for maximum SEO impact
+  - Questions target high-value keywords: "posta kodu nedir", "posta kodu nasıl öğrenilir", etc.
+  - Integrated FAQPage schema into Home.tsx @graph structure for rich snippets
+  - Used Accordion UI for clean, collapsible design that doesn't overwhelm page
+  - Detailed answers (100-150 words each) for better Google ranking
+  - Keywords optimized: posta kodu, İstanbul posta kodu, mahalle posta kodu, online posta kodu sorgulama
 - **Domain Migration to postakodrehberi.com**
   - Changed primary domain from postakodlari.com.tr to postakodrehberi.com
   - Updated all canonical URLs across all pages
