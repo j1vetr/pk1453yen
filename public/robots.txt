@@ -14,4 +14,4 @@ Disallow: /admin/*
 # Disallow API endpoints
 Disallow: /api/*
 
-Sitemap: https://postakodum.tr/sitemap.xml
+Sitemap: https://postakodlari.com.tr/sitemap.xml
