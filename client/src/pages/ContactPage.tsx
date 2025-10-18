@@ -85,7 +85,7 @@ export default function ContactPage() {
     } finally {
       setIsSubmitting(false);
     }
-  }, [executeRecaptcha, toast]);
+  }, [executeRecaptcha, toast, formData]);
 
   return (
     <div className="container max-w-4xl mx-auto px-4 py-8">

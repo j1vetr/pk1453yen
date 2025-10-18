@@ -105,6 +105,18 @@ function Router() {
           </PublicLayout>
         )}
       </Route>
+
+      {/* Admin Routes - Must be before dynamic routes */}
+      <Route path="/admin" component={AdminLogin} />
+      <Route path="/admin/dashboard" component={AdminDashboard} />
+      <Route path="/admin/messages" component={Messages} />
+      <Route path="/admin/csv-import" component={CSVImport} />
+      <Route path="/admin/data" component={DataManagement} />
+      <Route path="/admin/settings" component={SiteSettings} />
+      <Route path="/admin/seo" component={SEOManagement} />
+      <Route path="/admin/analytics" component={Analytics} />
+
+      {/* Dynamic routes - Must be after static routes */}
       <Route path="/:ilSlug">
         {() => (
           <PublicLayout>
@@ -126,16 +138,6 @@ function Router() {
           </PublicLayout>
         )}
       </Route>
-
-      {/* Admin Routes */}
-      <Route path="/admin" component={AdminLogin} />
-      <Route path="/admin/dashboard" component={AdminDashboard} />
-      <Route path="/admin/messages" component={Messages} />
-      <Route path="/admin/csv-import" component={CSVImport} />
-      <Route path="/admin/data" component={DataManagement} />
-      <Route path="/admin/settings" component={SiteSettings} />
-      <Route path="/admin/seo" component={SEOManagement} />
-      <Route path="/admin/analytics" component={Analytics} />
 
       {/* 404 */}
       <Route component={NotFound} />

@@ -1,5 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
+import session from "express-session";
+import connectPg from "connect-pg-simple";
 import { storage } from "./storage";
 import { verifyAdminCredentials, createAdminUser } from "./auth";
 import { turkishToSlug } from "@shared/utils";
@@ -16,7 +18,26 @@ declare module "express-session" {
   }
 }
 
+const PgSession = connectPg(session);
+
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Session middleware
+  app.use(
+    session({
+      store: new PgSession({
+        conString: process.env.DATABASE_URL,
+        createTableIfMissing: true,
+      }),
+      secret: process.env.SESSION_SECRET || 'your-secret-key-change-in-production',
+      resave: false,
+      saveUninitialized: false,
+      cookie: {
+        secure: process.env.NODE_ENV === 'production',
+        httpOnly: true,
+        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+      },
+    })
+  );
   // Serve robots.txt explicitly (before other routes)
   app.get("/robots.txt", (req, res) => {
     const baseUrl = process.env.BASE_URL || "https://postakodlari.com.tr";
