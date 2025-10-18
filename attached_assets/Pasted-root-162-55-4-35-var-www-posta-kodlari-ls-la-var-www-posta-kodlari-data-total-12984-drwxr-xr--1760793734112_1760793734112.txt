@@ -1,0 +1,62 @@
+root@162-55-4-35:/var/www/posta-kodlari# ls -la /var/www/posta-kodlari/data/
+total 12984
+drwxr-xr-x  2 root root     4096 Oct 18 15:21 .
+drwxr-xr-x 11 root root     4096 Oct 18 16:17 ..
+-rw-r--r--  1 root root 13285670 Oct 18 15:21 posta_kodlari.csv
+root@162-55-4-35:/var/www/posta-kodlari# wc -l /var/www/posta-kodlari/data/posta_kodlari.csv 2>/dev/null || echo "CSV dosyası bulunamadı"
+73306 /var/www/posta-kodlari/data/posta_kodlari.csv
+root@162-55-4-35:/var/www/posta-kodlari# node -e "
+import { parse } from 'csv-parse';
+import fs from 'fs';
+import { db } from './dist/db.js';
+import { postalCodes } from './dist/schema.js';
+const parser = fs.createReadStream('data/posta_kodlari.csv').pipe(parse({
+  columns: true,
+  skip_empty_lines: true
+}));
+let count = 0;
+const batch = [];
+for await (const record of parser) {
+  batch.push({
+    il: record.il,
+    ilce: record.ilce,
+    semt: record.semt || '',
+    mahalle: record.mahalle,
+    pk: record.pk,
+    ilSlug: record.ilSlug,
+    ilceSlug: record.ilceSlug,
+    mahalleSlug: record.mahalleSlug
+  });
+
+  if (batch.length >= 1000) {
+    await db.insert(postalCodes).values(batch).onConflictDoNothing();
+    count += batch.length;
+    console.log(\`\${count} kayıt import edildi...\`);
+    batch.length = 0;
+  }
+}
+if (batch.length > 0) {
+  await db.insert(postalCodes).values(batch).onConflictDoNothing();
+  count += batch.length;
+}
+console.log(\`✅ Toplam \${count} kayıt import edildi!\`);
+process.exit(0);
+"
+-bash: !\`: event not found
+node:internal/modules/esm/resolve:283
+    throw new ERR_MODULE_NOT_FOUND(
+          ^
+
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/var/www/posta-kodlari/dist/db.js' imported from /var/www/posta-kodlari/[eval1]
+    at finalizeResolution (node:internal/modules/esm/resolve:283:11)
+    at moduleResolve (node:internal/modules/esm/resolve:952:10)
+    at defaultResolve (node:internal/modules/esm/resolve:1188:11)
+    at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:708:12)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:657:25)
+    at ModuleLoader.resolve (node:internal/modules/esm/loader:640:38)
+    at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:264:38)
+    at ModuleJob._link (node:internal/modules/esm/module_job:168:49) {
+  code: 'ERR_MODULE_NOT_FOUND',
+  url: 'file:///var/www/posta-kodlari/dist/db.js'
+}
+
