@@ -100,6 +100,15 @@ export default function MahallePage() {
       )}
 
       <div className="container max-w-4xl mx-auto px-4 py-8">
+        {/* Skip to content - Accessibility */}
+        <a 
+          href="#main-content" 
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md"
+          aria-label="İçeriğe geç"
+        >
+          İçeriğe Geç
+        </a>
+
         {data && (
           <Breadcrumb
             items={[
@@ -122,7 +131,37 @@ export default function MahallePage() {
               Reklam Alanı
             </aside>
 
-            <article>
+            {/* Quick Navigation - Anchor Links */}
+            <nav className="mb-6 p-4 bg-muted/50 border rounded-lg" aria-label="Sayfa içi navigasyon">
+              <p className="text-sm font-semibold mb-2 text-muted-foreground">Hızlı Erişim:</p>
+              <div className="flex flex-wrap gap-2">
+                <a 
+                  href="#posta-kodu-bilgisi" 
+                  className="text-sm px-3 py-1 bg-background border rounded-md hover-elevate active-elevate-2 transition-colors"
+                  aria-label="Posta kodu bilgilerine git"
+                >
+                  Posta Kodu
+                </a>
+                <a 
+                  href="#adres-hiyerarsisi" 
+                  className="text-sm px-3 py-1 bg-background border rounded-md hover-elevate active-elevate-2 transition-colors"
+                  aria-label="Adres hiyerarşisine git"
+                >
+                  Adres Detayları
+                </a>
+                {data.relatedMahalleler.length > 0 && (
+                  <a 
+                    href="#diger-mahalleler" 
+                    className="text-sm px-3 py-1 bg-background border rounded-md hover-elevate active-elevate-2 transition-colors"
+                    aria-label="Diğer mahallelere git"
+                  >
+                    Diğer Mahalleler
+                  </a>
+                )}
+              </div>
+            </nav>
+
+            <article id="main-content">
               <header className="mb-8">
                 <h1 className="text-3xl md:text-4xl font-bold mb-3">
                   {data.mahalle} Mahallesi Posta Kodu
