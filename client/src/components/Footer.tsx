@@ -1,51 +1,120 @@
 import { Link } from 'wouter';
+import { Mail, Phone, MessageCircle } from 'lucide-react';
+import logoUrl from '@/assets/logo.png';
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="border-t bg-card mt-auto">
-      <div className="container max-w-7xl px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div>
-            <h3 className="font-semibold mb-3">Türkiye Posta Kodları</h3>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Türkiye'nin tüm il, ilçe ve mahallelerinin posta kodlarını
-              kolayca sorgulayabileceğiniz güncel rehber.
+    <footer className="bg-muted/30 border-t mt-auto">
+      <div className="container max-w-7xl mx-auto px-4 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {/* Logo ve Açıklama */}
+          <div className="space-y-4">
+            <Link href="/" className="inline-block">
+              <img src={logoUrl} alt="Posta Kodum Logo" className="h-12 w-auto" />
+            </Link>
+            <p className="text-sm text-muted-foreground">
+              Türkiye'nin en kapsamlı posta kodu rehberi. 73.000+ posta kodu bilgisi ile tüm il, ilçe ve mahallelerin posta kodlarını hızlıca sorgulayın.
             </p>
           </div>
 
+          {/* Hızlı Linkler */}
           <div>
-            <h3 className="font-semibold mb-3">Hızlı Linkler</h3>
+            <h3 className="font-semibold mb-4">Hızlı Linkler</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/" data-testid="footer-home">
-                  <a className="text-muted-foreground hover:text-foreground transition-colors">
-                    Ana Sayfa
-                  </a>
+                <Link href="/" className="text-muted-foreground hover:text-foreground transition-colors">
+                  Ana Sayfa
                 </Link>
               </li>
               <li>
-                <Link href="/ara" data-testid="footer-search">
-                  <a className="text-muted-foreground hover:text-foreground transition-colors">
-                    Posta Kodu Ara
-                  </a>
+                <Link href="/ara" className="text-muted-foreground hover:text-foreground transition-colors">
+                  Posta Kodu Ara
+                </Link>
+              </li>
+              <li>
+                <Link href="/hakkimizda" className="text-muted-foreground hover:text-foreground transition-colors">
+                  Hakkımızda
+                </Link>
+              </li>
+              <li>
+                <Link href="/iletisim" className="text-muted-foreground hover:text-foreground transition-colors">
+                  İletişim
                 </Link>
               </li>
             </ul>
           </div>
 
+          {/* Yasal */}
           <div>
-            <h3 className="font-semibold mb-3">Bilgi</h3>
-            <p className="text-sm text-muted-foreground">
-              73.000+ posta kodu bilgisi ile Türkiye'nin en kapsamlı
-              posta kodu rehberi.
-            </p>
+            <h3 className="font-semibold mb-4">Yasal</h3>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <Link href="/gizlilik-politikasi" className="text-muted-foreground hover:text-foreground transition-colors">
+                  Gizlilik Politikası
+                </Link>
+              </li>
+              <li>
+                <Link href="/kullanim-sartlari" className="text-muted-foreground hover:text-foreground transition-colors">
+                  Kullanım Şartları
+                </Link>
+              </li>
+              <li>
+                <Link href="/cerez-politikasi" className="text-muted-foreground hover:text-foreground transition-colors">
+                  Çerez Politikası
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* İletişim */}
+          <div>
+            <h3 className="font-semibold mb-4">İletişim</h3>
+            <ul className="space-y-3 text-sm">
+              <li>
+                <a 
+                  href="mailto:info@postakodum.tr" 
+                  className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <Mail className="w-4 h-4" />
+                  info@postakodum.tr
+                </a>
+              </li>
+              <li>
+                <a 
+                  href="tel:+905308616785" 
+                  className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <Phone className="w-4 h-4" />
+                  0530 861 67 85
+                </a>
+              </li>
+              <li>
+                <a 
+                  href="https://wa.me/905308616785" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <MessageCircle className="w-4 h-4" />
+                  WhatsApp
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
 
-        <div className="mt-8 pt-8 border-t text-center text-sm text-muted-foreground">
-          <p>&copy; {currentYear} Türkiye Posta Kodları. Tüm hakları saklıdır.</p>
+        <div className="border-t mt-8 pt-8 text-center text-sm text-muted-foreground">
+          <p>© {currentYear} Posta Kodum. Tüm hakları saklıdır.</p>
+          <p className="mt-2 text-xs">
+            Bu site, Google reklam iş ortakları tarafından sunulan reklamlar içerebilir. 
+            Çerez kullanımı ve kişisel verilerin korunması hakkında daha fazla bilgi için{' '}
+            <Link href="/gizlilik-politikasi" className="text-primary hover:underline">
+              Gizlilik Politikası
+            </Link>
+            'nı inceleyebilirsiniz.
+          </p>
         </div>
       </div>
     </footer>
