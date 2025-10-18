@@ -35,24 +35,45 @@ export default function KodPage() {
 
   if (!pk) return null;
 
-  const jsonLd = data ? {
-    '@context': 'https://schema.org',
-    '@type': 'ItemList',
-    name: `${data.pk} Posta Kodu`,
-    description: generateMetaDescription('kod', { pk: data.pk }),
-    numberOfItems: data.locations.length,
-    itemListElement: data.locations.map((loc, index) => ({
-      '@type': 'ListItem',
-      position: index + 1,
-      item: {
-        '@type': 'PostalAddress',
-        addressLocality: loc.mahalle,
-        addressRegion: loc.ilce,
-        addressCountry: 'TR',
-        postalCode: data.pk,
-      },
-    })),
-  } : undefined;
+  const jsonLd = data ? [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'ItemList',
+      name: `${data.pk} Posta Kodu`,
+      description: generateMetaDescription('kod', { pk: data.pk }),
+      numberOfItems: data.locations.length,
+      itemListElement: data.locations.map((loc, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        item: {
+          '@type': 'PostalAddress',
+          streetAddress: `${loc.mahalle} Mahallesi`,
+          addressLocality: loc.ilce,
+          addressRegion: loc.il,
+          postalCode: data.pk,
+          addressCountry: 'TR',
+        },
+      })),
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: 'Anasayfa',
+          item: 'https://postakodrehberi.com/',
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: `${data.pk} Posta Kodu`,
+          item: `https://postakodrehberi.com/kod/${data.pk}`,
+        },
+      ],
+    },
+  ] : undefined;
 
   return (
     <>

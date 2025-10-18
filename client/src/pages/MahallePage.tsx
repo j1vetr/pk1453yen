@@ -40,14 +40,47 @@ export default function MahallePage() {
     return <NotFound />;
   }
 
-  const jsonLd = data ? {
-    '@context': 'https://schema.org',
-    '@type': 'PostalAddress',
-    addressLocality: data.mahalle,
-    addressRegion: data.ilce,
-    addressCountry: 'TR',
-    postalCode: data.postalCodes.join(', '),
-  } : undefined;
+  const jsonLd = data ? [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'PostalAddress',
+      streetAddress: `${data.mahalle} Mahallesi`,
+      addressLocality: data.ilce,
+      addressRegion: data.il,
+      postalCode: data.postalCodes.join(', '),
+      addressCountry: 'TR',
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: 'Anasayfa',
+          item: 'https://postakodrehberi.com/',
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: data.il,
+          item: `https://postakodrehberi.com/${data.ilSlug}`,
+        },
+        {
+          '@type': 'ListItem',
+          position: 3,
+          name: data.ilce,
+          item: `https://postakodrehberi.com/${data.ilSlug}/${data.ilceSlug}`,
+        },
+        {
+          '@type': 'ListItem',
+          position: 4,
+          name: data.mahalle,
+          item: `https://postakodrehberi.com/${data.ilSlug}/${data.ilceSlug}/${data.mahalleSlug}`,
+        },
+      ],
+    },
+  ] : undefined;
 
   return (
     <>
