@@ -8,7 +8,25 @@ The system supports hierarchical browsing from city level down to individual pos
 
 ## Recent Changes
 
-**October 18, 2025:**
+**October 18, 2025 (Latest):**
+- Restructured mahalle/village page URLs to remove postal code suffix
+  - Changed from `/:ilSlug/:ilceSlug/:mahalleSlug/:pk` to `/:ilSlug/:ilceSlug/:mahalleSlug`
+  - Backend API updated to return all postal codes for a neighborhood
+  - Multiple postal codes per neighborhood are now displayed together
+  - Related mahalleler list now shows unique neighborhoods without duplicate entries
+- Updated navigation header
+  - Changed "Ara" to "Ana Sayfa" with Home icon
+  - Links to homepage instead of search page
+- Redesigned 404 error page
+  - Modern card-based layout with red theme
+  - Clear error messaging and "Ana Sayfaya Dön" button
+  - Pages with invalid data (Il, Ilce, Mahalle) now properly show 404 page
+- Added footer credit
+  - "made with ❤ by TOOV" linking to https://toov.com.tr
+- Fixed nested anchor tag warning in PostalCodeCard component
+- All end-to-end tests passing: navigation, URL structure, 404 handling, footer links
+
+**October 18, 2025 (Earlier):**
 - Changed color scheme from blue to red theme throughout application
   - Primary color: 355 85% 50% (light) / 355 85% 55% (dark)
   - All accent colors updated to red tones (355 hue)
@@ -30,7 +48,6 @@ The system supports hierarchical browsing from city level down to individual pos
   - Numeric queries (e.g., "34") now use start-of-string matching (^34 pattern)
   - Prevents false matches like "01340" when searching for "34"
 - Fixed SearchPage query parameter reading using window.location.search
-- All end-to-end tests passing: search, navigation, detail pages, copy functionality, theme system
 
 **October 17, 2025:**
 - Successfully imported 73,305 postal code records from CSV into PostgreSQL
@@ -61,12 +78,13 @@ Preferred communication style: Simple, everyday language.
 - Default theme: Dark mode (user-switchable to light mode)
 
 **Page Structure:**
-- Home page: Search bar, statistics cards, city listing
+- Home page (/): Search bar, statistics cards, city listing
 - City page (/:ilSlug): District listing for a specific city
 - District page (/:ilSlug/:ilceSlug): Neighborhood/village listing
-- Neighborhood detail page (/:ilSlug/:ilceSlug/:mahalleSlug/:pk): Individual postal code information
+- Neighborhood detail page (/:ilSlug/:ilceSlug/:mahalleSlug): All postal codes for a neighborhood
 - Postal code page (/kod/:pk): All locations sharing a postal code
 - Search results page (/ara?q=...): Dynamic search results
+- 404 error page: Modern design with "Ana Sayfaya Dön" button
 - Admin panel (/admin/*): Complete data and site management system
 
 **SEO Implementation:**
@@ -93,8 +111,8 @@ Preferred communication style: Simple, everyday language.
 - GET /api/stats - Platform statistics
 - GET /api/cities - All cities with counts
 - GET /api/il/:ilSlug - City details with districts
-- GET /api/ilce/:ilSlug/:ilceSlug - District details with neighborhoods
-- GET /api/mahalle/:ilSlug/:ilceSlug/:mahalleSlug/:pk - Neighborhood details
+- GET /api/ilce/:ilSlug/:ilceSlug - District details with neighborhoods (unique by mahalleSlug)
+- GET /api/mahalle/:ilSlug/:ilceSlug/:mahalleSlug - All postal codes for a neighborhood
 - GET /api/kod/:pk - All locations for a postal code
 - GET /api/search?q=... - Search functionality
 - POST /api/admin/* - Admin operations (authentication required)
