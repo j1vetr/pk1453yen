@@ -21,10 +21,10 @@ export class DatabaseStorage {
   async getAllPostalCodes(page: number = 1, pageSize: number = 20, search?: string) {
     const offset = (page - 1) * pageSize;
     
-    let query = db.select().from(postalCodes);
+    let queryBuilder = db.select().from(postalCodes).$dynamic();
     
     if (search) {
-      query = query.where(
+      queryBuilder = queryBuilder.where(
         or(
           ilike(postalCodes.il, `%${search}%`),
           ilike(postalCodes.ilce, `%${search}%`),
@@ -34,7 +34,7 @@ export class DatabaseStorage {
       );
     }
     
-    const data = await query
+    const data = await queryBuilder
       .limit(pageSize)
       .offset(offset)
       .orderBy(postalCodes.il, postalCodes.ilce, postalCodes.mahalle);
@@ -227,8 +227,8 @@ export class DatabaseStorage {
     return results.rows;
   }
 
-  // Sitemap için tüm posta kodlarını getir
-  async getAllPostalCodes() {
+  // Sitemap için tüm unique posta kodlarını getir
+  async getUniquePostalCodes() {
     const results = await db.execute<{ pk: string }>(
       sql`SELECT DISTINCT pk FROM postal_codes ORDER BY pk`
     );
