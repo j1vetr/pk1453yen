@@ -130,11 +130,11 @@ export async function generatePageMeta(url: string): Promise<PageMeta> {
 
       const firstLocation = locations[0];
       return {
-        title: `${pk} Posta Kodu - ${firstLocation.il} İli Posta Kodu`,
-        description: `${pk} posta koduna sahip ${locations.length} adet mahalle/köy bulunmaktadır. ${firstLocation.il}, ${firstLocation.ilce} posta kodu bilgileri.`,
+        title: `${pk} Posta Kodu – İlgili Yerleşimler`,
+        description: `${pk} posta koduna bağlı il/ilçe/mahallelerin güncel listesi. ${locations.length} farklı yerleşim yeri bu posta kodunu kullanıyor.`,
         canonicalUrl,
         ogTitle: `${pk} Posta Kodu`,
-        ogDescription: `${pk} posta koduna sahip mahalle ve köyler.`,
+        ogDescription: `${pk} posta koduna bağlı il/ilçe/mahallelerin güncel listesi.`,
         statusCode: 200,
       };
     }
@@ -216,11 +216,11 @@ export async function generatePageMeta(url: string): Promise<PageMeta> {
       const postalCodesList = postalCodes.map((pc: { pk: string }) => pc.pk).join(", ");
 
       return {
-        title: `${firstCode.mahalle} Posta Kodu - ${firstCode.il}, ${firstCode.ilce}, ${firstCode.mahalle}`,
-        description: `${firstCode.il}, ${firstCode.ilce}, ${firstCode.mahalle} posta kodu: ${postalCodesList}. Mahalle posta kodu bilgileri.`,
+        title: `${firstCode.mahalle} Mahallesi Posta Kodu (${firstCode.ilce}, ${firstCode.il})`,
+        description: `${firstCode.il} ${firstCode.ilce} ${firstCode.mahalle} Mahallesi'nin posta kodu ${postalCodesList}. Diğer mahalleleri buradan görüntüleyin.`,
         canonicalUrl,
-        ogTitle: `${firstCode.mahalle} Posta Kodu`,
-        ogDescription: `${firstCode.il}, ${firstCode.ilce}, ${firstCode.mahalle} posta kodu bilgileri.`,
+        ogTitle: `${firstCode.mahalle} Mahallesi Posta Kodu`,
+        ogDescription: `${firstCode.il} ${firstCode.ilce} ${firstCode.mahalle} Mahallesi'nin posta kodu bilgileri.`,
         statusCode: 200,
       };
     }
