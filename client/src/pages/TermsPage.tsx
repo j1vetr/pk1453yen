@@ -189,7 +189,7 @@ export default function TermsPage() {
               Kullanım şartları hakkında sorularınız için bizimle iletişime geçebilirsiniz:
             </p>
             <p className="text-sm text-muted-foreground mt-3">
-              E-posta: <a href="mailto:info@postakodum.tr" className="text-primary hover:underline">info@postakodum.tr</a>
+              E-posta: <a href="mailto:info@postakodlari.com.tr" className="text-primary hover:underline">info@postakodlari.com.tr</a>
               <br />
               Telefon: <a href="tel:+905308616785" className="text-primary hover:underline">0530 861 67 85</a>
             </p>
