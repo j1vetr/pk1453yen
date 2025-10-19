@@ -7,6 +7,7 @@ import { SearchBar } from '@/components/SearchBar';
 import { PostalCodeCard } from '@/components/PostalCodeCard';
 import { LoadingGrid } from '@/components/LoadingState';
 import { EmptyState } from '@/components/EmptyState';
+import { NeighboringDistrictsWidget } from '@/components/NeighboringDistrictsWidget';
 import { getCanonicalUrl, generateMetaDescription, generateIlceDescription } from '@shared/utils';
 import NotFound from './not-found';
 
@@ -115,6 +116,13 @@ export default function IlcePage() {
                 description={`${data.ilce} ilçesi için henüz mahalle kaydı bulunmuyor.`}
               />
             )}
+
+            {/* Neighboring Districts - Komşu ilçeler */}
+            <NeighboringDistrictsWidget 
+              ilSlug={data.ilSlug}
+              ilceSlug={data.ilceSlug}
+              ilName={data.il}
+            />
           </>
         ) : (
           <EmptyState
