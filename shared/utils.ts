@@ -43,41 +43,6 @@ export function titleCase(text: string): string {
 }
 
 /**
- * Turkish Title Case - properly handles Turkish characters (İ, ı, etc.)
- * Converts: "ANADOLU KAVAĞI MAH" → "Anadolu Kavağı Mah"
- */
-export function turkishTitleCase(text: string): string {
-  if (!text) return '';
-  
-  // Turkish lowercase map
-  const lowerMap: Record<string, string> = {
-    'İ': 'i', 'I': 'ı',
-    'Ş': 'ş', 'Ğ': 'ğ', 'Ü': 'ü', 'Ö': 'ö', 'Ç': 'ç'
-  };
-  
-  // Turkish uppercase map
-  const upperMap: Record<string, string> = {
-    'i': 'İ', 'ı': 'I',
-    'ş': 'Ş', 'ğ': 'Ğ', 'ü': 'Ü', 'ö': 'Ö', 'ç': 'Ç'
-  };
-  
-  // First, convert to lowercase (Turkish-aware)
-  let result = text;
-  Object.keys(lowerMap).forEach(key => {
-    result = result.replace(new RegExp(key, 'g'), lowerMap[key]);
-  });
-  result = result.toLowerCase();
-  
-  // Then capitalize first letter of each word
-  return result.split(' ').map(word => {
-    if (word.length === 0) return word;
-    const firstChar = word.charAt(0);
-    const upperChar = upperMap[firstChar] || firstChar.toUpperCase();
-    return upperChar + word.slice(1);
-  }).join(' ');
-}
-
-/**
  * Format postal code display
  */
 export function formatPostalCode(pk: string): string {
@@ -216,7 +181,7 @@ export function generateMahalleFAQ(mahalle: string, ilce: string, il: string, pk
   return [
     {
       question: `${mahalle} posta kodu nedir?`,
-      answer: `${mahalle} mahallesinin posta kodu ${pk}'dir. Bu kod, kargo gönderimi, adres doğrulama ve resmi yazışmalarda kullanılmaktadır.`
+      answer: `${mahalle} mahallesinin posta kodu ${pk}'dır. Bu kod, kargo gönderimi, adres doğrulama ve resmi yazışmalarda kullanılmaktadır.`
     },
     {
       question: `${mahalle} hangi ilçeye bağlıdır?`,
@@ -229,157 +194,6 @@ export function generateMahalleFAQ(mahalle: string, ilce: string, il: string, pk
     {
       question: `${mahalle} yakınındaki diğer mahalleler hangileridir?`,
       answer: `${mahalle} civarındaki diğer mahallelerin listesini aşağıda bulabilirsiniz. Her mahallenin kendi posta kodu numarası bulunmaktadır.`
-    }
-  ];
-}
-
-/**
- * Turkish province data by postal code prefix
- * Maps postal code prefixes to province information
- */
-interface ProvinceData {
-  name: string;
-  region: string;
-  slug: string;
-}
-
-const PROVINCE_PREFIX_MAP: Record<string, ProvinceData> = {
-  '01': { name: 'Adana', region: 'Akdeniz', slug: 'adana' },
-  '02': { name: 'Adıyaman', region: 'Güneydoğu Anadolu', slug: 'adiyaman' },
-  '03': { name: 'Afyonkarahisar', region: 'Ege', slug: 'afyonkarahisar' },
-  '04': { name: 'Ağrı', region: 'Doğu Anadolu', slug: 'agri' },
-  '05': { name: 'Amasya', region: 'Karadeniz', slug: 'amasya' },
-  '06': { name: 'Ankara', region: 'İç Anadolu', slug: 'ankara' },
-  '07': { name: 'Antalya', region: 'Akdeniz', slug: 'antalya' },
-  '08': { name: 'Artvin', region: 'Karadeniz', slug: 'artvin' },
-  '09': { name: 'Aydın', region: 'Ege', slug: 'aydin' },
-  '10': { name: 'Balıkesir', region: 'Marmara', slug: 'balikesir' },
-  '11': { name: 'Bilecik', region: 'Marmara', slug: 'bilecik' },
-  '12': { name: 'Bingöl', region: 'Doğu Anadolu', slug: 'bingol' },
-  '13': { name: 'Bitlis', region: 'Doğu Anadolu', slug: 'bitlis' },
-  '14': { name: 'Bolu', region: 'Karadeniz', slug: 'bolu' },
-  '15': { name: 'Burdur', region: 'Akdeniz', slug: 'burdur' },
-  '16': { name: 'Bursa', region: 'Marmara', slug: 'bursa' },
-  '17': { name: 'Çanakkale', region: 'Marmara', slug: 'canakkale' },
-  '18': { name: 'Çankırı', region: 'İç Anadolu', slug: 'cankiri' },
-  '19': { name: 'Çorum', region: 'Karadeniz', slug: 'corum' },
-  '20': { name: 'Denizli', region: 'Ege', slug: 'denizli' },
-  '21': { name: 'Diyarbakır', region: 'Güneydoğu Anadolu', slug: 'diyarbakir' },
-  '22': { name: 'Edirne', region: 'Marmara', slug: 'edirne' },
-  '23': { name: 'Elazığ', region: 'Doğu Anadolu', slug: 'elazig' },
-  '24': { name: 'Erzincan', region: 'Doğu Anadolu', slug: 'erzincan' },
-  '25': { name: 'Erzurum', region: 'Doğu Anadolu', slug: 'erzurum' },
-  '26': { name: 'Eskişehir', region: 'İç Anadolu', slug: 'eskisehir' },
-  '27': { name: 'Gaziantep', region: 'Güneydoğu Anadolu', slug: 'gaziantep' },
-  '28': { name: 'Giresun', region: 'Karadeniz', slug: 'giresun' },
-  '29': { name: 'Gümüşhane', region: 'Karadeniz', slug: 'gumushane' },
-  '30': { name: 'Hakkari', region: 'Doğu Anadolu', slug: 'hakkari' },
-  '31': { name: 'Hatay', region: 'Akdeniz', slug: 'hatay' },
-  '32': { name: 'Isparta', region: 'Akdeniz', slug: 'isparta' },
-  '33': { name: 'Mersin', region: 'Akdeniz', slug: 'mersin' },
-  '34': { name: 'İstanbul', region: 'Marmara', slug: 'istanbul' },
-  '35': { name: 'İzmir', region: 'Ege', slug: 'izmir' },
-  '36': { name: 'Kars', region: 'Doğu Anadolu', slug: 'kars' },
-  '37': { name: 'Kastamonu', region: 'Karadeniz', slug: 'kastamonu' },
-  '38': { name: 'Kayseri', region: 'İç Anadolu', slug: 'kayseri' },
-  '39': { name: 'Kırklareli', region: 'Marmara', slug: 'kirklareli' },
-  '40': { name: 'Kırşehir', region: 'İç Anadolu', slug: 'kirsehir' },
-  '41': { name: 'Kocaeli', region: 'Marmara', slug: 'kocaeli' },
-  '42': { name: 'Konya', region: 'İç Anadolu', slug: 'konya' },
-  '43': { name: 'Kütahya', region: 'Ege', slug: 'kutahya' },
-  '44': { name: 'Malatya', region: 'Doğu Anadolu', slug: 'malatya' },
-  '45': { name: 'Manisa', region: 'Ege', slug: 'manisa' },
-  '46': { name: 'Kahramanmaraş', region: 'Akdeniz', slug: 'kahramanmaras' },
-  '47': { name: 'Mardin', region: 'Güneydoğu Anadolu', slug: 'mardin' },
-  '48': { name: 'Muğla', region: 'Ege', slug: 'mugla' },
-  '49': { name: 'Muş', region: 'Doğu Anadolu', slug: 'mus' },
-  '50': { name: 'Nevşehir', region: 'İç Anadolu', slug: 'nevsehir' },
-  '51': { name: 'Niğde', region: 'İç Anadolu', slug: 'nigde' },
-  '52': { name: 'Ordu', region: 'Karadeniz', slug: 'ordu' },
-  '53': { name: 'Rize', region: 'Karadeniz', slug: 'rize' },
-  '54': { name: 'Sakarya', region: 'Marmara', slug: 'sakarya' },
-  '55': { name: 'Samsun', region: 'Karadeniz', slug: 'samsun' },
-  '56': { name: 'Siirt', region: 'Güneydoğu Anadolu', slug: 'siirt' },
-  '57': { name: 'Sinop', region: 'Karadeniz', slug: 'sinop' },
-  '58': { name: 'Sivas', region: 'İç Anadolu', slug: 'sivas' },
-  '59': { name: 'Tekirdağ', region: 'Marmara', slug: 'tekirdag' },
-  '60': { name: 'Tokat', region: 'Karadeniz', slug: 'tokat' },
-  '61': { name: 'Trabzon', region: 'Karadeniz', slug: 'trabzon' },
-  '62': { name: 'Tunceli', region: 'Doğu Anadolu', slug: 'tunceli' },
-  '63': { name: 'Şanlıurfa', region: 'Güneydoğu Anadolu', slug: 'sanliurfa' },
-  '64': { name: 'Uşak', region: 'Ege', slug: 'usak' },
-  '65': { name: 'Van', region: 'Doğu Anadolu', slug: 'van' },
-  '66': { name: 'Yozgat', region: 'İç Anadolu', slug: 'yozgat' },
-  '67': { name: 'Zonguldak', region: 'Karadeniz', slug: 'zonguldak' },
-  '68': { name: 'Aksaray', region: 'İç Anadolu', slug: 'aksaray' },
-  '69': { name: 'Bayburt', region: 'Karadeniz', slug: 'bayburt' },
-  '70': { name: 'Karaman', region: 'İç Anadolu', slug: 'karaman' },
-  '71': { name: 'Kırıkkale', region: 'İç Anadolu', slug: 'kirikkale' },
-  '72': { name: 'Batman', region: 'Güneydoğu Anadolu', slug: 'batman' },
-  '73': { name: 'Şırnak', region: 'Güneydoğu Anadolu', slug: 'sirnak' },
-  '74': { name: 'Bartın', region: 'Karadeniz', slug: 'bartin' },
-  '75': { name: 'Ardahan', region: 'Doğu Anadolu', slug: 'ardahan' },
-  '76': { name: 'Iğdır', region: 'Doğu Anadolu', slug: 'igdir' },
-  '77': { name: 'Yalova', region: 'Marmara', slug: 'yalova' },
-  '78': { name: 'Karabük', region: 'Karadeniz', slug: 'karabuk' },
-  '79': { name: 'Kilis', region: 'Güneydoğu Anadolu', slug: 'kilis' },
-  '80': { name: 'Osmaniye', region: 'Akdeniz', slug: 'osmaniye' },
-  '81': { name: 'Düzce', region: 'Karadeniz', slug: 'duzce' },
-};
-
-/**
- * Get province information by postal code prefix
- */
-export function getProvinceByPrefix(pk: string): ProvinceData | null {
-  if (!pk || pk.length < 2) return null;
-  const prefix = pk.substring(0, 2);
-  return PROVINCE_PREFIX_MAP[prefix] || null;
-}
-
-/**
- * Generate dynamic SEO-friendly description for postal code pages
- */
-export function generatePostalCodeDescription(
-  pk: string,
-  provinceData: ProvinceData | null,
-  locationCount: number
-): string {
-  if (!provinceData) {
-    return `${pk} posta kodu bilgileri. Bu posta koduna bağlı ${locationCount} farklı yerleşim yeri bulunmaktadır. Posta kodu sorgulama, adres doğrulama ve kargo gönderimleriniz için detaylı bilgilere ulaşabilirsiniz.`;
-  }
-
-  const { name: ilName, region } = provinceData;
-  
-  return `${pk} posta kodu, ${ilName} iline ait olup ${region} Bölgesi sınırları içerisinde yer almaktadır. Bu posta koduna bağlı toplam ${locationCount} farklı yerleşim yeri (mahalle, köy veya semt) bulunmaktadır. Türkiye'de posta kodları PTT (Posta ve Telgraf Teşkilatı) tarafından belirlenmekte olup her posta kodunun ilk iki hanesi ili temsil etmektedir. ${pk} posta kodunun ilk iki hanesi (${pk.substring(0, 2)}) ${ilName} ilini göstermektedir. Kargo gönderimi, adres doğrulama, resmi yazışmalar ve e-ticaret işlemlerinde doğru posta kodu kullanımı kritik öneme sahiptir. ${pk} posta kodunu kullanarak ${ilName} içinde bulunan ilgili yerleşim yerlerine hızlı ve güvenli teslimat sağlanabilir. Aşağıda ${pk} posta koduna bağlı tüm mahalle ve yerleşim yerlerinin detaylı listesini bulabilirsiniz.`;
-}
-
-/**
- * Generate FAQ content for POSTAL CODE pages
- */
-export function generatePostalCodeFAQ(
-  pk: string,
-  provinceData: ProvinceData | null,
-  locationCount: number
-) {
-  const ilName = provinceData?.name || 'ilgili il';
-  const region = provinceData?.region || 'ilgili bölge';
-  
-  return [
-    {
-      question: `${pk} posta kodu hangi ile aittir?`,
-      answer: `${pk} posta kodu ${ilName} iline aittir. Posta kodlarının ilk iki hanesi ili gösterir ve ${pk} kodunun ilk iki hanesi (${pk.substring(0, 2)}) ${ilName} ilini temsil etmektedir. ${ilName}, ${region} Bölgesi'nde yer almaktadır.`
-    },
-    {
-      question: `${pk} posta kodu kaç farklı yerleşim yerini kapsar?`,
-      answer: `${pk} posta kodu toplam ${locationCount} farklı yerleşim yerini (mahalle, köy veya semt) kapsamaktadır. Her bir yerleşim yerinin detaylı bilgilerini yukarıdaki listede bulabilirsiniz.`
-    },
-    {
-      question: `Posta kodu sistemi nasıl çalışır?`,
-      answer: `Türkiye'de posta kodları 5 haneli sayılardan oluşur. İlk iki hane ili, sonraki haneler ise ilçe ve mahalle bilgilerini temsil eder. PTT tarafından belirlenen bu sistem, posta ve kargo gönderimlerinin doğru adrese ulaşmasını sağlar.`
-    },
-    {
-      question: `${pk} posta kodunu kargo gönderiminde nasıl kullanmalıyım?`,
-      answer: `Kargo veya posta gönderirken alıcı adres bilgilerinde ${pk} posta kodunu mutlaka belirtmelisiniz. Doğru posta kodu kullanımı, gönderinizin hızlı ve sorunsuz şekilde teslim edilmesini garanti eder. Yanlış veya eksik posta kodu teslimat gecikmelerine neden olabilir.`
     }
   ];
 }
