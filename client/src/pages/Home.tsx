@@ -6,6 +6,8 @@ import { StatsCard } from '@/components/StatsCard';
 import { PostalCodeCard } from '@/components/PostalCodeCard';
 import { LoadingGrid, LoadingStats } from '@/components/LoadingState';
 import { EmptyState } from '@/components/EmptyState';
+import { PopularMahallerWidget } from '@/components/PopularMahallerWidget';
+import { RecentSearchesWidget } from '@/components/RecentSearchesWidget';
 import { getCanonicalUrl } from '@shared/utils';
 import {
   Accordion,
@@ -217,6 +219,14 @@ export default function Home() {
           Reklam Alanı
         </div>
       </div>
+
+      {/* Popüler İçerikler Widget'ları */}
+      <section className="container max-w-7xl mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <PopularMahallerWidget />
+          <RecentSearchesWidget />
+        </div>
+      </section>
 
       {/* Cities Section */}
       <section className="container max-w-7xl mx-auto px-4 py-12">
