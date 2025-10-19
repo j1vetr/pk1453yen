@@ -7,6 +7,7 @@ import { Breadcrumb } from '@/components/Breadcrumb';
 import { CopyButton } from '@/components/CopyButton';
 import { PostalCodeCard } from '@/components/PostalCodeCard';
 import { EmptyState } from '@/components/EmptyState';
+import { SimilarMahallerWidget } from '@/components/SimilarMahallerWidget';
 import { getCanonicalUrl, generateMetaDescription, formatPostalCode, generateMahalleDescription } from '@shared/utils';
 import NotFound from './not-found';
 
@@ -258,6 +259,13 @@ export default function MahallePage() {
                 </div>
               </section>
             )}
+
+            {/* Similar Mahalleler - Benzer isimli mahalleler */}
+            <SimilarMahallerWidget 
+              mahalleName={data.mahalle}
+              currentIl={data.il}
+              currentIlce={data.ilce}
+            />
             </article>
           </>
         ) : (
