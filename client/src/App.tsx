@@ -21,6 +21,7 @@ import ContactPage from "@/pages/ContactPage";
 import PrivacyPage from "@/pages/PrivacyPage";
 import TermsPage from "@/pages/TermsPage";
 import CookiePage from "@/pages/CookiePage";
+import StatsPage from "@/pages/StatsPage";
 import NotFound from "@/pages/not-found";
 
 // Admin Pages
@@ -95,6 +96,13 @@ function Router() {
         {() => (
           <PublicLayout>
             <CookiePage />
+          </PublicLayout>
+        )}
+      </Route>
+      <Route path="/istatistikler">
+        {() => (
+          <PublicLayout>
+            <StatsPage />
           </PublicLayout>
         )}
       </Route>
