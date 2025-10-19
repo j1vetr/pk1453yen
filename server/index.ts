@@ -73,6 +73,9 @@ app.use((req, res, next) => {
   // setting up all the other routes so the catch-all route
   // doesn't interfere with the other routes
   if (app.get("env") === "development") {
+    // Development: Use SSR-enabled Vite middleware (disabled for now)
+    // NOTE: server/vite.ts currently doesn't use SSR in development
+    // For SSR testing, build and run in production mode
     await setupVite(app, server);
   } else {
     // Production: Serve static files (but not index.html - SSR will handle that)

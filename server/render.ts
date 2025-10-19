@@ -151,8 +151,10 @@ export async function renderMahallePage(
 
 // City page SSR
 export async function renderCityPage(ilSlug: string): Promise<RenderResult> {
+  console.log('[SSR renderCityPage] Called with ilSlug:', ilSlug);
   try {
     const districts = await storage.getDistrictsByCity(ilSlug);
+    console.log('[SSR renderCityPage] Districts found:', districts?.length || 0);
 
     if (!districts || districts.length === 0) {
       return {
@@ -165,10 +167,12 @@ export async function renderCityPage(ilSlug: string): Promise<RenderResult> {
     const geoCoords = getIlGeoCoordinates(cityData.il);
     const baseUrl = process.env.BASE_URL || "https://postakodrehberi.com";
 
-    // Generate JSON-LD schemas for SEO
-    const jsonLdSchemas = [
-      // Place with GeoCoordinates
-      geoCoords ? {
+    // Generate JSON-LD schemas for SEO (separate script tags for each)
+    const jsonLdScripts: string[] = [];
+
+    // Place with GeoCoordinates
+    if (geoCoords) {
+      jsonLdScripts.push(`<script type="application/ld+json">${JSON.stringify({
         "@context": "https://schema.org",
         "@type": "Place",
         "name": `${cityData.il}, Türkiye`,
@@ -182,42 +186,44 @@ export async function renderCityPage(ilSlug: string): Promise<RenderResult> {
           "addressRegion": cityData.il,
           "addressCountry": "TR"
         }
-      } : null,
-      // BreadcrumbList
-      {
-        "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-          {
-            "@type": "ListItem",
-            "position": 1,
-            "name": "Ana Sayfa",
-            "item": baseUrl
-          },
-          {
-            "@type": "ListItem",
-            "position": 2,
-            "name": cityData.il,
-            "item": `${baseUrl}/${ilSlug}`
-          }
-        ]
-      },
-      // ItemList for districts
-      {
-        "@context": "https://schema.org",
-        "@type": "ItemList",
-        "name": `${cityData.il} Posta Kodları`,
-        "description": `${cityData.il} ili posta kodları. ${districts.length} ilçe ve mahallelerinin posta kodlarını görüntüleyin.`,
-        "itemListElement": districts.map((d: any, index: number) => ({
-          "@type": "ListItem",
-          "position": index + 1,
-          "name": d.ilce,
-          "url": `${baseUrl}/${ilSlug}/${d.ilceSlug}`
-        }))
-      }
-    ].filter(Boolean);
+      })}</script>`);
+    }
 
-    const jsonLdScript = `<script type="application/ld+json">${JSON.stringify(jsonLdSchemas)}</script>`;
+    // BreadcrumbList
+    jsonLdScripts.push(`<script type="application/ld+json">${JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Ana Sayfa",
+          "item": baseUrl
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": cityData.il,
+          "item": `${baseUrl}/${ilSlug}`
+        }
+      ]
+    })}</script>`);
+
+    // ItemList for districts
+    jsonLdScripts.push(`<script type="application/ld+json">${JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "name": `${cityData.il} Posta Kodları`,
+      "description": `${cityData.il} ili posta kodları. ${districts.length} ilçe ve mahallelerinin posta kodlarını görüntüleyin.`,
+      "itemListElement": districts.map((d: any, index: number) => ({
+        "@type": "ListItem",
+        "position": index + 1,
+        "name": d.ilce,
+        "url": `${baseUrl}/${ilSlug}/${d.ilceSlug}`
+      }))
+    })}</script>`);
+
+    const jsonLdScript = jsonLdScripts.join('\n');
 
     const html = `
       ${jsonLdScript}
