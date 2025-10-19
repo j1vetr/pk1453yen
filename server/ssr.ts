@@ -135,13 +135,18 @@ export async function generatePageMeta(url: string): Promise<PageMeta> {
         };
       }
 
-      const firstLocation = locations[0];
+      // Get province information from postal code prefix
+      const { getProvinceByPrefix } = await import("../shared/utils");
+      const provinceData = getProvinceByPrefix(pk);
+      const ilName = provinceData?.name || 'Türkiye';
+      const region = provinceData?.region || '';
+      
       return {
-        title: `${pk} Posta Kodu – İlgili Yerleşimler`,
-        description: `${pk} posta koduna bağlı il/ilçe/mahallelerin güncel listesi. ${locations.length} farklı yerleşim yeri bu posta kodunu kullanıyor.`,
+        title: `${pk} Posta Kodu - ${ilName} ${region ? `(${region})` : ''} | ${locations.length} Yerleşim Yeri`,
+        description: `${pk} posta kodu ${ilName} iline aittir${region ? ` (${region} Bölgesi)` : ''}. Bu posta koduna bağlı ${locations.length} farklı mahalle, köy ve yerleşim yeri bulunmaktadır. Kargo gönderimi, adres doğrulama ve PTT posta kodu sorgulama için detaylı bilgiler.`,
         canonicalUrl,
-        ogTitle: `${pk} Posta Kodu`,
-        ogDescription: `${pk} posta koduna bağlı il/ilçe/mahallelerin güncel listesi.`,
+        ogTitle: `${pk} Posta Kodu - ${ilName}`,
+        ogDescription: `${pk} posta kodu ${ilName} iline ait ${locations.length} farklı yerleşim yerini kapsar. Kargo ve adres bilgileri.`,
         statusCode: 200,
       };
     }

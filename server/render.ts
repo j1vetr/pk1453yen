@@ -7,6 +7,9 @@ import {
   generateIlceFAQ,
   generateMahalleFAQ,
   turkishTitleCase,
+  getProvinceByPrefix,
+  generatePostalCodeDescription,
+  generatePostalCodeFAQ,
 } from "../shared/utils";
 
 interface RenderResult {
@@ -480,32 +483,136 @@ export async function renderPostalCodePage(pk: string): Promise<RenderResult> {
       };
     }
 
+    // Get province information from postal code prefix
+    const provinceData = getProvinceByPrefix(pk);
+    const ilName = provinceData?.name || 'Türkiye';
+    const ilSlug = provinceData?.slug || '';
+    const region = provinceData?.region || '';
+    
+    // Generate rich description and FAQ
+    const description = generatePostalCodeDescription(pk, provinceData, locations.length);
+    const faqs = generatePostalCodeFAQ(pk, provinceData, locations.length);
+
+    // Create breadcrumb schema
+    const breadcrumbSchema = {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Ana Sayfa",
+          "item": "https://postakodrehberi.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": `${ilName}`,
+          "item": `https://postakodrehberi.com/${ilSlug}`
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": `${pk} Posta Kodu`,
+          "item": `https://postakodrehberi.com/kod/${pk}`
+        }
+      ]
+    };
+
+    // Create FAQPage schema
+    const faqSchema = {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": faqs.map(faq => ({
+        "@type": "Question",
+        "name": faq.question,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": faq.answer
+        }
+      }))
+    };
+
+    // Create PostalAddress schema for each location
+    const addressSchemas = locations.slice(0, 5).map((loc: any) => ({
+      "@context": "https://schema.org",
+      "@type": "PostalAddress",
+      "addressLocality": turkishTitleCase(loc.mahalle),
+      "addressRegion": turkishTitleCase(loc.ilce),
+      "addressCountry": "TR",
+      "postalCode": pk,
+      "streetAddress": turkishTitleCase(loc.mahalle)
+    }));
+
+    const jsonLd = generateJSONLD([breadcrumbSchema, faqSchema, ...addressSchemas]);
+
     const html = `
       <div class="container max-w-6xl mx-auto px-4 py-8">
         <article>
           <header class="mb-8">
+            <nav class="flex items-center gap-2 text-sm text-muted-foreground mb-4" aria-label="Breadcrumb">
+              <a href="/" class="hover:text-foreground transition-colors">Ana Sayfa</a>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+              ${ilSlug ? `
+                <a href="/${ilSlug}" class="hover:text-foreground transition-colors">${ilName}</a>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+              ` : ''}
+              <span class="text-foreground font-medium">${pk} Posta Kodu</span>
+            </nav>
+            
             <h1 class="text-3xl md:text-4xl font-bold mb-3">${pk} Posta Kodu</h1>
-            <p class="text-lg text-muted-foreground">
-              ${pk} posta koduna bağlı ${locations.length} farklı yerleşim yeri bulunmaktadır.
+            <p class="text-lg text-muted-foreground mb-4">
+              ${ilName} ili - ${region} Bölgesi
             </p>
+            <div class="flex flex-wrap gap-2 mb-4">
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary/10 text-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mr-1"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                ${locations.length} Yerleşim Yeri
+              </span>
+              ${ilSlug ? `
+                <a href="/${ilSlug}" class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-muted hover:bg-muted/80 transition-colors">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mr-1"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                  ${ilName} Posta Kodları
+                </a>
+              ` : ''}
+            </div>
           </header>
 
-          <section>
-            <h2 class="text-2xl font-semibold mb-6">İlgili Yerleşimler</h2>
+          <section class="mb-12">
+            <h2 class="text-2xl md:text-3xl font-bold mb-4">${pk} Posta Kodu Hakkında</h2>
+            <div class="prose prose-lg max-w-none text-muted-foreground leading-relaxed">
+              <p>${description}</p>
+            </div>
+          </section>
+
+          <section class="mb-12">
+            <h2 class="text-2xl font-semibold mb-6 flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-primary"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+              ${pk} Posta Koduna Ait Yerleşimler
+            </h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               ${locations.map((loc: any) => `
-                <a href="/${loc.ilSlug}/${loc.ilceSlug}/${loc.mahalleSlug}" class="border rounded-lg p-4 hover:border-primary/50 transition-colors">
-                  <h3 class="font-semibold mb-1">${loc.mahalle}</h3>
-                  <p class="text-sm text-muted-foreground">${loc.ilce} / ${loc.il}</p>
+                <a href="/${loc.ilSlug}/${loc.ilceSlug}/${loc.mahalleSlug}" 
+                   class="border rounded-lg p-4 hover:border-primary/50 transition-colors hover-elevate"
+                   data-testid="link-location-${loc.mahalleSlug}">
+                  <h3 class="font-semibold mb-1 text-lg">${turkishTitleCase(loc.mahalle)}</h3>
+                  <p class="text-sm text-muted-foreground mb-2">${turkishTitleCase(loc.ilce)} / ${turkishTitleCase(loc.il)}</p>
+                  <div class="flex items-center gap-2 text-xs text-muted-foreground">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                    Posta Kodu: ${pk}
+                  </div>
                 </a>
               `).join('')}
             </div>
           </section>
+
+          ${renderFAQ(faqs)}
         </article>
+        ${renderFooter()}
       </div>
     `;
 
-    return { html, statusCode: 200 };
+    return { html, statusCode: 200, jsonLd };
   } catch (error) {
     console.error("Postal code SSR error:", error);
     return {
