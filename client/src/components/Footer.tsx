@@ -5,38 +5,10 @@ import logoUrl from '@/assets/logo.png';
 export function Footer() {
   const currentYear = new Date().getFullYear();
 
-  // Popüler şehirler - SEO için en büyük 24 şehir
-  const popularCities = [
-    { name: 'İstanbul', slug: 'istanbul' },
-    { name: 'Ankara', slug: 'ankara' },
-    { name: 'İzmir', slug: 'izmir' },
-    { name: 'Bursa', slug: 'bursa' },
-    { name: 'Antalya', slug: 'antalya' },
-    { name: 'Adana', slug: 'adana' },
-    { name: 'Konya', slug: 'konya' },
-    { name: 'Gaziantep', slug: 'gaziantep' },
-    { name: 'Şanlıurfa', slug: 'sanliurfa' },
-    { name: 'Kocaeli', slug: 'kocaeli' },
-    { name: 'Mersin', slug: 'mersin' },
-    { name: 'Diyarbakır', slug: 'diyarbakir' },
-    { name: 'Kayseri', slug: 'kayseri' },
-    { name: 'Eskişehir', slug: 'eskisehir' },
-    { name: 'Samsun', slug: 'samsun' },
-    { name: 'Denizli', slug: 'denizli' },
-    { name: 'Adapazarı', slug: 'adapazari' },
-    { name: 'Malatya', slug: 'malatya' },
-    { name: 'Kahramanmaraş', slug: 'kahramanmaras' },
-    { name: 'Erzurum', slug: 'erzurum' },
-    { name: 'Van', slug: 'van' },
-    { name: 'Batman', slug: 'batman' },
-    { name: 'Elazığ', slug: 'elazig' },
-    { name: 'Trabzon', slug: 'trabzon' },
-  ];
-
   return (
     <footer className="bg-muted/30 border-t mt-auto">
       <div className="container max-w-7xl mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {/* Logo ve Açıklama */}
           <div className="space-y-4">
             <Link href="/" className="inline-block" data-testid="link-footer-logo">
@@ -45,23 +17,6 @@ export function Footer() {
             <p className="text-sm text-muted-foreground">
               Türkiye'nin en kapsamlı posta kodu rehberi. 73.000+ posta kodu bilgisi ile tüm il, ilçe ve mahallelerin posta kodlarını hızlıca sorgulayın.
             </p>
-          </div>
-
-          {/* Popüler Şehirler - 2 kolon */}
-          <div className="lg:col-span-2">
-            <h3 className="font-semibold mb-4">Popüler Şehirler</h3>
-            <div className="grid grid-cols-2 gap-x-4 gap-y-2">
-              {popularCities.map((city) => (
-                <Link
-                  key={city.slug}
-                  href={`/${city.slug}`}
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                  data-testid={`link-city-${city.slug}`}
-                >
-                  {city.name}
-                </Link>
-              ))}
-            </div>
           </div>
 
           {/* Hızlı Linkler */}
@@ -76,6 +31,11 @@ export function Footer() {
               <li>
                 <Link href="/ara" className="text-muted-foreground hover:text-foreground transition-colors" data-testid="link-footer-search">
                   Posta Kodu Ara
+                </Link>
+              </li>
+              <li>
+                <Link href="/istatistikler" className="text-muted-foreground hover:text-foreground transition-colors" data-testid="link-footer-stats">
+                  İlginç İstatistikler
                 </Link>
               </li>
               <li>

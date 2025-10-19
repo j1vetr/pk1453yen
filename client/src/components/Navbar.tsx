@@ -19,6 +19,9 @@ export function Navbar() {
             <Home className="w-4 h-4" />
             Ana Sayfa
           </Link>
+          <Link href="/istatistikler" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-3 py-2 hidden sm:inline-block" data-testid="link-stats">
+            İstatistikler
+          </Link>
           <Link href="/hakkimizda" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-3 py-2 hidden sm:inline-block">
             Hakkımızda
           </Link>
