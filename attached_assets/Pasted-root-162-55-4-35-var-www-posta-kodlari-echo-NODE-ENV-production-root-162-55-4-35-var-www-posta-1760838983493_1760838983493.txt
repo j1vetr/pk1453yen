@@ -1,0 +1,165 @@
+root@162-55-4-35:/var/www/posta-kodlari# echo $NODE_ENV
+production
+root@162-55-4-35:/var/www/posta-kodlari# grep -n "import.*vite" dist/index.js | head -5
+1518:import { createServer as createViteServer, createLogger } from "vite";
+1521:import { defineConfig } from "vite";
+1522:import react from "@vitejs/plugin-react";
+1524:import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
+1530:      await import("@replit/vite-plugin-cartographer").then(
+root@162-55-4-35:/var/www/posta-kodlari# grep -A5 "NODE_ENV" server/index.ts
+if (process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1);
+}
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+root@162-55-4-35:/var/www/posta-kodlari# rm -rf dist
+root@162-55-4-35:/var/www/posta-kodlari# set -a && source .env && set +a && NODE_ENV=production npm run build
+
+> rest-express@1.0.0 build
+> vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+
+sh: 1: vite: not found
+root@162-55-4-35:/var/www/posta-kodlari# ^C
+root@162-55-4-35:/var/www/posta-kodlari# npm install
+
+up to date, audited 410 packages in 908ms
+
+55 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+root@162-55-4-35:/var/www/posta-kodlari# set -a && source .env && set +a && npm run build
+
+> rest-express@1.0.0 build
+> vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+
+sh: 1: vite: not found
+root@162-55-4-35:/var/www/posta-kodlari# rm -rf node_modules package-lock.json
+root@162-55-4-35:/var/www/posta-kodlari# npm install --omit=dev
+
+added 409 packages, and audited 410 packages in 14s
+
+55 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+root@162-55-4-35:/var/www/posta-kodlari# pm2 restart posta-kodlari
+Use --update-env to update environment variables
+[PM2] Applying action restartProcessId on app [posta-kodlari](ids: [ 10, 11 ])
+[PM2] [posta-kodlari](10) ✓
+[PM2] [posta-kodlari](11) ✓
+┌────┬────────────────────┬──────────┬──────┬───────────┬──────────┬──────────┐
+│ id │ name               │ mode     │ ↺    │ status    │ cpu      │ memory   │
+├────┼────────────────────┼──────────┼──────┼───────────┼──────────┼──────────┤
+│ 9  │ maison-nomade-con… │ fork     │ 0    │ online    │ 3.3%     │ 59.1mb   │
+│ 10 │ posta-kodlari      │ cluster  │ 3    │ online    │ 0%       │ 55.0mb   │
+│ 11 │ posta-kodlari      │ cluster  │ 3    │ online    │ 0%       │ 38.6mb   │
+│ 0  │ watermarktoo-back… │ cluster  │ 0    │ online    │ 0%       │ 97.8mb   │
+│ 1  │ yosun-restaurant   │ fork     │ 444… │ online    │ 0%       │ 55.0mb   │
+└────┴────────────────────┴──────────┴──────┴───────────┴──────────┴──────────┘
+root@162-55-4-35:/var/www/posta-kodlari# pm2 logs posta-kodlari --lines 50
+[TAILING] Tailing last 50 lines for [posta-kodlari] process (change the value with --lines option)
+/var/www/posta-kodlari/logs/pm2-out.log last 50 lines:
+10|posta-k | 2025-10-19 04:29:31 +03:00: 4:29:31 AM [express] GET /api/il/istanbul 200 in 2ms :: {"il":"İSTANBUL","ilSlug":"istanbul","distri…
+10|posta-k | 2025-10-19 04:29:33 +03:00: 4:29:33 AM [express] GET /api/ilce/istanbul/adalar 200 in 2ms :: {"il":"İSTANBUL","ilSlug":"istanbul…
+10|posta-k | 2025-10-19 04:29:33 +03:00: 4:29:33 AM [express] GET /api/neighboring-districts/istanbul/adalar 200 in 4ms :: [{"ilce":"ARNAVUTK…
+10|posta-k | 2025-10-19 04:29:34 +03:00: 4:29:34 AM [express] GET /api/mahalle/istanbul/adalar/burgazada-mah 200 in 4ms :: {"il":"İSTANBUL","…
+10|posta-k | 2025-10-19 04:29:34 +03:00: 4:29:34 AM [express] GET /api/similar-mahalleler/BURGAZADA%20MAH 200 in 7ms :: [{"il":"İSTANBUL","il…
+10|posta-k | 2025-10-19 04:30:26 +03:00: 4:30:26 AM [express] serving on port 5040
+10|posta-k | 2025-10-19 04:30:27 +03:00: 4:30:27 AM [express] serving on port 5040
+10|posta-k | 2025-10-19 04:30:48 +03:00: 4:30:48 AM [express] GET /api/settings 304 in 4ms :: {"googleAnalyticsCode":"","googleSearchConsoleC…
+10|posta-k | 2025-10-19 04:30:48 +03:00: 4:30:48 AM [express] GET /api/popular-mahalleler 304 in 9ms :: []
+10|posta-k | 2025-10-19 04:30:48 +03:00: 4:30:48 AM [express] GET /api/recent-searches 304 in 13ms :: [{"query":"anadolu kava","count":7},{"q…
+10|posta-k | 2025-10-19 04:30:48 +03:00: 4:30:48 AM [express] GET /api/cities 304 in 29ms :: [{"il":"ADANA","ilSlug":"adana","count":832},{"i…
+10|posta-k | 2025-10-19 04:30:48 +03:00: 4:30:48 AM [express] GET /api/stats 304 in 87ms :: {"totalCities":81,"totalDistricts":973,"totalCode…
+10|posta-k | 2025-10-19 04:30:54 +03:00: 4:30:54 AM [express] GET /api/il/kastamonu 200 in 4ms :: {"il":"KASTAMONU","ilSlug":"kastamonu","dis…
+10|posta-k | 2025-10-19 04:30:55 +03:00: 4:30:55 AM [express] GET /api/ilce/kastamonu/hanonu 200 in 4ms :: {"il":"KASTAMONU","ilSlug":"kastam…
+10|posta-k | 2025-10-19 04:30:55 +03:00: 4:30:55 AM [express] GET /api/neighboring-districts/kastamonu/hanonu 200 in 12ms :: [{"ilce":"ABANA"…
+10|posta-k | 2025-10-19 04:30:57 +03:00: 4:30:57 AM [express] GET /api/mahalle/kastamonu/hanonu/abazoglu-mah-bolukyazi-koyu 200 in 7ms :: {"i…
+10|posta-k | 2025-10-19 04:30:57 +03:00: 4:30:57 AM [express] GET /api/similar-mahalleler/ABAZO%C4%9ELU%20MAH%20(B%C3%96L%C3%9CKYAZI%20K%C3%9…
+10|posta-k | 2025-10-19 04:31:08 +03:00: 4:31:08 AM [express] GET /api/il/artvin 200 in 10ms :: {"il":"ARTVİN","ilSlug":"artvin","districts":…
+10|posta-k | 2025-10-19 04:31:17 +03:00: 4:31:17 AM [express] GET /api/settings 304 in 3ms :: {"googleAnalyticsCode":"","googleSearchConsoleC…
+10|posta-k | 2025-10-19 04:31:17 +03:00: 4:31:17 AM [express] GET /api/kod/34825 200 in 3ms :: {"pk":"34825","locations":[{"il":"İSTANBUL","i…
+10|posta-k | 2025-10-19 04:39:38 +03:00: 4:39:38 AM [express] serving on port 5040
+10|posta-k | 2025-10-19 04:39:38 +03:00: 4:39:38 AM [express] serving on port 5040
+10|posta-k | 2025-10-19 04:39:44 +03:00: 4:39:44 AM [express] GET /api/popular-mahalleler 200 in 4ms :: []
+10|posta-k | 2025-10-19 04:39:44 +03:00: 4:39:44 AM [express] GET /api/recent-searches 200 in 11ms :: [{"query":"anadolu kava","count":7},{"q…
+10|posta-k | 2025-10-19 04:39:44 +03:00: 4:39:44 AM [express] GET /api/settings 200 in 36ms :: {"googleAnalyticsCode":"","googleSearchConsole…
+10|posta-k | 2025-10-19 04:39:44 +03:00: 4:39:44 AM [express] GET /api/cities 200 in 39ms :: [{"il":"ADANA","ilSlug":"adana","count":832},{"i…
+10|posta-k | 2025-10-19 04:39:44 +03:00: 4:39:44 AM [express] GET /api/stats 200 in 87ms :: {"totalCities":81,"totalDistricts":973,"totalCode…
+10|posta-k | 2025-10-19 04:39:49 +03:00: 4:39:49 AM [express] GET /api/il/balikesir 200 in 5ms :: {"il":"BALIKESİR","ilSlug":"balikesir","dis…
+10|posta-k | 2025-10-19 04:39:55 +03:00: 4:39:55 AM [express] GET /api/kod/34825 200 in 3ms :: {"pk":"34825","locations":[{"il":"İSTANBUL","i…
+10|posta-k | 2025-10-19 04:39:55 +03:00: 4:39:55 AM [express] GET /api/settings 304 in 3ms :: {"googleAnalyticsCode":"","googleSearchConsoleC…
+10|posta-k | 2025-10-19 04:40:01 +03:00: 4:40:01 AM [express] GET /api/settings 304 in 3ms :: {"googleAnalyticsCode":"","googleSearchConsoleC…
+10|posta-k | 2025-10-19 04:40:01 +03:00: 4:40:01 AM [express] GET /api/kod/34825 304 in 3ms :: {"pk":"34825","locations":[{"il":"İSTANBUL","i…
+10|posta-k | 2025-10-19 04:40:26 +03:00: 4:40:26 AM [express] GET /api/settings 304 in 4ms :: {"googleAnalyticsCode":"","googleSearchConsoleC…
+10|posta-k | 2025-10-19 04:40:26 +03:00: 4:40:26 AM [express] GET /api/kod/34825 304 in 6ms :: {"pk":"34825","locations":[{"il":"İSTANBUL","i…
+10|posta-k | 2025-10-19 04:40:28 +03:00: 4:40:28 AM [express] GET /api/mahalle/istanbul/beykoz/ornekkoy-mah 200 in 4ms :: {"il":"İSTANBUL","i…
+10|posta-k | 2025-10-19 04:40:28 +03:00: 4:40:28 AM [express] GET /api/similar-mahalleler/%C3%96RNEKK%C3%96Y%20MAH 200 in 9ms :: [{"il":"BURS…
+10|posta-k | 2025-10-19 04:40:49 +03:00: 4:40:49 AM [express] GET /api/mahalle/istanbul/beykoz/anadolu-hisari-mah 200 in 13ms :: {"il":"İSTAN…
+10|posta-k | 2025-10-19 04:40:49 +03:00: 4:40:49 AM [express] GET /api/similar-mahalleler/ANADOLU%20H%C4%B0SARI%20MAH 200 in 20ms :: [{"il":"…
+10|posta-k | 2025-10-19 04:41:06 +03:00: 4:41:06 AM [express] GET /api/settings 304 in 2ms :: {"googleAnalyticsCode":"","googleSearchConsoleC…
+10|posta-k | 2025-10-19 04:41:06 +03:00: 4:41:06 AM [express] GET /api/kod/34000 404 in 2ms :: {"error":"Posta kodu bulunamadı"}
+10|posta-k | 2025-10-19 04:41:09 +03:00: 4:41:09 AM [express] GET /api/kod/34824 404 in 2ms :: {"error":"Posta kodu bulunamadı"}
+10|posta-k | 2025-10-19 04:41:09 +03:00: 4:41:09 AM [express] GET /api/settings 304 in 2ms :: {"googleAnalyticsCode":"","googleSearchConsoleC…
+10|posta-k | 2025-10-19 04:41:12 +03:00: 4:41:12 AM [express] GET /api/settings 304 in 3ms :: {"googleAnalyticsCode":"","googleSearchConsoleC…
+10|posta-k | 2025-10-19 04:41:12 +03:00: 4:41:12 AM [express] GET /api/kod/34826 404 in 2ms :: {"error":"Posta kodu bulunamadı"}
+10|posta-k | 2025-10-19 04:41:14 +03:00: 4:41:14 AM [express] GET /api/settings 304 in 2ms :: {"googleAnalyticsCode":"","googleSearchConsoleC…
+10|posta-k | 2025-10-19 04:41:14 +03:00: 4:41:14 AM [express] GET /api/kod/34825 304 in 2ms :: {"pk":"34825","locations":[{"il":"İSTANBUL","i…
+10|posta-k | 2025-10-19 04:41:25 +03:00: 4:41:25 AM [express] GET /api/settings 304 in 2ms :: {"googleAnalyticsCode":"","googleSearchConsoleC…
+10|posta-k | 2025-10-19 04:41:25 +03:00: 4:41:25 AM [express] GET /api/il/konya 200 in 4ms :: {"il":"KONYA","ilSlug":"konya","districts":[{"i…
+10|posta-k | 2025-10-19 04:41:49 +03:00: 4:41:49 AM [express] GET /api/kod/35920 200 in 2ms :: {"pk":"35920","locations":[{"il":"İZMİR","ilSl…
+10|posta-k | 2025-10-19 04:41:49 +03:00: 4:41:49 AM [express] GET /api/settings 304 in 2ms :: {"googleAnalyticsCode":"","googleSearchConsoleC…
+
+/var/www/posta-kodlari/logs/pm2-error.log last 50 lines:
+10|posta-k |     at defaultResolve (node:internal/modules/esm/resolve:1188:11)
+10|posta-k |     at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:708:12)
+10|posta-k |     at #cachedDefaultResolve (node:internal/modules/esm/loader:657:25)
+10|posta-k |     at ModuleLoader.resolve (node:internal/modules/esm/loader:640:38)
+10|posta-k |     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:264:38)
+10|posta-k |     at ModuleJob._link (node:internal/modules/esm/module_job:168:49)
+10|posta-k | You have triggered an unhandledRejection, you may have forgotten to catch a Promise rejection:
+10|posta-k | Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'vite' imported from /var/www/posta-kodlari/dist/index.js
+10|posta-k |     at packageResolve (node:internal/modules/esm/resolve:873:9)
+10|posta-k |     at moduleResolve (node:internal/modules/esm/resolve:946:18)
+10|posta-k |     at defaultResolve (node:internal/modules/esm/resolve:1188:11)
+10|posta-k |     at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:708:12)
+10|posta-k |     at #cachedDefaultResolve (node:internal/modules/esm/loader:657:25)
+10|posta-k |     at ModuleLoader.resolve (node:internal/modules/esm/loader:640:38)
+10|posta-k |     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:264:38)
+10|posta-k |     at ModuleJob._link (node:internal/modules/esm/module_job:168:49)
+10|posta-k | You have triggered an unhandledRejection, you may have forgotten to catch a Promise rejection:
+10|posta-k | Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'vite' imported from /var/www/posta-kodlari/dist/index.js
+10|posta-k |     at packageResolve (node:internal/modules/esm/resolve:873:9)
+10|posta-k |     at moduleResolve (node:internal/modules/esm/resolve:946:18)
+10|posta-k |     at defaultResolve (node:internal/modules/esm/resolve:1188:11)
+10|posta-k |     at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:708:12)
+10|posta-k |     at #cachedDefaultResolve (node:internal/modules/esm/loader:657:25)
+10|posta-k |     at ModuleLoader.resolve (node:internal/modules/esm/loader:640:38)
+10|posta-k |     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:264:38)
+10|posta-k |     at ModuleJob._link (node:internal/modules/esm/module_job:168:49)
+10|posta-k | You have triggered an unhandledRejection, you may have forgotten to catch a Promise rejection:
+10|posta-k | Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/var/www/posta-kodlari/dist/index.js' imported from /usr/lib/node_modules/pm2/lib/ProcessContainer.js
+10|posta-k |     at finalizeResolution (node:internal/modules/esm/resolve:283:11)
+10|posta-k |     at moduleResolve (node:internal/modules/esm/resolve:952:10)
+10|posta-k |     at defaultResolve (node:internal/modules/esm/resolve:1188:11)
+10|posta-k |     at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:708:12)
+10|posta-k |     at #cachedDefaultResolve (node:internal/modules/esm/loader:657:25)
+10|posta-k |     at ModuleLoader.resolve (node:internal/modules/esm/loader:640:38)
+10|posta-k |     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:264:38)
+10|posta-k |     at ModuleLoader.import (node:internal/modules/esm/loader:605:34)
+10|posta-k |     at defaultImportModuleDynamicallyForScript (node:internal/modules/esm/utils:234:31)
+10|posta-k |     at importModuleDynamicallyCallback (node:internal/modules/esm/utils:256:12)
+10|posta-k | You have triggered an unhandledRejection, you may have forgotten to catch a Promise rejection:
+10|posta-k | Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/var/www/posta-kodlari/dist/index.js' imported from /usr/lib/node_modules/pm2/lib/ProcessContainer.js
+10|posta-k |     at finalizeResolution (node:internal/modules/esm/resolve:283:11)
+10|posta-k |     at moduleResolve (node:internal/modules/esm/resolve:952:10)
+10|posta-k |     at defaultResolve (node:internal/modules/esm/resolve:1188:11)
+10|posta-k |     at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:708:12)
+10|posta-k |     at #cachedDefaultResolve (node:internal/modules/esm/loader:657:25)
+10|posta-k |     at ModuleLoader.resolve (node:internal/modules/esm/loader:640:38)
+10|posta-k |     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:264:38)
+10|posta-k |     at ModuleLoader.import (node:internal/modules/esm/loader:605:34)
+10|posta-k |     at defaultImportModuleDynamicallyForScript (node:internal/modules/esm/utils:234:31)
+10|posta-k |     at importModuleDynamicallyCallback (node:internal/modules/esm/utils:256:12)
