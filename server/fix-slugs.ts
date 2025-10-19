@@ -4,6 +4,15 @@ import { db } from "./db";
 import { postalCodes } from "../shared/schema";
 import { eq, and } from "drizzle-orm";
 
+// Load environment variables from .env file if it exists
+try {
+  const dotenv = await import('dotenv');
+  dotenv.config();
+  console.log("✅ Environment variables loaded from .env\n");
+} catch (e) {
+  console.log("ℹ️  No .env file found, using system environment variables\n");
+}
+
 async function fixAllSlugs() {
   console.log("🔧 Starting slug fix...\n");
 
