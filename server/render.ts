@@ -6,6 +6,7 @@ import {
   generateIlFAQ,
   generateIlceFAQ,
   generateMahalleFAQ,
+  turkishTitleCase,
 } from "../shared/utils";
 
 interface RenderResult {
@@ -55,6 +56,74 @@ function generateJSONLD(schemas: any[]): string {
   ).join('\n');
 }
 
+// Helper: Render Footer
+function renderFooter(): string {
+  const currentYear = new Date().getFullYear();
+  return `
+    <footer class="bg-muted/30 border-t mt-auto">
+      <div class="container max-w-7xl mx-auto px-4 py-12">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div class="space-y-4">
+            <a href="/" class="inline-block">
+              <img src="/logo.png" alt="Posta Kodları Logo" class="h-12 w-auto" />
+            </a>
+            <p class="text-sm text-muted-foreground">
+              Türkiye'nin en kapsamlı posta kodu rehberi. 73.000+ posta kodu bilgisi ile tüm il, ilçe ve mahallelerin posta kodlarını hızlıca sorgulayın.
+            </p>
+          </div>
+          <div>
+            <h3 class="font-semibold mb-4">Hızlı Linkler</h3>
+            <ul class="space-y-2 text-sm">
+              <li><a href="/" class="text-muted-foreground hover:text-foreground transition-colors">Ana Sayfa</a></li>
+              <li><a href="/ara" class="text-muted-foreground hover:text-foreground transition-colors">Posta Kodu Ara</a></li>
+              <li><a href="/istatistikler" class="text-muted-foreground hover:text-foreground transition-colors">İlginç İstatistikler</a></li>
+              <li><a href="/hakkimizda" class="text-muted-foreground hover:text-foreground transition-colors">Hakkımızda</a></li>
+              <li><a href="/iletisim" class="text-muted-foreground hover:text-foreground transition-colors">İletişim</a></li>
+              <li><a href="/gizlilik-politikasi" class="text-muted-foreground hover:text-foreground transition-colors">Gizlilik Politikası</a></li>
+              <li><a href="/kullanim-sartlari" class="text-muted-foreground hover:text-foreground transition-colors">Kullanım Şartları</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="font-semibold mb-4">İletişim</h3>
+            <ul class="space-y-3 text-sm">
+              <li>
+                <a href="mailto:info@postakodrehberi.com" class="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m2 7 8.97 5.7a1.94 1.94 0 0 0 2.06 0L22 7"/></svg>
+                  info@postakodrehberi.com
+                </a>
+              </li>
+              <li>
+                <a href="tel:+905308616785" class="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                  0530 861 67 85
+                </a>
+              </li>
+              <li>
+                <a href="https://wa.me/905308616785" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  WhatsApp
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="border-t mt-8 pt-8 text-center space-y-3">
+          <p class="text-sm text-muted-foreground">© ${currentYear} Posta Kodları. Tüm hakları saklıdır.</p>
+          <p class="text-sm text-muted-foreground">
+            made with <span class="text-primary">❤</span> by 
+            <a href="https://toov.com.tr" target="_blank" rel="noopener noreferrer" class="font-medium text-foreground hover:text-primary transition-colors">TOOV</a>
+          </p>
+          <p class="text-xs text-muted-foreground">
+            Bu site, Google reklam iş ortakları tarafından sunulan reklamlar içerebilir. 
+            Çerez kullanımı ve kişisel verilerin korunması hakkında daha fazla bilgi için
+            <a href="/gizlilik-politikasi" class="text-primary hover:underline">Gizlilik Politikası</a>'nı inceleyebilirsiniz.
+          </p>
+        </div>
+      </div>
+    </footer>
+  `;
+}
+
 // Mahalle page SSR
 export async function renderMahallePage(
   ilSlug: string,
@@ -79,15 +148,19 @@ export async function renderMahallePage(
 
     const postalCodesList = postalCodes.map((pc: any) => pc.pk);
 
+    const ilTitle = turkishTitleCase(firstCode.il);
+    const ilceTitle = turkishTitleCase(firstCode.ilce);
+    const mahalleTitle = turkishTitleCase(firstCode.mahalle);
+    
     const html = `
       <div class="container max-w-4xl mx-auto px-4 py-8">
         <nav aria-label="breadcrumb" class="mb-6">
           <ol class="flex items-center gap-2 text-sm text-muted-foreground">
-            <li><a href="/${ilSlug}" class="hover:text-foreground">${firstCode.il}</a></li>
+            <li><a href="/${ilSlug}" class="hover:text-foreground">${ilTitle}</a></li>
             <li>/</li>
-            <li><a href="/${ilSlug}/${ilceSlug}" class="hover:text-foreground">${firstCode.ilce}</a></li>
+            <li><a href="/${ilSlug}/${ilceSlug}" class="hover:text-foreground">${ilceTitle}</a></li>
             <li>/</li>
-            <li class="text-foreground font-medium">${firstCode.mahalle}</li>
+            <li class="text-foreground font-medium">${mahalleTitle}</li>
           </ol>
         </nav>
 
@@ -113,9 +186,9 @@ export async function renderMahallePage(
 
         <article id="main-content">
           <header class="mb-8">
-            <h1 class="text-3xl md:text-4xl font-bold mb-3">${firstCode.mahalle} Mahallesi Posta Kodu</h1>
+            <h1 class="text-3xl md:text-4xl font-bold mb-3">${mahalleTitle} Mahallesi Posta Kodu</h1>
             <p class="text-lg text-muted-foreground leading-relaxed">
-              ${generateMahalleDescription(firstCode.mahalle, firstCode.ilce, firstCode.il, postalCodesList[0])}
+              ${generateMahalleDescription(mahalleTitle, ilceTitle, ilTitle, postalCodesList[0])}
             </p>
           </header>
 
@@ -129,7 +202,7 @@ export async function renderMahallePage(
                 <div class="flex flex-col sm:flex-row items-center justify-between gap-4 ${index < postalCodesList.length - 1 ? 'pb-4 border-b mb-4' : ''}">
                   <div class="flex-1">
                     <p class="text-4xl font-mono font-bold text-primary">${pk.slice(0, 2)} ${pk.slice(2)}</p>
-                    <p class="text-muted-foreground mt-2">${firstCode.mahalle}, ${firstCode.ilce} / ${firstCode.il}</p>
+                    <p class="text-muted-foreground mt-2">${mahalleTitle}, ${ilceTitle} / ${ilTitle}</p>
                   </div>
                   <button class="px-4 py-2 bg-primary text-primary-foreground rounded-md" data-copy="${pk}">Kopyala</button>
                 </div>
@@ -146,21 +219,21 @@ export async function renderMahallePage(
               <div class="space-y-3">
                 <div class="flex justify-between py-2 border-b">
                   <span class="font-medium">İl:</span>
-                  <span>${firstCode.il}</span>
+                  <span>${ilTitle}</span>
                 </div>
                 <div class="flex justify-between py-2 border-b">
                   <span class="font-medium">İlçe:</span>
-                  <span>${firstCode.ilce}</span>
+                  <span>${ilceTitle}</span>
                 </div>
                 ${firstCode.semt ? `
                   <div class="flex justify-between py-2 border-b">
                     <span class="font-medium">Semt/Bucak/Belde:</span>
-                    <span>${firstCode.semt}</span>
+                    <span>${turkishTitleCase(firstCode.semt)}</span>
                   </div>
                 ` : ''}
                 <div class="flex justify-between py-2 border-b">
                   <span class="font-medium">Mahalle/Köy:</span>
-                  <span>${firstCode.mahalle}</span>
+                  <span>${mahalleTitle}</span>
                 </div>
                 <div class="flex justify-between py-2">
                   <span class="font-medium">Posta ${postalCodesList.length > 1 ? 'Kodları' : 'Kodu'}:</span>
@@ -170,16 +243,16 @@ export async function renderMahallePage(
             </div>
           </section>
 
-          ${renderFAQ(generateMahalleFAQ(firstCode.mahalle, firstCode.ilce, firstCode.il, postalCodesList[0]))}
+          ${renderFAQ(generateMahalleFAQ(mahalleTitle, ilceTitle, ilTitle, postalCodesList[0]))}
 
           ${otherMahalleler.length > 0 ? `
             <section id="diger-mahalleler">
-              <h2 class="text-2xl font-semibold mb-6">${firstCode.ilce} İlçesindeki Diğer Mahalleler</h2>
+              <h2 class="text-2xl font-semibold mb-6">${ilceTitle} İlçesindeki Diğer Mahalleler</h2>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 ${otherMahalleler.map((m: any) => `
                   <a href="/${ilSlug}/${ilceSlug}/${m.mahalleSlug}" class="border rounded-lg p-4 hover:border-primary/50 transition-colors">
-                    <h3 class="font-semibold mb-1">${m.mahalle}</h3>
-                    <p class="text-sm text-muted-foreground">${firstCode.ilce} / ${firstCode.il}</p>
+                    <h3 class="font-semibold mb-1">${turkishTitleCase(m.mahalle)}</h3>
+                    <p class="text-sm text-muted-foreground">${ilceTitle} / ${ilTitle}</p>
                   </a>
                 `).join('')}
               </div>
@@ -187,15 +260,16 @@ export async function renderMahallePage(
           ` : ''}
         </article>
       </div>
+      ${renderFooter()}
     `;
 
     const jsonLdSchemas = [
       {
         '@context': 'https://schema.org',
         '@type': 'PostalAddress',
-        streetAddress: `${firstCode.mahalle} Mahallesi`,
-        addressLocality: firstCode.ilce,
-        addressRegion: firstCode.il,
+        streetAddress: mahalleTitle.endsWith(' Mah') ? `${mahalleTitle}.` : `${mahalleTitle} Mah.`,
+        addressLocality: ilceTitle,
+        addressRegion: ilTitle,
         postalCode: postalCodesList.join(', '),
         addressCountry: 'TR',
       },
@@ -204,15 +278,15 @@ export async function renderMahallePage(
         '@type': 'BreadcrumbList',
         itemListElement: [
           { '@type': 'ListItem', position: 1, name: 'Anasayfa', item: 'https://postakodrehberi.com/' },
-          { '@type': 'ListItem', position: 2, name: firstCode.il, item: `https://postakodrehberi.com/${ilSlug}` },
-          { '@type': 'ListItem', position: 3, name: firstCode.ilce, item: `https://postakodrehberi.com/${ilSlug}/${ilceSlug}` },
-          { '@type': 'ListItem', position: 4, name: firstCode.mahalle, item: `https://postakodrehberi.com/${ilSlug}/${ilceSlug}/${mahalleSlug}` },
+          { '@type': 'ListItem', position: 2, name: ilTitle, item: `https://postakodrehberi.com/${ilSlug}` },
+          { '@type': 'ListItem', position: 3, name: ilceTitle, item: `https://postakodrehberi.com/${ilSlug}/${ilceSlug}` },
+          { '@type': 'ListItem', position: 4, name: mahalleTitle, item: `https://postakodrehberi.com/${ilSlug}/${ilceSlug}/${mahalleSlug}` },
         ],
       },
       {
         '@context': 'https://schema.org',
         '@type': 'FAQPage',
-        mainEntity: generateMahalleFAQ(firstCode.mahalle, firstCode.ilce, firstCode.il, postalCodesList[0]).map((faq) => ({
+        mainEntity: generateMahalleFAQ(mahalleTitle, ilceTitle, ilTitle, postalCodesList[0]).map((faq) => ({
           '@type': 'Question',
           name: faq.question,
           acceptedAnswer: { '@type': 'Answer', text: faq.answer },
@@ -243,14 +317,15 @@ export async function renderCityPage(ilSlug: string): Promise<RenderResult> {
     }
 
     const cityData = districts[0];
+    const ilTitle = turkishTitleCase(cityData.il);
 
     const html = `
       <div class="container max-w-6xl mx-auto px-4 py-8">
         <article>
           <header class="mb-8">
-            <h1 class="text-3xl md:text-4xl font-bold mb-3">${cityData.il} Posta Kodları</h1>
+            <h1 class="text-3xl md:text-4xl font-bold mb-3">${ilTitle} Posta Kodları</h1>
             <p class="text-lg text-muted-foreground leading-relaxed">
-              ${generateIlDescription(cityData.il)}
+              ${generateIlDescription(ilTitle)}
             </p>
           </header>
 
@@ -259,34 +334,35 @@ export async function renderCityPage(ilSlug: string): Promise<RenderResult> {
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               ${districts.map((d: any) => `
                 <a href="/${ilSlug}/${d.ilceSlug}" class="border rounded-lg p-4 hover:border-primary/50 transition-colors">
-                  <h3 class="font-semibold mb-1">${d.ilce}</h3>
+                  <h3 class="font-semibold mb-1">${turkishTitleCase(d.ilce)}</h3>
                   <p class="text-sm text-muted-foreground">${d.count} posta kodu</p>
                 </a>
               `).join('')}
             </div>
           </section>
 
-          ${renderFAQ(generateIlFAQ(cityData.il))}
+          ${renderFAQ(generateIlFAQ(ilTitle))}
         </article>
       </div>
+      ${renderFooter()}
     `;
 
     const jsonLdSchemas = [
       {
         '@context': 'https://schema.org',
         '@type': 'ItemList',
-        name: `${cityData.il} Posta Kodları`,
+        name: `${ilTitle} Posta Kodları`,
         itemListElement: districts.map((d: any, index: number) => ({
           '@type': 'ListItem',
           position: index + 1,
-          name: d.ilce,
+          name: turkishTitleCase(d.ilce),
           url: `https://postakodrehberi.com/${ilSlug}/${d.ilceSlug}`,
         })),
       },
       {
         '@context': 'https://schema.org',
         '@type': 'FAQPage',
-        mainEntity: generateIlFAQ(cityData.il).map((faq) => ({
+        mainEntity: generateIlFAQ(ilTitle).map((faq) => ({
           '@type': 'Question',
           name: faq.question,
           acceptedAnswer: { '@type': 'Answer', text: faq.answer },
@@ -320,21 +396,24 @@ export async function renderDistrictPage(ilSlug: string, ilceSlug: string): Prom
     const uniqueMahalleler = Array.from(new Set(mahalleler.map((m: any) => m.mahalleSlug)))
       .map(slug => mahalleler.find((m: any) => m.mahalleSlug === slug));
 
+    const ilTitle = turkishTitleCase(districtData.il);
+    const ilceTitle = turkishTitleCase(districtData.ilce);
+
     const html = `
       <div class="container max-w-6xl mx-auto px-4 py-8">
         <nav aria-label="breadcrumb" class="mb-6">
           <ol class="flex items-center gap-2 text-sm text-muted-foreground">
-            <li><a href="/${ilSlug}" class="hover:text-foreground">${districtData.il}</a></li>
+            <li><a href="/${ilSlug}" class="hover:text-foreground">${ilTitle}</a></li>
             <li>/</li>
-            <li class="text-foreground font-medium">${districtData.ilce}</li>
+            <li class="text-foreground font-medium">${ilceTitle}</li>
           </ol>
         </nav>
 
         <article>
           <header class="mb-8">
-            <h1 class="text-3xl md:text-4xl font-bold mb-3">${districtData.ilce}, ${districtData.il} Posta Kodları</h1>
+            <h1 class="text-3xl md:text-4xl font-bold mb-3">${ilceTitle}, ${ilTitle} Posta Kodları</h1>
             <p class="text-lg text-muted-foreground leading-relaxed">
-              ${generateIlceDescription(districtData.ilce, districtData.il)}
+              ${generateIlceDescription(ilceTitle, ilTitle)}
             </p>
           </header>
 
@@ -343,34 +422,35 @@ export async function renderDistrictPage(ilSlug: string, ilceSlug: string): Prom
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               ${uniqueMahalleler.map((m: any) => `
                 <a href="/${ilSlug}/${ilceSlug}/${m.mahalleSlug}" class="border rounded-lg p-4 hover:border-primary/50 transition-colors">
-                  <h3 class="font-semibold mb-1">${m.mahalle}</h3>
-                  <p class="text-sm text-muted-foreground">${districtData.ilce} / ${districtData.il}</p>
+                  <h3 class="font-semibold mb-1">${turkishTitleCase(m.mahalle)}</h3>
+                  <p class="text-sm text-muted-foreground">${ilceTitle} / ${ilTitle}</p>
                 </a>
               `).join('')}
             </div>
           </section>
 
-          ${renderFAQ(generateIlceFAQ(districtData.ilce, districtData.il))}
+          ${renderFAQ(generateIlceFAQ(ilceTitle, ilTitle))}
         </article>
       </div>
+      ${renderFooter()}
     `;
 
     const jsonLdSchemas = [
       {
         '@context': 'https://schema.org',
         '@type': 'ItemList',
-        name: `${districtData.ilce}, ${districtData.il} Posta Kodları`,
+        name: `${ilceTitle}, ${ilTitle} Posta Kodları`,
         itemListElement: uniqueMahalleler.map((m: any, index: number) => ({
           '@type': 'ListItem',
           position: index + 1,
-          name: m.mahalle,
+          name: turkishTitleCase(m.mahalle),
           url: `https://postakodrehberi.com/${ilSlug}/${ilceSlug}/${m.mahalleSlug}`,
         })),
       },
       {
         '@context': 'https://schema.org',
         '@type': 'FAQPage',
-        mainEntity: generateIlceFAQ(districtData.ilce, districtData.il).map((faq) => ({
+        mainEntity: generateIlceFAQ(ilceTitle, ilTitle).map((faq) => ({
           '@type': 'Question',
           name: faq.question,
           acceptedAnswer: { '@type': 'Answer', text: faq.answer },

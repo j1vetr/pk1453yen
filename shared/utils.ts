@@ -43,6 +43,41 @@ export function titleCase(text: string): string {
 }
 
 /**
+ * Turkish Title Case - properly handles Turkish characters (İ, ı, etc.)
+ * Converts: "ANADOLU KAVAĞI MAH" → "Anadolu Kavağı Mah"
+ */
+export function turkishTitleCase(text: string): string {
+  if (!text) return '';
+  
+  // Turkish lowercase map
+  const lowerMap: Record<string, string> = {
+    'İ': 'i', 'I': 'ı',
+    'Ş': 'ş', 'Ğ': 'ğ', 'Ü': 'ü', 'Ö': 'ö', 'Ç': 'ç'
+  };
+  
+  // Turkish uppercase map
+  const upperMap: Record<string, string> = {
+    'i': 'İ', 'ı': 'I',
+    'ş': 'Ş', 'ğ': 'Ğ', 'ü': 'Ü', 'ö': 'Ö', 'ç': 'Ç'
+  };
+  
+  // First, convert to lowercase (Turkish-aware)
+  let result = text;
+  Object.keys(lowerMap).forEach(key => {
+    result = result.replace(new RegExp(key, 'g'), lowerMap[key]);
+  });
+  result = result.toLowerCase();
+  
+  // Then capitalize first letter of each word
+  return result.split(' ').map(word => {
+    if (word.length === 0) return word;
+    const firstChar = word.charAt(0);
+    const upperChar = upperMap[firstChar] || firstChar.toUpperCase();
+    return upperChar + word.slice(1);
+  }).join(' ');
+}
+
+/**
  * Format postal code display
  */
 export function formatPostalCode(pk: string): string {
@@ -181,7 +216,7 @@ export function generateMahalleFAQ(mahalle: string, ilce: string, il: string, pk
   return [
     {
       question: `${mahalle} posta kodu nedir?`,
-      answer: `${mahalle} mahallesinin posta kodu ${pk}'dır. Bu kod, kargo gönderimi, adres doğrulama ve resmi yazışmalarda kullanılmaktadır.`
+      answer: `${mahalle} mahallesinin posta kodu ${pk}'dir. Bu kod, kargo gönderimi, adres doğrulama ve resmi yazışmalarda kullanılmaktadır.`
     },
     {
       question: `${mahalle} hangi ilçeye bağlıdır?`,
