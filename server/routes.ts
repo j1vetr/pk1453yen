@@ -541,10 +541,14 @@ Sitemap: ${baseUrl}/sitemap.xml
   // Interesting Stats - İlginç istatistikler
   app.get("/api/interesting-stats", async (req, res) => {
     try {
+      console.log('[API] Starting getInterestingStats...');
       const stats = await storage.getInterestingStats();
+      console.log('[API] Stats result:', JSON.stringify(stats, null, 2));
       res.json(stats);
     } catch (error: any) {
-      res.status(500).json({ error: error.message });
+      console.error('[API] Error in interesting-stats:', error);
+      console.error('[API] Full error:', error.stack);
+      res.status(500).json({ error: error.message, stack: error.stack });
     }
   });
 

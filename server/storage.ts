@@ -445,26 +445,26 @@ export class DatabaseStorage {
   // İlginç istatistikler
   async getInterestingStats() {
     // En uzun mahalle ismi
-    const [longestMahalle] = await db.execute<{
+    const longestResult = await db.execute<{
       mahalle: string;
       il: string;
       ilce: string;
       length: number;
     }>(
-      sql`SELECT mahalle, il, ilce, LENGTH(mahalle) as length 
+      sql`SELECT mahalle, il, ilce, LENGTH(mahalle)::int as length 
           FROM postal_codes 
           ORDER BY LENGTH(mahalle) DESC 
           LIMIT 1`
     );
 
     // En kısa mahalle ismi
-    const [shortestMahalle] = await db.execute<{
+    const shortestResult = await db.execute<{
       mahalle: string;
       il: string;
       ilce: string;
       length: number;
     }>(
-      sql`SELECT mahalle, il, ilce, LENGTH(mahalle) as length 
+      sql`SELECT mahalle, il, ilce, LENGTH(mahalle)::int as length 
           FROM postal_codes 
           WHERE LENGTH(mahalle) > 2
           ORDER BY LENGTH(mahalle) ASC 
@@ -472,12 +472,12 @@ export class DatabaseStorage {
     );
 
     // En fazla posta koduna sahip ilçe
-    const [mostCodesDistrict] = await db.execute<{
+    const mostCodesResult = await db.execute<{
       il: string;
       ilce: string;
       count: number;
     }>(
-      sql`SELECT il, ilce, COUNT(*) as count 
+      sql`SELECT il, ilce, COUNT(*)::int as count 
           FROM postal_codes 
           GROUP BY il, ilce 
           ORDER BY count DESC 
@@ -485,12 +485,12 @@ export class DatabaseStorage {
     );
 
     // En fazla mahallesi olan ilçe
-    const [mostMahalleDistrict] = await db.execute<{
+    const mostMahalleResult = await db.execute<{
       il: string;
       ilce: string;
       count: number;
     }>(
-      sql`SELECT il, ilce, COUNT(DISTINCT mahalle) as count 
+      sql`SELECT il, ilce, COUNT(DISTINCT mahalle)::int as count 
           FROM postal_codes 
           GROUP BY il, ilce 
           ORDER BY count DESC 
@@ -498,11 +498,11 @@ export class DatabaseStorage {
     );
 
     // En yaygın mahalle isimleri (top 5)
-    const commonMahalleNames = await db.execute<{
+    const commonNamesResult = await db.execute<{
       mahalle: string;
       count: number;
     }>(
-      sql`SELECT mahalle, COUNT(DISTINCT il || '-' || ilce) as count 
+      sql`SELECT mahalle, COUNT(DISTINCT il || '-' || ilce)::int as count 
           FROM postal_codes 
           GROUP BY mahalle 
           HAVING COUNT(DISTINCT il || '-' || ilce) > 1
@@ -511,11 +511,11 @@ export class DatabaseStorage {
     );
 
     return {
-      longestMahalle: longestMahalle?.rows[0] || null,
-      shortestMahalle: shortestMahalle?.rows[0] || null,
-      mostCodesDistrict: mostCodesDistrict?.rows[0] || null,
-      mostMahalleDistrict: mostMahalleDistrict?.rows[0] || null,
-      commonMahalleNames: commonMahalleNames?.rows || [],
+      longestMahalle: longestResult.rows[0] || null,
+      shortestMahalle: shortestResult.rows[0] || null,
+      mostCodesDistrict: mostCodesResult.rows[0] || null,
+      mostMahalleDistrict: mostMahalleResult.rows[0] || null,
+      commonMahalleNames: commonNamesResult.rows || [],
     };
   }
 
