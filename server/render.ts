@@ -1,5 +1,11 @@
 import { storage } from "./storage";
-import { getIlGeoCoordinates, getCanonicalUrl } from "../shared/utils";
+import { 
+  getIlGeoCoordinates, 
+  getCanonicalUrl,
+  generateIlDescription,
+  generateIlceDescription,
+  generateMahalleDescription
+} from "../shared/utils";
 
 interface RenderResult {
   html: string;
@@ -30,6 +36,7 @@ export async function renderMahallePage(
 
     const postalCodesList = postalCodes.map((pc: any) => pc.pk);
     const baseUrl = process.env.BASE_URL || "https://postakodrehberi.com";
+    const longDescription = generateMahalleDescription(firstCode.mahalle, firstCode.ilce, firstCode.il, postalCodesList[0]);
 
     // Generate JSON-LD schemas
     const jsonLdScripts: string[] = [];
@@ -114,11 +121,17 @@ export async function renderMahallePage(
         <article id="main-content">
           <header class="mb-8">
             <h1 class="text-3xl md:text-4xl font-bold mb-3">${firstCode.mahalle} Mahallesi Posta Kodu</h1>
-            <p class="text-lg text-muted-foreground leading-relaxed">
+            <p class="text-lg text-muted-foreground leading-relaxed mb-6">
               ${firstCode.il} ${firstCode.ilce} ${firstCode.mahalle} Mahallesi'nin posta kodu ${postalCodesList[0]}. 
               ${firstCode.il} ili ${firstCode.ilce} ilçesine bağlı bu mahalle için güncel posta kodu bilgilerini aşağıda bulabilirsiniz.
             </p>
           </header>
+
+          <section class="mb-8">
+            <div class="prose prose-lg dark:prose-invert max-w-none">
+              <p class="text-foreground/90 leading-relaxed">${longDescription}</p>
+            </div>
+          </section>
 
           <section class="mb-8" id="posta-kodu-bilgisi">
             <h2 class="text-2xl font-semibold mb-4 flex items-center gap-2">
@@ -272,16 +285,24 @@ export async function renderCityPage(ilSlug: string): Promise<RenderResult> {
 
     const jsonLdScript = jsonLdScripts.join('\n');
 
+    const longDescription = generateIlDescription(cityData.il);
+
     const html = `
       ${jsonLdScript}
       <div class="container max-w-6xl mx-auto px-4 py-8">
         <article>
           <header class="mb-8">
             <h1 class="text-3xl md:text-4xl font-bold mb-3">${cityData.il} Posta Kodları</h1>
-            <p class="text-lg text-muted-foreground">
+            <p class="text-lg text-muted-foreground mb-6">
               ${cityData.il} ili posta kodları. ${districts.length} ilçe ve mahallelerinin posta kodlarını görüntüleyin.
             </p>
           </header>
+
+          <section class="mb-8">
+            <div class="prose prose-lg dark:prose-invert max-w-none">
+              <p class="text-foreground/90 leading-relaxed whitespace-pre-line">${longDescription}</p>
+            </div>
+          </section>
 
           <section>
             <h2 class="text-2xl font-semibold mb-6">${cityData.il} İlçeleri</h2>
@@ -370,6 +391,7 @@ export async function renderDistrictPage(ilSlug: string, ilceSlug: string): Prom
     })}</script>`);
 
     const jsonLdScript = jsonLdScripts.join('\n');
+    const longDescription = generateIlceDescription(districtData.ilce, districtData.il);
 
     const html = `
       ${jsonLdScript}
@@ -385,10 +407,16 @@ export async function renderDistrictPage(ilSlug: string, ilceSlug: string): Prom
         <article>
           <header class="mb-8">
             <h1 class="text-3xl md:text-4xl font-bold mb-3">${districtData.ilce} Posta Kodu</h1>
-            <p class="text-lg text-muted-foreground">
+            <p class="text-lg text-muted-foreground mb-6">
               ${districtData.il}, ${districtData.ilce} ilçesi posta kodları. ${uniqueMahalleler.length} mahalle ve köyün posta kodlarına ulaşın.
             </p>
           </header>
+
+          <section class="mb-8">
+            <div class="prose prose-lg dark:prose-invert max-w-none">
+              <p class="text-foreground/90 leading-relaxed">${longDescription}</p>
+            </div>
+          </section>
 
           <section>
             <h2 class="text-2xl font-semibold mb-6">${districtData.ilce} Mahalleleri</h2>
