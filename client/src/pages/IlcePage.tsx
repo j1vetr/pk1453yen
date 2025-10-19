@@ -8,7 +8,8 @@ import { PostalCodeCard } from '@/components/PostalCodeCard';
 import { LoadingGrid } from '@/components/LoadingState';
 import { EmptyState } from '@/components/EmptyState';
 import { NeighboringDistrictsWidget } from '@/components/NeighboringDistrictsWidget';
-import { getCanonicalUrl, generateMetaDescription, generateIlceDescription } from '@shared/utils';
+import { FAQSection } from '@/components/FAQSection';
+import { getCanonicalUrl, generateMetaDescription, generateIlceDescription, generateIlceFAQ } from '@shared/utils';
 import NotFound from './not-found';
 
 interface Mahalle {
@@ -39,18 +40,32 @@ export default function IlcePage() {
     return <NotFound />;
   }
 
-  const jsonLd = data ? {
-    '@context': 'https://schema.org',
-    '@type': 'ItemList',
-    name: `${data.ilce}, ${data.il} Posta Kodları`,
-    description: generateMetaDescription('ilce', { ilce: data.ilce, il: data.il }),
-    itemListElement: data.mahalleler.map((mahalle, index) => ({
-      '@type': 'ListItem',
-      position: index + 1,
-      name: mahalle.mahalle,
-      url: getCanonicalUrl(`/${data.ilSlug}/${data.ilceSlug}/${mahalle.mahalleSlug}`),
-    })),
-  } : undefined;
+  const jsonLd = data ? [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'ItemList',
+      name: `${data.ilce}, ${data.il} Posta Kodları`,
+      description: generateMetaDescription('ilce', { ilce: data.ilce, il: data.il }),
+      itemListElement: data.mahalleler.map((mahalle, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        name: mahalle.mahalle,
+        url: getCanonicalUrl(`/${data.ilSlug}/${data.ilceSlug}/${mahalle.mahalleSlug}`),
+      })),
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: generateIlceFAQ(data.ilce, data.il).map((faq) => ({
+        '@type': 'Question',
+        name: faq.question,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: faq.answer,
+        },
+      })),
+    }
+  ] : undefined;
 
   return (
     <>
@@ -97,25 +112,29 @@ export default function IlcePage() {
 
             <SearchBar className="mb-8" />
 
-            <h2 className="text-2xl font-semibold mb-6">Mahalleler</h2>
-            {data.mahalleler.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {data.mahalleler.map((mahalle) => (
-                  <PostalCodeCard
-                    key={mahalle.mahalleSlug}
-                    title={mahalle.mahalle}
-                    subtitle={`${data.ilce} / ${data.il}`}
-                    href={`/${data.ilSlug}/${data.ilceSlug}/${mahalle.mahalleSlug}`}
-                  />
-                ))}
-              </div>
-            ) : (
-              <EmptyState
-                icon={MapPin}
-                title="Mahalle Bulunamadı"
-                description={`${data.ilce} ilçesi için henüz mahalle kaydı bulunmuyor.`}
-              />
-            )}
+            <article>
+              <h2 className="text-2xl font-semibold mb-6">Mahalleler</h2>
+              {data.mahalleler.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {data.mahalleler.map((mahalle) => (
+                    <PostalCodeCard
+                      key={mahalle.mahalleSlug}
+                      title={mahalle.mahalle}
+                      subtitle={`${data.ilce} / ${data.il}`}
+                      href={`/${data.ilSlug}/${data.ilceSlug}/${mahalle.mahalleSlug}`}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <EmptyState
+                  icon={MapPin}
+                  title="Mahalle Bulunamadı"
+                  description={`${data.ilce} ilçesi için henüz mahalle kaydı bulunmuyor.`}
+                />
+              )}
+            </article>
+
+            <FAQSection faqs={generateIlceFAQ(data.ilce, data.il)} />
 
             {/* Neighboring Districts - Komşu ilçeler */}
             <NeighboringDistrictsWidget 

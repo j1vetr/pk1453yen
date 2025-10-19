@@ -8,7 +8,8 @@ import { CopyButton } from '@/components/CopyButton';
 import { PostalCodeCard } from '@/components/PostalCodeCard';
 import { EmptyState } from '@/components/EmptyState';
 import { SimilarMahallerWidget } from '@/components/SimilarMahallerWidget';
-import { getCanonicalUrl, generateMetaDescription, formatPostalCode, generateMahalleDescription } from '@shared/utils';
+import { FAQSection } from '@/components/FAQSection';
+import { getCanonicalUrl, generateMetaDescription, formatPostalCode, generateMahalleDescription, generateMahalleFAQ } from '@shared/utils';
 import NotFound from './not-found';
 
 interface MahalleData {
@@ -81,6 +82,18 @@ export default function MahallePage() {
         },
       ],
     },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: generateMahalleFAQ(data.mahalle, data.ilce, data.il, data.postalCodes[0]).map((faq) => ({
+        '@type': 'Question',
+        name: faq.question,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: faq.answer,
+        },
+      })),
+    }
   ] : undefined;
 
   return (
@@ -259,6 +272,9 @@ export default function MahallePage() {
                 </div>
               </section>
             )}
+
+            {/* FAQ Section */}
+            <FAQSection faqs={generateMahalleFAQ(data.mahalle, data.ilce, data.il, data.postalCodes[0])} />
 
             {/* Similar Mahalleler - Benzer isimli mahalleler */}
             <SimilarMahallerWidget 

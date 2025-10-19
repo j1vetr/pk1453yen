@@ -7,7 +7,8 @@ import { SearchBar } from '@/components/SearchBar';
 import { PostalCodeCard } from '@/components/PostalCodeCard';
 import { LoadingGrid } from '@/components/LoadingState';
 import { EmptyState } from '@/components/EmptyState';
-import { getCanonicalUrl, generateMetaDescription, generateIlDescription } from '@shared/utils';
+import { FAQSection } from '@/components/FAQSection';
+import { getCanonicalUrl, generateMetaDescription, generateIlDescription, generateIlFAQ } from '@shared/utils';
 import NotFound from './not-found';
 
 interface District {
@@ -37,18 +38,32 @@ export default function IlPage() {
     return <NotFound />;
   }
 
-  const jsonLd = data ? {
-    '@context': 'https://schema.org',
-    '@type': 'ItemList',
-    name: `${data.il} Posta Kodları`,
-    description: generateMetaDescription('il', { il: data.il }),
-    itemListElement: data.districts.map((district, index) => ({
-      '@type': 'ListItem',
-      position: index + 1,
-      name: district.ilce,
-      url: getCanonicalUrl(`/${data.ilSlug}/${district.ilceSlug}`),
-    })),
-  } : undefined;
+  const jsonLd = data ? [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'ItemList',
+      name: `${data.il} Posta Kodları`,
+      description: generateMetaDescription('il', { il: data.il }),
+      itemListElement: data.districts.map((district, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        name: district.ilce,
+        url: getCanonicalUrl(`/${data.ilSlug}/${district.ilceSlug}`),
+      })),
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: generateIlFAQ(data.il).map((faq) => ({
+        '@type': 'Question',
+        name: faq.question,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: faq.answer,
+        },
+      })),
+    }
+  ] : undefined;
 
   return (
     <>
@@ -94,25 +109,29 @@ export default function IlPage() {
 
             <SearchBar className="mb-8" />
 
-            <h2 className="text-2xl font-semibold mb-6">İlçeler</h2>
-            {data.districts.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {data.districts.map((district) => (
-                  <PostalCodeCard
-                    key={district.ilceSlug}
-                    title={district.ilce}
-                    subtitle={`${district.count} posta kodu`}
-                    href={`/${data.ilSlug}/${district.ilceSlug}`}
-                  />
-                ))}
-              </div>
-            ) : (
-              <EmptyState
-                icon={MapPin}
-                title="İlçe Bulunamadı"
-                description={`${data.il} ili için henüz ilçe kaydı bulunmuyor.`}
-              />
-            )}
+            <article>
+              <h2 className="text-2xl font-semibold mb-6">İlçeler</h2>
+              {data.districts.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {data.districts.map((district) => (
+                    <PostalCodeCard
+                      key={district.ilceSlug}
+                      title={district.ilce}
+                      subtitle={`${district.count} posta kodu`}
+                      href={`/${data.ilSlug}/${district.ilceSlug}`}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <EmptyState
+                  icon={MapPin}
+                  title="İlçe Bulunamadı"
+                  description={`${data.il} ili için henüz ilçe kaydı bulunmuyor.`}
+                />
+              )}
+            </article>
+
+            <FAQSection faqs={generateIlFAQ(data.il)} />
           </>
         ) : (
           <EmptyState
