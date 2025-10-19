@@ -1,10 +1,18 @@
 import { SEOHead } from '@/components/SEOHead';
 import { Breadcrumb } from '@/components/Breadcrumb';
+import { TableOfContents } from '@/components/TableOfContents';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Package, MapPin, FileText, TruckIcon, Building2, CheckCircle } from 'lucide-react';
 import { getCanonicalUrl } from '@shared/utils';
 
 export default function PostalCodeGuidePage() {
+  const tocItems = [
+    { id: 'howto-steps', title: 'Posta Kodu Bulma Adımları' },
+    { id: 'use-cases', title: 'Posta Kodu Kullanım Senaryoları' },
+    { id: 'important-tips', title: 'Önemli İpuçları' },
+    { id: 'faq-section', title: 'Sık Sorulan Sorular' },
+  ];
+
   const howToSteps = [
     {
       step: 1,
@@ -103,6 +111,8 @@ export default function PostalCodeGuidePage() {
               Posta kodu, Türkiye genelinde posta ve kargo hizmetlerinin hızlı ve doğru şekilde gerçekleştirilmesi için kullanılan 5 haneli bir numaralandırma sistemidir. Bu rehberde posta kodunun nasıl bulunacağını ve farklı senaryolarda nasıl kullanılacağını adım adım öğreneceksiniz.
             </p>
           </header>
+
+          <TableOfContents items={tocItems} />
 
           <section className="mb-12" aria-labelledby="howto-steps">
             <h2 id="howto-steps" className="text-2xl font-semibold mb-6">

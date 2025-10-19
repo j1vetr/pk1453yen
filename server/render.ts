@@ -1,4 +1,5 @@
 import { storage } from "./storage";
+import { getIlGeoCoordinates, getCanonicalUrl } from "../shared/utils";
 
 interface RenderResult {
   html: string;
@@ -161,12 +162,69 @@ export async function renderCityPage(ilSlug: string): Promise<RenderResult> {
     }
 
     const cityData = districts[0];
+    const geoCoords = getIlGeoCoordinates(cityData.il);
+    const baseUrl = process.env.BASE_URL || "https://postakodrehberi.com";
+
+    // Generate JSON-LD schemas for SEO
+    const jsonLdSchemas = [
+      // Place with GeoCoordinates
+      geoCoords ? {
+        "@context": "https://schema.org",
+        "@type": "Place",
+        "name": `${cityData.il}, Türkiye`,
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": geoCoords.lat,
+          "longitude": geoCoords.lng
+        },
+        "address": {
+          "@type": "PostalAddress",
+          "addressRegion": cityData.il,
+          "addressCountry": "TR"
+        }
+      } : null,
+      // BreadcrumbList
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Ana Sayfa",
+            "item": baseUrl
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": cityData.il,
+            "item": `${baseUrl}/${ilSlug}`
+          }
+        ]
+      },
+      // ItemList for districts
+      {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "name": `${cityData.il} Posta Kodları`,
+        "description": `${cityData.il} ili posta kodları. ${districts.length} ilçe ve mahallelerinin posta kodlarını görüntüleyin.`,
+        "itemListElement": districts.map((d: any, index: number) => ({
+          "@type": "ListItem",
+          "position": index + 1,
+          "name": d.ilce,
+          "url": `${baseUrl}/${ilSlug}/${d.ilceSlug}`
+        }))
+      }
+    ].filter(Boolean);
+
+    const jsonLdScript = `<script type="application/ld+json">${JSON.stringify(jsonLdSchemas)}</script>`;
 
     const html = `
+      ${jsonLdScript}
       <div class="container max-w-6xl mx-auto px-4 py-8">
         <article>
           <header class="mb-8">
-            <h1 class="text-3xl md:text-4xl font-bold mb-3">${cityData.il} Posta Kodu</h1>
+            <h1 class="text-3xl md:text-4xl font-bold mb-3">${cityData.il} Posta Kodları</h1>
             <p class="text-lg text-muted-foreground">
               ${cityData.il} ili posta kodları. ${districts.length} ilçe ve mahallelerinin posta kodlarını görüntüleyin.
             </p>
