@@ -1,5 +1,6 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
+import { setupVite, serveStatic, log } from "./vite";
 import { renderHTMLWithMeta } from "./ssr";
 import path from "path";
 import fs from "fs";
@@ -9,17 +10,6 @@ const app = express();
 // Trust proxy for production (Nginx reverse proxy)
 if (process.env.NODE_ENV === 'production') {
   app.set('trust proxy', 1);
-}
-
-// Simple log function (no Vite dependency)
-function log(message: string, source = "express") {
-  const formattedTime = new Date().toLocaleTimeString("en-US", {
-    hour: "numeric",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: true,
-  });
-  console.log(`${formattedTime} [${source}] ${message}`);
 }
 
 app.use(express.json());
@@ -86,10 +76,7 @@ app.use((req, res, next) => {
     // Development: Setup Vite AND SSR for rendering content
     const vite = await import('vite');
     const viteDevServer = await vite.createServer({
-      server: { 
-        middlewareMode: true,
-        allowedHosts: true
-      },
+      server: { middlewareMode: true },
       appType: 'custom',
     });
     
