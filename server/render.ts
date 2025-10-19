@@ -4,7 +4,10 @@ import {
   getCanonicalUrl,
   generateIlDescription,
   generateIlceDescription,
-  generateMahalleDescription
+  generateMahalleDescription,
+  generateIlFAQ,
+  generateIlceFAQ,
+  generateMahalleFAQ
 } from "../shared/utils";
 
 interface RenderResult {
@@ -37,6 +40,7 @@ export async function renderMahallePage(
     const postalCodesList = postalCodes.map((pc: any) => pc.pk);
     const baseUrl = process.env.BASE_URL || "https://postakodrehberi.com";
     const longDescription = generateMahalleDescription(firstCode.mahalle, firstCode.ilce, firstCode.il, postalCodesList[0]);
+    const faqData = generateMahalleFAQ(firstCode.mahalle, firstCode.ilce, firstCode.il, postalCodesList[0]);
 
     // Generate JSON-LD schemas
     const jsonLdScripts: string[] = [];
@@ -81,6 +85,20 @@ export async function renderMahallePage(
           "item": `${baseUrl}/${ilSlug}/${ilceSlug}/${mahalleSlug}`
         }
       ]
+    })}</script>`);
+
+    // FAQPage
+    jsonLdScripts.push(`<script type="application/ld+json">${JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": faqData.map(faq => ({
+        "@type": "Question",
+        "name": faq.question,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": faq.answer
+        }
+      }))
     })}</script>`);
 
     const jsonLdScript = jsonLdScripts.join('\n');
@@ -184,6 +202,23 @@ export async function renderMahallePage(
             </div>
           </section>
 
+          <section class="mb-8" id="sss">
+            <h2 class="text-2xl font-semibold mb-6">Sıkça Sorulan Sorular</h2>
+            <div class="space-y-4">
+              ${faqData.map((faq, index) => `
+                <div class="border rounded-lg">
+                  <button class="w-full text-left p-4 font-semibold hover:bg-muted/50 transition-colors flex justify-between items-center">
+                    <span>${faq.question}</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform"><path d="m6 9 6 6 6-6"/></svg>
+                  </button>
+                  <div class="p-4 pt-0 text-muted-foreground">
+                    <p>${faq.answer}</p>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </section>
+
           ${otherMahalleler.length > 0 ? `
             <section id="diger-mahalleler">
               <h2 class="text-2xl font-semibold mb-6">${firstCode.ilce} İlçesindeki Diğer Mahalleler</h2>
@@ -283,6 +318,21 @@ export async function renderCityPage(ilSlug: string): Promise<RenderResult> {
       }))
     })}</script>`);
 
+    // FAQPage
+    const faqData = generateIlFAQ(cityData.il);
+    jsonLdScripts.push(`<script type="application/ld+json">${JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": faqData.map(faq => ({
+        "@type": "Question",
+        "name": faq.question,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": faq.answer
+        }
+      }))
+    })}</script>`);
+
     const jsonLdScript = jsonLdScripts.join('\n');
 
     const longDescription = generateIlDescription(cityData.il);
@@ -301,6 +351,23 @@ export async function renderCityPage(ilSlug: string): Promise<RenderResult> {
           <section class="mb-8">
             <div class="prose prose-lg dark:prose-invert max-w-none">
               <p class="text-foreground/90 leading-relaxed whitespace-pre-line">${longDescription}</p>
+            </div>
+          </section>
+
+          <section class="mb-8" id="sss">
+            <h2 class="text-2xl font-semibold mb-6">Sıkça Sorulan Sorular</h2>
+            <div class="space-y-4">
+              ${faqData.map((faq, index) => `
+                <div class="border rounded-lg">
+                  <button class="w-full text-left p-4 font-semibold hover:bg-muted/50 transition-colors flex justify-between items-center">
+                    <span>${faq.question}</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform"><path d="m6 9 6 6 6-6"/></svg>
+                  </button>
+                  <div class="p-4 pt-0 text-muted-foreground">
+                    <p>${faq.answer}</p>
+                  </div>
+                </div>
+              `).join('')}
             </div>
           </section>
 
@@ -345,7 +412,14 @@ export async function renderDistrictPage(ilSlug: string, ilceSlug: string): Prom
     const uniqueMahalleler = Array.from(new Set(mahalleler.map((m: any) => m.mahalleSlug)))
       .map(slug => mahalleler.find((m: any) => m.mahalleSlug === slug));
 
+    // Get other districts in the same city
+    const allDistricts = await storage.getDistrictsByCity(ilSlug);
+    const otherDistricts = allDistricts
+      .filter((d: any) => d.ilceSlug !== ilceSlug)
+      .slice(0, 6);
+
     const baseUrl = process.env.BASE_URL || "https://postakodrehberi.com";
+    const faqData = generateIlceFAQ(districtData.ilce, districtData.il);
 
     // Generate JSON-LD schemas
     const jsonLdScripts: string[] = [];
@@ -390,6 +464,20 @@ export async function renderDistrictPage(ilSlug: string, ilceSlug: string): Prom
       }))
     })}</script>`);
 
+    // FAQPage
+    jsonLdScripts.push(`<script type="application/ld+json">${JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": faqData.map(faq => ({
+        "@type": "Question",
+        "name": faq.question,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": faq.answer
+        }
+      }))
+    })}</script>`);
+
     const jsonLdScript = jsonLdScripts.join('\n');
     const longDescription = generateIlceDescription(districtData.ilce, districtData.il);
 
@@ -418,7 +506,24 @@ export async function renderDistrictPage(ilSlug: string, ilceSlug: string): Prom
             </div>
           </section>
 
-          <section>
+          <section class="mb-8" id="sss">
+            <h2 class="text-2xl font-semibold mb-6">Sıkça Sorulan Sorular</h2>
+            <div class="space-y-4">
+              ${faqData.map((faq, index) => `
+                <div class="border rounded-lg">
+                  <button class="w-full text-left p-4 font-semibold hover:bg-muted/50 transition-colors flex justify-between items-center">
+                    <span>${faq.question}</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform"><path d="m6 9 6 6 6-6"/></svg>
+                  </button>
+                  <div class="p-4 pt-0 text-muted-foreground">
+                    <p>${faq.answer}</p>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </section>
+
+          <section class="mb-8">
             <h2 class="text-2xl font-semibold mb-6">${districtData.ilce} Mahalleleri</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               ${uniqueMahalleler.map((m: any) => `
@@ -429,6 +534,20 @@ export async function renderDistrictPage(ilSlug: string, ilceSlug: string): Prom
               `).join('')}
             </div>
           </section>
+
+          ${otherDistricts.length > 0 ? `
+            <section id="diger-ilceler">
+              <h2 class="text-2xl font-semibold mb-6">${districtData.il} İlindeki Diğer İlçeler</h2>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                ${otherDistricts.map((d: any) => `
+                  <a href="/${ilSlug}/${d.ilceSlug}" class="border rounded-lg p-4 hover:border-primary/50 transition-colors">
+                    <h3 class="font-semibold mb-1">${d.ilce}</h3>
+                    <p class="text-sm text-muted-foreground">${d.count} mahalle</p>
+                  </a>
+                `).join('')}
+              </div>
+            </section>
+          ` : ''}
         </article>
       </div>
     `;
