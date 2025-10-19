@@ -204,16 +204,11 @@ export async function renderMahallePage(
 
           <section class="mb-8" id="sss">
             <h2 class="text-2xl font-semibold mb-6">Sıkça Sorulan Sorular</h2>
-            <div class="space-y-4">
+            <div class="space-y-6">
               ${faqData.map((faq, index) => `
-                <div class="border rounded-lg">
-                  <button class="w-full text-left p-4 font-semibold hover:bg-muted/50 transition-colors flex justify-between items-center">
-                    <span>${faq.question}</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform"><path d="m6 9 6 6 6-6"/></svg>
-                  </button>
-                  <div class="p-4 pt-0 text-muted-foreground">
-                    <p>${faq.answer}</p>
-                  </div>
+                <div class="border-l-4 border-primary pl-4">
+                  <h3 class="font-semibold text-lg mb-2">${faq.question}</h3>
+                  <p class="text-muted-foreground">${faq.answer}</p>
                 </div>
               `).join('')}
             </div>
@@ -356,16 +351,11 @@ export async function renderCityPage(ilSlug: string): Promise<RenderResult> {
 
           <section class="mb-8" id="sss">
             <h2 class="text-2xl font-semibold mb-6">Sıkça Sorulan Sorular</h2>
-            <div class="space-y-4">
+            <div class="space-y-6">
               ${faqData.map((faq, index) => `
-                <div class="border rounded-lg">
-                  <button class="w-full text-left p-4 font-semibold hover:bg-muted/50 transition-colors flex justify-between items-center">
-                    <span>${faq.question}</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform"><path d="m6 9 6 6 6-6"/></svg>
-                  </button>
-                  <div class="p-4 pt-0 text-muted-foreground">
-                    <p>${faq.answer}</p>
-                  </div>
+                <div class="border-l-4 border-primary pl-4">
+                  <h3 class="font-semibold text-lg mb-2">${faq.question}</h3>
+                  <p class="text-muted-foreground">${faq.answer}</p>
                 </div>
               `).join('')}
             </div>
@@ -508,16 +498,11 @@ export async function renderDistrictPage(ilSlug: string, ilceSlug: string): Prom
 
           <section class="mb-8" id="sss">
             <h2 class="text-2xl font-semibold mb-6">Sıkça Sorulan Sorular</h2>
-            <div class="space-y-4">
+            <div class="space-y-6">
               ${faqData.map((faq, index) => `
-                <div class="border rounded-lg">
-                  <button class="w-full text-left p-4 font-semibold hover:bg-muted/50 transition-colors flex justify-between items-center">
-                    <span>${faq.question}</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform"><path d="m6 9 6 6 6-6"/></svg>
-                  </button>
-                  <div class="p-4 pt-0 text-muted-foreground">
-                    <p>${faq.answer}</p>
-                  </div>
+                <div class="border-l-4 border-primary pl-4">
+                  <h3 class="font-semibold text-lg mb-2">${faq.question}</h3>
+                  <p class="text-muted-foreground">${faq.answer}</p>
                 </div>
               `).join('')}
             </div>
