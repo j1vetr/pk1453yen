@@ -29,8 +29,57 @@ export async function renderMahallePage(
       .slice(0, 6);
 
     const postalCodesList = postalCodes.map((pc: any) => pc.pk);
+    const baseUrl = process.env.BASE_URL || "https://postakodrehberi.com";
+
+    // Generate JSON-LD schemas
+    const jsonLdScripts: string[] = [];
+
+    // PostalAddress
+    jsonLdScripts.push(`<script type="application/ld+json">${JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "PostalAddress",
+      "addressLocality": firstCode.mahalle,
+      "addressRegion": firstCode.il,
+      "addressCountry": "TR",
+      "postalCode": postalCodesList[0]
+    })}</script>`);
+
+    // BreadcrumbList
+    jsonLdScripts.push(`<script type="application/ld+json">${JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Ana Sayfa",
+          "item": baseUrl
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": firstCode.il,
+          "item": `${baseUrl}/${ilSlug}`
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": firstCode.ilce,
+          "item": `${baseUrl}/${ilSlug}/${ilceSlug}`
+        },
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "name": firstCode.mahalle,
+          "item": `${baseUrl}/${ilSlug}/${ilceSlug}/${mahalleSlug}`
+        }
+      ]
+    })}</script>`);
+
+    const jsonLdScript = jsonLdScripts.join('\n');
 
     const html = `
+      ${jsonLdScript}
       <div class="container max-w-4xl mx-auto px-4 py-8">
         <nav aria-label="breadcrumb" class="mb-6">
           <ol class="flex items-center gap-2 text-sm text-muted-foreground">
@@ -151,10 +200,8 @@ export async function renderMahallePage(
 
 // City page SSR
 export async function renderCityPage(ilSlug: string): Promise<RenderResult> {
-  console.log('[SSR renderCityPage] Called with ilSlug:', ilSlug);
   try {
     const districts = await storage.getDistrictsByCity(ilSlug);
-    console.log('[SSR renderCityPage] Districts found:', districts?.length || 0);
 
     if (!districts || districts.length === 0) {
       return {
@@ -277,7 +324,55 @@ export async function renderDistrictPage(ilSlug: string, ilceSlug: string): Prom
     const uniqueMahalleler = Array.from(new Set(mahalleler.map((m: any) => m.mahalleSlug)))
       .map(slug => mahalleler.find((m: any) => m.mahalleSlug === slug));
 
+    const baseUrl = process.env.BASE_URL || "https://postakodrehberi.com";
+
+    // Generate JSON-LD schemas
+    const jsonLdScripts: string[] = [];
+
+    // BreadcrumbList
+    jsonLdScripts.push(`<script type="application/ld+json">${JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Ana Sayfa",
+          "item": baseUrl
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": districtData.il,
+          "item": `${baseUrl}/${ilSlug}`
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": districtData.ilce,
+          "item": `${baseUrl}/${ilSlug}/${ilceSlug}`
+        }
+      ]
+    })}</script>`);
+
+    // ItemList for neighborhoods
+    jsonLdScripts.push(`<script type="application/ld+json">${JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "name": `${districtData.ilce} Mahalleleri`,
+      "description": `${districtData.il}, ${districtData.ilce} ilçesi posta kodları. ${uniqueMahalleler.length} mahalle ve köyün posta kodlarını görüntüleyin.`,
+      "itemListElement": uniqueMahalleler.map((m: any, index: number) => ({
+        "@type": "ListItem",
+        "position": index + 1,
+        "name": m.mahalle,
+        "url": `${baseUrl}/${ilSlug}/${ilceSlug}/${m.mahalleSlug}`
+      }))
+    })}</script>`);
+
+    const jsonLdScript = jsonLdScripts.join('\n');
+
     const html = `
+      ${jsonLdScript}
       <div class="container max-w-6xl mx-auto px-4 py-8">
         <nav aria-label="breadcrumb" class="mb-6">
           <ol class="flex items-center gap-2 text-sm text-muted-foreground">

@@ -6,6 +6,17 @@
 
 ## Recent Changes
 
+**Complete JSON-LD Schema Implementation (October 19, 2025):**
+- **District & Neighborhood JSON-LD**: Added comprehensive structured data to all page types
+  - District pages: BreadcrumbList + ItemList (neighborhoods)
+  - Neighborhood pages: PostalAddress + BreadcrumbList
+- **Production SSR Verified**: All JSON-LD schemas render server-side in View Source
+  - City: 3 schemas (Place+GeoCoordinates, BreadcrumbList, ItemList)
+  - District: 2 schemas (BreadcrumbList, ItemList)
+  - Neighborhood: 2 schemas (PostalAddress, BreadcrumbList)
+- **SEO Complete**: Google bots can index all structured data without JavaScript
+- **Note**: Development mode uses client-side rendering (server/vite.ts edit restricted), production has full SSR
+
 **Major SEO Content Enhancement (October 19, 2025):**
 - **Rich Content Generators**: Enhanced all description generators to produce 200-400 word unique content per page
   - `generateIlDescription()`: Comprehensive province-level descriptions with PTT standards, usage guidance
