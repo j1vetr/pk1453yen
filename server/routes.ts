@@ -515,6 +515,62 @@ Sitemap: ${baseUrl}/sitemap.xml
     }
   });
 
+  // Popular Mahalleler - En çok ziyaret edilen mahalleler
+  app.get("/api/popular-mahalleler", async (req, res) => {
+    try {
+      const limit = parseInt(req.query.limit as string) || 10;
+      const mahalleler = await storage.getPopularMahalleler(limit);
+      res.json(mahalleler);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Similar Mahalleler - Benzer isimli mahalleler
+  app.get("/api/similar-mahalleler/:mahalleName", async (req, res) => {
+    try {
+      const { mahalleName } = req.params;
+      const limit = parseInt(req.query.limit as string) || 10;
+      const mahalleler = await storage.getSimilarMahalleler(mahalleName, limit);
+      res.json(mahalleler);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Interesting Stats - İlginç istatistikler
+  app.get("/api/interesting-stats", async (req, res) => {
+    try {
+      const stats = await storage.getInterestingStats();
+      res.json(stats);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Neighboring Districts - Komşu ilçeler
+  app.get("/api/neighboring-districts/:ilSlug/:ilceSlug", async (req, res) => {
+    try {
+      const { ilSlug, ilceSlug } = req.params;
+      const limit = parseInt(req.query.limit as string) || 10;
+      const districts = await storage.getNeighboringDistricts(ilSlug, ilceSlug, limit);
+      res.json(districts);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Recent Searches - Son aramalar
+  app.get("/api/recent-searches", async (req, res) => {
+    try {
+      const limit = parseInt(req.query.limit as string) || 10;
+      const searches = await storage.getRecentSearches(limit);
+      res.json(searches);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   // Admin Authentication
 
   // Admin login

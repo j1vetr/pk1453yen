@@ -373,6 +373,169 @@ export class DatabaseStorage {
   async clearAllPostalCodes() {
     await db.delete(postalCodes);
   }
+
+  // Popular Mahalleler - En çok aranan/ziyaret edilen mahalleler
+  async getPopularMahalleler(limit: number = 10) {
+    // En çok görüntülenen mahalle sayfalarını bul
+    const popularPages = await db.select({
+      path: pageViews.path,
+      viewCount: pageViews.viewCount,
+    })
+      .from(pageViews)
+      .where(sql`${pageViews.path} ~ '^/[^/]+/[^/]+/[^/]+$'`) // Mahalle URL pattern
+      .orderBy(desc(pageViews.viewCount))
+      .limit(limit * 2); // Fazladan al, çünkü bazıları silinmiş olabilir
+
+    // Her path için mahalle bilgilerini getir
+    const mahalleler = [];
+    for (const page of popularPages) {
+      const parts = page.path.split('/').filter(p => p);
+      if (parts.length === 3) {
+        const [ilSlug, ilceSlug, mahalleSlug] = parts;
+        const [mahalle] = await db.select()
+          .from(postalCodes)
+          .where(
+            and(
+              eq(postalCodes.ilSlug, ilSlug),
+              eq(postalCodes.ilceSlug, ilceSlug),
+              eq(postalCodes.mahalleSlug, mahalleSlug)
+            )
+          )
+          .limit(1);
+
+        if (mahalle) {
+          mahalleler.push({
+            il: mahalle.il,
+            ilSlug: mahalle.ilSlug,
+            ilce: mahalle.ilce,
+            ilceSlug: mahalle.ilceSlug,
+            mahalle: mahalle.mahalle,
+            mahalleSlug: mahalle.mahalleSlug,
+            views: page.viewCount,
+          });
+        }
+      }
+      if (mahalleler.length >= limit) break;
+    }
+
+    return mahalleler;
+  }
+
+  // Benzer isimli mahalleler - Aynı isimde kaç mahalle var
+  async getSimilarMahalleler(mahalleName: string, limit: number = 10) {
+    const results = await db.execute<{
+      il: string;
+      ilSlug: string;
+      ilce: string;
+      ilceSlug: string;
+      mahalle: string;
+      mahalleSlug: string;
+    }>(
+      sql`SELECT DISTINCT il, il_slug as "ilSlug", ilce, ilce_slug as "ilceSlug", 
+                          mahalle, mahalle_slug as "mahalleSlug"
+          FROM postal_codes 
+          WHERE mahalle = ${mahalleName}
+          ORDER BY il, ilce
+          LIMIT ${limit}`
+    );
+
+    return results.rows;
+  }
+
+  // İlginç istatistikler
+  async getInterestingStats() {
+    // En uzun mahalle ismi
+    const [longestMahalle] = await db.execute<{
+      mahalle: string;
+      il: string;
+      ilce: string;
+      length: number;
+    }>(
+      sql`SELECT mahalle, il, ilce, LENGTH(mahalle) as length 
+          FROM postal_codes 
+          ORDER BY LENGTH(mahalle) DESC 
+          LIMIT 1`
+    );
+
+    // En kısa mahalle ismi
+    const [shortestMahalle] = await db.execute<{
+      mahalle: string;
+      il: string;
+      ilce: string;
+      length: number;
+    }>(
+      sql`SELECT mahalle, il, ilce, LENGTH(mahalle) as length 
+          FROM postal_codes 
+          WHERE LENGTH(mahalle) > 2
+          ORDER BY LENGTH(mahalle) ASC 
+          LIMIT 1`
+    );
+
+    // En fazla posta koduna sahip ilçe
+    const [mostCodesDistrict] = await db.execute<{
+      il: string;
+      ilce: string;
+      count: number;
+    }>(
+      sql`SELECT il, ilce, COUNT(*) as count 
+          FROM postal_codes 
+          GROUP BY il, ilce 
+          ORDER BY count DESC 
+          LIMIT 1`
+    );
+
+    // En fazla mahallesi olan ilçe
+    const [mostMahalleDistrict] = await db.execute<{
+      il: string;
+      ilce: string;
+      count: number;
+    }>(
+      sql`SELECT il, ilce, COUNT(DISTINCT mahalle) as count 
+          FROM postal_codes 
+          GROUP BY il, ilce 
+          ORDER BY count DESC 
+          LIMIT 1`
+    );
+
+    // En yaygın mahalle isimleri (top 5)
+    const commonMahalleNames = await db.execute<{
+      mahalle: string;
+      count: number;
+    }>(
+      sql`SELECT mahalle, COUNT(DISTINCT il || '-' || ilce) as count 
+          FROM postal_codes 
+          GROUP BY mahalle 
+          HAVING COUNT(DISTINCT il || '-' || ilce) > 1
+          ORDER BY count DESC 
+          LIMIT 5`
+    );
+
+    return {
+      longestMahalle: longestMahalle?.rows[0] || null,
+      shortestMahalle: shortestMahalle?.rows[0] || null,
+      mostCodesDistrict: mostCodesDistrict?.rows[0] || null,
+      mostMahalleDistrict: mostMahalleDistrict?.rows[0] || null,
+      commonMahalleNames: commonMahalleNames?.rows || [],
+    };
+  }
+
+  // Komşu ilçeler - Aynı ildeki diğer ilçeler
+  async getNeighboringDistricts(ilSlug: string, ilceSlug: string, limit: number = 10) {
+    const results = await db.execute<{
+      ilce: string;
+      ilceSlug: string;
+      mahalleCount: number;
+    }>(
+      sql`SELECT ilce, ilce_slug as "ilceSlug", COUNT(DISTINCT mahalle) as "mahalleCount"
+          FROM postal_codes 
+          WHERE il_slug = ${ilSlug} AND ilce_slug != ${ilceSlug}
+          GROUP BY ilce, ilce_slug
+          ORDER BY ilce
+          LIMIT ${limit}`
+    );
+
+    return results.rows;
+  }
 }
 
 export const storage = new DatabaseStorage();
