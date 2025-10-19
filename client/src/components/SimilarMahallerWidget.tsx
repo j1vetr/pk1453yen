@@ -20,7 +20,7 @@ interface Props {
 
 export function SimilarMahallerWidget({ mahalleName, currentIl, currentIlce }: Props) {
   const { data: mahalleler, isLoading } = useQuery<SimilarMahalle[]>({
-    queryKey: ['/api/similar-mahalleler', mahalleName],
+    queryKey: [`/api/similar-mahalleler/${mahalleName}`],
     enabled: !!mahalleName,
   });
 

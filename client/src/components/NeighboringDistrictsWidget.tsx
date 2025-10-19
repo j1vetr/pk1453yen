@@ -17,7 +17,7 @@ interface Props {
 
 export function NeighboringDistrictsWidget({ ilSlug, ilceSlug, ilName }: Props) {
   const { data: districts, isLoading } = useQuery<NeighboringDistrict[]>({
-    queryKey: ['/api/neighboring-districts', ilSlug, ilceSlug],
+    queryKey: [`/api/neighboring-districts/${ilSlug}/${ilceSlug}`],
     enabled: !!ilSlug && !!ilceSlug,
   });
 
