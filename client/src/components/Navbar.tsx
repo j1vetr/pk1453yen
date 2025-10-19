@@ -18,14 +18,14 @@ export function Navbar() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header role="banner" className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 max-w-7xl mx-auto items-center justify-between px-4">
-        <Link href="/" data-testid="nav-logo" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-          <img src={logoUrl} alt="Posta Kodları Logo" className="h-10 w-auto" />
+        <Link href="/" data-testid="nav-logo" className="flex items-center gap-2 hover:opacity-80 transition-opacity" aria-label="Ana sayfaya git">
+          <img src={logoUrl} alt="Posta Kodları - Türkiye'nin En Kapsamlı Posta Kodu Rehberi" className="h-10 w-auto" />
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-2">
+        <nav role="navigation" aria-label="Ana menü" className="hidden md:flex items-center gap-2">
           <Link href="/" data-testid="link-home" className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-3 py-2">
             <Home className="w-4 h-4" />
             Ana Sayfa

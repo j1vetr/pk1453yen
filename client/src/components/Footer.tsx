@@ -6,13 +6,13 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-muted/30 border-t mt-auto">
+    <footer role="contentinfo" className="bg-muted/30 border-t mt-auto">
       <div className="container max-w-7xl mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {/* Logo ve Açıklama */}
           <div className="space-y-4">
-            <Link href="/" className="inline-block" data-testid="link-footer-logo">
-              <img src={logoUrl} alt="Posta Kodları Logo" className="h-12 w-auto" />
+            <Link href="/" className="inline-block" data-testid="link-footer-logo" aria-label="Ana sayfaya dön">
+              <img src={logoUrl} alt="Posta Kodları - Türkiye'nin En Kapsamlı Posta Kodu Rehberi" className="h-12 w-auto" />
             </Link>
             <p className="text-sm text-muted-foreground">
               Türkiye'nin en kapsamlı posta kodu rehberi. 73.000+ posta kodu bilgisi ile tüm il, ilçe ve mahallelerin posta kodlarını hızlıca sorgulayın.
@@ -22,7 +22,8 @@ export function Footer() {
           {/* Hızlı Linkler */}
           <div>
             <h3 className="font-semibold mb-4">Hızlı Linkler</h3>
-            <ul className="space-y-2 text-sm">
+            <nav aria-label="Footer navigasyonu">
+              <ul className="space-y-2 text-sm">
               <li>
                 <Link href="/" className="text-muted-foreground hover:text-foreground transition-colors" data-testid="link-footer-home">
                   Ana Sayfa
@@ -58,7 +59,8 @@ export function Footer() {
                   Kullanım Şartları
                 </Link>
               </li>
-            </ul>
+              </ul>
+            </nav>
           </div>
 
           {/* İletişim */}

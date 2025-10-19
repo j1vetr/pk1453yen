@@ -22,6 +22,7 @@ import PrivacyPage from "@/pages/PrivacyPage";
 import TermsPage from "@/pages/TermsPage";
 import CookiePage from "@/pages/CookiePage";
 import StatsPage from "@/pages/StatsPage";
+import PostalCodeGuidePage from "@/pages/PostalCodeGuidePage";
 import NotFound from "@/pages/not-found";
 
 // Admin Pages
@@ -38,7 +39,7 @@ function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
-      <main className="flex-1">
+      <main role="main" aria-label="Ana içerik" className="flex-1">
         {children}
       </main>
       <Footer />
@@ -103,6 +104,13 @@ function Router() {
         {() => (
           <PublicLayout>
             <StatsPage />
+          </PublicLayout>
+        )}
+      </Route>
+      <Route path="/posta-kodu-rehberi">
+        {() => (
+          <PublicLayout>
+            <PostalCodeGuidePage />
           </PublicLayout>
         )}
       </Route>

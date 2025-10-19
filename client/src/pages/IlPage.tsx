@@ -8,7 +8,7 @@ import { PostalCodeCard } from '@/components/PostalCodeCard';
 import { LoadingGrid } from '@/components/LoadingState';
 import { EmptyState } from '@/components/EmptyState';
 import { FAQSection } from '@/components/FAQSection';
-import { getCanonicalUrl, generateMetaDescription, generateIlDescription, generateIlFAQ } from '@shared/utils';
+import { getCanonicalUrl, generateMetaDescription, generateIlDescription, generateIlFAQ, getIlGeoCoordinates } from '@shared/utils';
 import NotFound from './not-found';
 
 interface District {
@@ -38,6 +38,8 @@ export default function IlPage() {
     return <NotFound />;
   }
 
+  const geoCoords = data ? getIlGeoCoordinates(data.il) : null;
+  
   const jsonLd = data ? [
     {
       '@context': 'https://schema.org',
@@ -62,7 +64,22 @@ export default function IlPage() {
           text: faq.answer,
         },
       })),
-    }
+    },
+    ...(geoCoords ? [{
+      '@context': 'https://schema.org',
+      '@type': 'Place',
+      name: `${data.il}, Türkiye`,
+      geo: {
+        '@type': 'GeoCoordinates',
+        latitude: geoCoords.lat,
+        longitude: geoCoords.lng,
+      },
+      address: {
+        '@type': 'PostalAddress',
+        addressRegion: data.il,
+        addressCountry: 'TR',
+      },
+    }] : [])
   ] : undefined;
 
   return (
