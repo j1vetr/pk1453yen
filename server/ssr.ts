@@ -258,6 +258,7 @@ export async function renderHTMLWithMeta(req: Request, res: Response, templatePa
     const parts = url.split("/").filter(Boolean);
     let renderedContent = "";
     let contentStatusCode = 200;
+    let jsonLd = "";
 
     // Skip SSR for admin and static pages
     const skipSSR = url.startsWith("/admin") || 
@@ -274,26 +275,31 @@ export async function renderHTMLWithMeta(req: Request, res: Response, templatePa
         const result = await renderHomePage();
         renderedContent = result.html;
         contentStatusCode = result.statusCode;
+        jsonLd = result.jsonLd || "";
       } else if (parts[0] === "kod" && parts[1]) {
         // Postal code page
         const result = await renderPostalCodePage(parts[1]);
         renderedContent = result.html;
         contentStatusCode = result.statusCode;
+        jsonLd = result.jsonLd || "";
       } else if (parts.length === 1) {
         // City page
         const result = await renderCityPage(parts[0]);
         renderedContent = result.html;
         contentStatusCode = result.statusCode;
+        jsonLd = result.jsonLd || "";
       } else if (parts.length === 2) {
         // District page
         const result = await renderDistrictPage(parts[0], parts[1]);
         renderedContent = result.html;
         contentStatusCode = result.statusCode;
+        jsonLd = result.jsonLd || "";
       } else if (parts.length === 3) {
         // Neighborhood page
         const result = await renderMahallePage(parts[0], parts[1], parts[2]);
         renderedContent = result.html;
         contentStatusCode = result.statusCode;
+        jsonLd = result.jsonLd || "";
       }
     }
 
@@ -304,6 +310,11 @@ export async function renderHTMLWithMeta(req: Request, res: Response, templatePa
       .replace(/\{\{CANONICAL_URL\}\}/g, meta.canonicalUrl)
       .replace(/\{\{OG_TITLE\}\}/g, meta.ogTitle)
       .replace(/\{\{OG_DESCRIPTION\}\}/g, meta.ogDescription);
+
+    // Inject JSON-LD schemas into <head> before </head>
+    if (jsonLd) {
+      html = html.replace('</head>', `${jsonLd}\n</head>`);
+    }
 
     // Inject rendered content into root div if available
     if (renderedContent) {

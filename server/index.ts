@@ -73,7 +73,38 @@ app.use((req, res, next) => {
   // setting up all the other routes so the catch-all route
   // doesn't interfere with the other routes
   if (app.get("env") === "development") {
-    await setupVite(app, server);
+    // Development: Setup Vite AND SSR for rendering content
+    const vite = await import('vite');
+    const viteDevServer = await vite.createServer({
+      server: { middlewareMode: true },
+      appType: 'custom',
+    });
+    
+    app.use(viteDevServer.middlewares);
+    
+    // Development SSR: Serve HTML with dynamic meta tags and rendered content
+    app.use("*", async (req, res, next) => {
+      const url = req.originalUrl;
+      
+      try {
+        // Check if this is an API route
+        if (url.startsWith('/api')) {
+          return next();
+        }
+        
+        const templatePath = path.resolve(import.meta.dirname, "..", "client", "index.html");
+        
+        // Check if this is a static file request (has extension and not .html)
+        if (req.path.includes('.') && !req.path.endsWith('.html')) {
+          return next();
+        }
+        
+        await renderHTMLWithMeta(req, res, templatePath);
+      } catch (e: any) {
+        viteDevServer.ssrFixStacktrace(e);
+        next(e);
+      }
+    });
   } else {
     // Production: Serve static files (but not index.html - SSR will handle that)
     const distPath = path.resolve(import.meta.dirname, "public");

@@ -1,8 +1,58 @@
 import { storage } from "./storage";
+import {
+  generateIlDescription,
+  generateIlceDescription,
+  generateMahalleDescription,
+  generateIlFAQ,
+  generateIlceFAQ,
+  generateMahalleFAQ,
+} from "../shared/utils";
 
 interface RenderResult {
   html: string;
   statusCode: number;
+  jsonLd?: string; // JSON-LD schemas to inject into <head>
+}
+
+// Helper: Generate FAQ HTML
+function renderFAQ(faqs: Array<{ question: string; answer: string }>): string {
+  if (!faqs || faqs.length === 0) return '';
+  
+  return `
+    <section class="mt-12">
+      <div class="mb-6">
+        <h2 class="text-2xl md:text-3xl font-bold mb-2 flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-7 h-7 text-primary"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+          Sık Sorulan Sorular
+        </h2>
+        <p class="text-muted-foreground">
+          Posta kodları hakkında en çok merak edilen sorular ve cevapları
+        </p>
+      </div>
+      <div class="border rounded-lg">
+        <div class="divide-y">
+          ${faqs.map((faq, index) => `
+            <details class="group p-6">
+              <summary class="cursor-pointer list-none flex items-center justify-between font-medium">
+                <span>${faq.question}</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="transition-transform group-open:rotate-180">
+                  <polyline points="6 9 12 15 18 9"/>
+                </svg>
+              </summary>
+              <p class="mt-4 text-muted-foreground leading-relaxed">${faq.answer}</p>
+            </details>
+          `).join('')}
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+// Helper: Generate JSON-LD Schema
+function generateJSONLD(schemas: any[]): string {
+  return schemas.map(schema => 
+    `<script type="application/ld+json">${JSON.stringify(schema)}</script>`
+  ).join('\n');
 }
 
 // Mahalle page SSR
@@ -65,8 +115,7 @@ export async function renderMahallePage(
           <header class="mb-8">
             <h1 class="text-3xl md:text-4xl font-bold mb-3">${firstCode.mahalle} Mahallesi Posta Kodu</h1>
             <p class="text-lg text-muted-foreground leading-relaxed">
-              ${firstCode.il} ${firstCode.ilce} ${firstCode.mahalle} Mahallesi'nin posta kodu ${postalCodesList[0]}. 
-              ${firstCode.il} ili ${firstCode.ilce} ilçesine bağlı bu mahalle için güncel posta kodu bilgilerini aşağıda bulabilirsiniz.
+              ${generateMahalleDescription(firstCode.mahalle, firstCode.ilce, firstCode.il, postalCodesList[0])}
             </p>
           </header>
 
@@ -121,6 +170,8 @@ export async function renderMahallePage(
             </div>
           </section>
 
+          ${renderFAQ(generateMahalleFAQ(firstCode.mahalle, firstCode.ilce, firstCode.il, postalCodesList[0]))}
+
           ${otherMahalleler.length > 0 ? `
             <section id="diger-mahalleler">
               <h2 class="text-2xl font-semibold mb-6">${firstCode.ilce} İlçesindeki Diğer Mahalleler</h2>
@@ -138,7 +189,38 @@ export async function renderMahallePage(
       </div>
     `;
 
-    return { html, statusCode: 200 };
+    const jsonLdSchemas = [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'PostalAddress',
+        streetAddress: `${firstCode.mahalle} Mahallesi`,
+        addressLocality: firstCode.ilce,
+        addressRegion: firstCode.il,
+        postalCode: postalCodesList.join(', '),
+        addressCountry: 'TR',
+      },
+      {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Anasayfa', item: 'https://postakodrehberi.com/' },
+          { '@type': 'ListItem', position: 2, name: firstCode.il, item: `https://postakodrehberi.com/${ilSlug}` },
+          { '@type': 'ListItem', position: 3, name: firstCode.ilce, item: `https://postakodrehberi.com/${ilSlug}/${ilceSlug}` },
+          { '@type': 'ListItem', position: 4, name: firstCode.mahalle, item: `https://postakodrehberi.com/${ilSlug}/${ilceSlug}/${mahalleSlug}` },
+        ],
+      },
+      {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: generateMahalleFAQ(firstCode.mahalle, firstCode.ilce, firstCode.il, postalCodesList[0]).map((faq) => ({
+          '@type': 'Question',
+          name: faq.question,
+          acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+        })),
+      }
+    ];
+
+    return { html, statusCode: 200, jsonLd: generateJSONLD(jsonLdSchemas) };
   } catch (error) {
     console.error("Mahalle SSR error:", error);
     return {
@@ -166,28 +248,53 @@ export async function renderCityPage(ilSlug: string): Promise<RenderResult> {
       <div class="container max-w-6xl mx-auto px-4 py-8">
         <article>
           <header class="mb-8">
-            <h1 class="text-3xl md:text-4xl font-bold mb-3">${cityData.il} Posta Kodu</h1>
-            <p class="text-lg text-muted-foreground">
-              ${cityData.il} ili posta kodları. ${districts.length} ilçe ve mahallelerinin posta kodlarını görüntüleyin.
+            <h1 class="text-3xl md:text-4xl font-bold mb-3">${cityData.il} Posta Kodları</h1>
+            <p class="text-lg text-muted-foreground leading-relaxed">
+              ${generateIlDescription(cityData.il)}
             </p>
           </header>
 
           <section>
-            <h2 class="text-2xl font-semibold mb-6">${cityData.il} İlçeleri</h2>
+            <h2 class="text-2xl font-semibold mb-6">İlçeler</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               ${districts.map((d: any) => `
                 <a href="/${ilSlug}/${d.ilceSlug}" class="border rounded-lg p-4 hover:border-primary/50 transition-colors">
                   <h3 class="font-semibold mb-1">${d.ilce}</h3>
-                  <p class="text-sm text-muted-foreground">${d.count} mahalle</p>
+                  <p class="text-sm text-muted-foreground">${d.count} posta kodu</p>
                 </a>
               `).join('')}
             </div>
           </section>
+
+          ${renderFAQ(generateIlFAQ(cityData.il))}
         </article>
       </div>
     `;
 
-    return { html, statusCode: 200 };
+    const jsonLdSchemas = [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'ItemList',
+        name: `${cityData.il} Posta Kodları`,
+        itemListElement: districts.map((d: any, index: number) => ({
+          '@type': 'ListItem',
+          position: index + 1,
+          name: d.ilce,
+          url: `https://postakodrehberi.com/${ilSlug}/${d.ilceSlug}`,
+        })),
+      },
+      {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: generateIlFAQ(cityData.il).map((faq) => ({
+          '@type': 'Question',
+          name: faq.question,
+          acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+        })),
+      }
+    ];
+
+    return { html, statusCode: 200, jsonLd: generateJSONLD(jsonLdSchemas) };
   } catch (error) {
     console.error("City SSR error:", error);
     return {
@@ -225,14 +332,14 @@ export async function renderDistrictPage(ilSlug: string, ilceSlug: string): Prom
 
         <article>
           <header class="mb-8">
-            <h1 class="text-3xl md:text-4xl font-bold mb-3">${districtData.ilce} Posta Kodu</h1>
-            <p class="text-lg text-muted-foreground">
-              ${districtData.il}, ${districtData.ilce} ilçesi posta kodları. ${uniqueMahalleler.length} mahalle ve köyün posta kodlarına ulaşın.
+            <h1 class="text-3xl md:text-4xl font-bold mb-3">${districtData.ilce}, ${districtData.il} Posta Kodları</h1>
+            <p class="text-lg text-muted-foreground leading-relaxed">
+              ${generateIlceDescription(districtData.ilce, districtData.il)}
             </p>
           </header>
 
           <section>
-            <h2 class="text-2xl font-semibold mb-6">${districtData.ilce} Mahalleleri</h2>
+            <h2 class="text-2xl font-semibold mb-6">Mahalleler</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               ${uniqueMahalleler.map((m: any) => `
                 <a href="/${ilSlug}/${ilceSlug}/${m.mahalleSlug}" class="border rounded-lg p-4 hover:border-primary/50 transition-colors">
@@ -242,11 +349,36 @@ export async function renderDistrictPage(ilSlug: string, ilceSlug: string): Prom
               `).join('')}
             </div>
           </section>
+
+          ${renderFAQ(generateIlceFAQ(districtData.ilce, districtData.il))}
         </article>
       </div>
     `;
 
-    return { html, statusCode: 200 };
+    const jsonLdSchemas = [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'ItemList',
+        name: `${districtData.ilce}, ${districtData.il} Posta Kodları`,
+        itemListElement: uniqueMahalleler.map((m: any, index: number) => ({
+          '@type': 'ListItem',
+          position: index + 1,
+          name: m.mahalle,
+          url: `https://postakodrehberi.com/${ilSlug}/${ilceSlug}/${m.mahalleSlug}`,
+        })),
+      },
+      {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: generateIlceFAQ(districtData.ilce, districtData.il).map((faq) => ({
+          '@type': 'Question',
+          name: faq.question,
+          acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+        })),
+      }
+    ];
+
+    return { html, statusCode: 200, jsonLd: generateJSONLD(jsonLdSchemas) };
   } catch (error) {
     console.error("District SSR error:", error);
     return {
