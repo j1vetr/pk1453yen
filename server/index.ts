@@ -86,7 +86,10 @@ app.use((req, res, next) => {
     // Development: Setup Vite AND SSR for rendering content
     const vite = await import('vite');
     const viteDevServer = await vite.createServer({
-      server: { middlewareMode: true },
+      server: { 
+        middlewareMode: true,
+        allowedHosts: true
+      },
       appType: 'custom',
     });
     
