@@ -39,6 +39,40 @@ export default function SearchPage() {
     enabled: !!searchTerm,
   });
 
+  // Group results by category (il, ilce, mahalle)
+  const groupedResults = results ? (() => {
+    const iller = new Map<string, { il: string; ilSlug: string }>();
+    const ilceler = new Map<string, { il: string; ilSlug: string; ilce: string; ilceSlug: string }>();
+    const mahalleler: SearchResult[] = [];
+
+    results.forEach(result => {
+      // Collect unique provinces
+      if (!iller.has(result.ilSlug)) {
+        iller.set(result.ilSlug, { il: result.il, ilSlug: result.ilSlug });
+      }
+
+      // Collect unique districts
+      const ilceKey = `${result.ilSlug}-${result.ilceSlug}`;
+      if (!ilceler.has(ilceKey)) {
+        ilceler.set(ilceKey, {
+          il: result.il,
+          ilSlug: result.ilSlug,
+          ilce: result.ilce,
+          ilceSlug: result.ilceSlug
+        });
+      }
+
+      // Collect all neighborhoods
+      mahalleler.push(result);
+    });
+
+    return {
+      iller: Array.from(iller.values()),
+      ilceler: Array.from(ilceler.values()),
+      mahalleler: mahalleler.slice(0, 50), // Limit mahalle results
+    };
+  })() : null;
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim()) {
@@ -121,16 +155,67 @@ export default function SearchPage() {
 
             {isLoading ? (
               <LoadingGrid />
-            ) : results && results.length > 0 ? (
-              <div className="grid grid-cols-1 gap-4">
-                {results.map((result, idx) => (
-                  <PostalCodeCard
-                    key={idx}
-                    title={result.mahalle}
-                    subtitle={`${result.ilce}, ${result.il} - Posta Kodu: ${result.pk}${result.semt ? ` - ${result.semt}` : ''}`}
-                    href={`/${result.ilSlug}/${result.ilceSlug}/${result.mahalleSlug}`}
-                  />
-                ))}
+            ) : results && results.length > 0 && groupedResults ? (
+              <div className="space-y-8">
+                {/* İller (Provinces) */}
+                {groupedResults.iller.length > 0 && (
+                  <section>
+                    <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                      <MapPin className="w-5 h-5 text-primary" />
+                      İller ({groupedResults.iller.length})
+                    </h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {groupedResults.iller.map((il) => (
+                        <PostalCodeCard
+                          key={il.ilSlug}
+                          title={il.il}
+                          subtitle="İl posta kodları sayfası"
+                          href={`/${il.ilSlug}`}
+                        />
+                      ))}
+                    </div>
+                  </section>
+                )}
+
+                {/* İlçeler (Districts) */}
+                {groupedResults.ilceler.length > 0 && (
+                  <section>
+                    <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                      <MapPin className="w-5 h-5 text-primary" />
+                      İlçeler ({groupedResults.ilceler.length})
+                    </h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {groupedResults.ilceler.map((ilce) => (
+                        <PostalCodeCard
+                          key={`${ilce.ilSlug}-${ilce.ilceSlug}`}
+                          title={ilce.ilce}
+                          subtitle={`${ilce.il} - İlçe posta kodları`}
+                          href={`/${ilce.ilSlug}/${ilce.ilceSlug}`}
+                        />
+                      ))}
+                    </div>
+                  </section>
+                )}
+
+                {/* Mahalleler (Neighborhoods) */}
+                {groupedResults.mahalleler.length > 0 && (
+                  <section>
+                    <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                      <MapPin className="w-5 h-5 text-primary" />
+                      Mahalleler ({groupedResults.mahalleler.length}{groupedResults.mahalleler.length >= 50 ? '+' : ''})
+                    </h2>
+                    <div className="grid grid-cols-1 gap-4">
+                      {groupedResults.mahalleler.map((result, idx) => (
+                        <PostalCodeCard
+                          key={idx}
+                          title={result.mahalle}
+                          subtitle={`${result.ilce}, ${result.il} - Posta Kodu: ${result.pk}${result.semt ? ` - ${result.semt}` : ''}`}
+                          href={`/${result.ilSlug}/${result.ilceSlug}/${result.mahalleSlug}`}
+                        />
+                      ))}
+                    </div>
+                  </section>
+                )}
               </div>
             ) : (
               <EmptyState
