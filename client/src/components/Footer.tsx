@@ -5,13 +5,41 @@ import logoUrl from '@/assets/logo.png';
 export function Footer() {
   const currentYear = new Date().getFullYear();
 
+  // Popüler şehirler - SEO için en büyük 24 şehir
+  const popularCities = [
+    { name: 'İstanbul', slug: 'istanbul' },
+    { name: 'Ankara', slug: 'ankara' },
+    { name: 'İzmir', slug: 'izmir' },
+    { name: 'Bursa', slug: 'bursa' },
+    { name: 'Antalya', slug: 'antalya' },
+    { name: 'Adana', slug: 'adana' },
+    { name: 'Konya', slug: 'konya' },
+    { name: 'Gaziantep', slug: 'gaziantep' },
+    { name: 'Şanlıurfa', slug: 'sanliurfa' },
+    { name: 'Kocaeli', slug: 'kocaeli' },
+    { name: 'Mersin', slug: 'mersin' },
+    { name: 'Diyarbakır', slug: 'diyarbakir' },
+    { name: 'Kayseri', slug: 'kayseri' },
+    { name: 'Eskişehir', slug: 'eskisehir' },
+    { name: 'Samsun', slug: 'samsun' },
+    { name: 'Denizli', slug: 'denizli' },
+    { name: 'Adapazarı', slug: 'adapazari' },
+    { name: 'Malatya', slug: 'malatya' },
+    { name: 'Kahramanmaraş', slug: 'kahramanmaras' },
+    { name: 'Erzurum', slug: 'erzurum' },
+    { name: 'Van', slug: 'van' },
+    { name: 'Batman', slug: 'batman' },
+    { name: 'Elazığ', slug: 'elazig' },
+    { name: 'Trabzon', slug: 'trabzon' },
+  ];
+
   return (
     <footer className="bg-muted/30 border-t mt-auto">
       <div className="container max-w-7xl mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Logo ve Açıklama */}
           <div className="space-y-4">
-            <Link href="/" className="inline-block">
+            <Link href="/" className="inline-block" data-testid="link-footer-logo">
               <img src={logoUrl} alt="Posta Kodları Logo" className="h-12 w-auto" />
             </Link>
             <p className="text-sm text-muted-foreground">
@@ -19,50 +47,55 @@ export function Footer() {
             </p>
           </div>
 
+          {/* Popüler Şehirler - 2 kolon */}
+          <div className="lg:col-span-2">
+            <h3 className="font-semibold mb-4">Popüler Şehirler</h3>
+            <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+              {popularCities.map((city) => (
+                <Link
+                  key={city.slug}
+                  href={`/${city.slug}`}
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  data-testid={`link-city-${city.slug}`}
+                >
+                  {city.name}
+                </Link>
+              ))}
+            </div>
+          </div>
+
           {/* Hızlı Linkler */}
           <div>
             <h3 className="font-semibold mb-4">Hızlı Linkler</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="/" className="text-muted-foreground hover:text-foreground transition-colors" data-testid="link-footer-home">
                   Ana Sayfa
                 </Link>
               </li>
               <li>
-                <Link href="/ara" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="/ara" className="text-muted-foreground hover:text-foreground transition-colors" data-testid="link-footer-search">
                   Posta Kodu Ara
                 </Link>
               </li>
               <li>
-                <Link href="/hakkimizda" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="/hakkimizda" className="text-muted-foreground hover:text-foreground transition-colors" data-testid="link-footer-about">
                   Hakkımızda
                 </Link>
               </li>
               <li>
-                <Link href="/iletisim" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="/iletisim" className="text-muted-foreground hover:text-foreground transition-colors" data-testid="link-footer-contact">
                   İletişim
                 </Link>
               </li>
-            </ul>
-          </div>
-
-          {/* Yasal */}
-          <div>
-            <h3 className="font-semibold mb-4">Yasal</h3>
-            <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/gizlilik-politikasi" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="/gizlilik-politikasi" className="text-muted-foreground hover:text-foreground transition-colors" data-testid="link-footer-privacy">
                   Gizlilik Politikası
                 </Link>
               </li>
               <li>
-                <Link href="/kullanim-sartlari" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="/kullanim-sartlari" className="text-muted-foreground hover:text-foreground transition-colors" data-testid="link-footer-terms">
                   Kullanım Şartları
-                </Link>
-              </li>
-              <li>
-                <Link href="/cerez-politikasi" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Çerez Politikası
                 </Link>
               </li>
             </ul>
@@ -76,6 +109,7 @@ export function Footer() {
                 <a 
                   href="mailto:info@postakodrehberi.com" 
                   className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+                  data-testid="link-footer-email"
                 >
                   <Mail className="w-5 h-5" />
                   info@postakodrehberi.com
@@ -85,6 +119,7 @@ export function Footer() {
                 <a 
                   href="tel:+905308616785" 
                   className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+                  data-testid="link-footer-phone"
                 >
                   <Phone className="w-5 h-5" />
                   0530 861 67 85
@@ -96,6 +131,7 @@ export function Footer() {
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+                  data-testid="link-footer-whatsapp"
                 >
                   <MessageCircle className="w-5 h-5" />
                   WhatsApp
